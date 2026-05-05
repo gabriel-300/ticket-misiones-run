@@ -1,8 +1,7 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
-import { useState } from 'react'
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
-import { AlertCircle, CheckCircle2, Calendar } from 'lucide-react'
+import { AlertCircle, Calendar } from 'lucide-react'
 import { toast } from 'sonner'
 import { ProtectedRoute } from '@/components/layout/protected-route'
 import { useOrder } from '@/hooks/use-order'
@@ -27,7 +26,7 @@ const formatARS = (n: number) =>
 function CheckoutPage() {
   const { orderId } = Route.useParams()
   const { data: order, isLoading, error } = useOrder(orderId)
-  const [paid, setPaid] = useState(false)
+  const navigate = useNavigate()
 
   if (isLoading) {
     return (
@@ -48,32 +47,13 @@ function CheckoutPage() {
     )
   }
 
-  // Already paid
-  if (order.status === 'paid' || paid) {
+  // Already paid — redirect to confirmation
+  if (order.status === 'paid') {
     const reg = order.registration as any
-    return (
-      <div className="container mx-auto px-4 py-16 max-w-lg text-center">
-        <CheckCircle2 className="h-16 w-16 text-green-500 mx-auto mb-4" />
-        <h1 className="text-2xl font-bold">¡Inscripción confirmada!</h1>
-        <p className="text-muted-foreground mt-2">Tu pago fue aprobado. Recibirás un email de confirmación pronto.</p>
-        {reg && (
-          <div className="mt-6 bg-muted/40 rounded-xl p-4 text-sm space-y-1 text-left">
-            <p><span className="text-muted-foreground">Evento:</span> <span className="font-medium">{(reg.event as any)?.name}</span></p>
-            <p><span className="text-muted-foreground">Distancia:</span> <span className="font-medium">{(reg.distance as any)?.name}</span></p>
-            {reg.bib_number && <p><span className="text-muted-foreground">Número de dorsal:</span> <span className="font-bold text-primary">#{reg.bib_number}</span></p>}
-            {reg.category && <p><span className="text-muted-foreground">Categoría:</span> <span className="font-medium">{reg.category}</span></p>}
-          </div>
-        )}
-        <div className="flex flex-col sm:flex-row gap-3 justify-center mt-8">
-          {reg?.event?.slug && (
-            <Link to="/eventos/$slug" params={{ slug: (reg.event as any).slug }}>
-              <Button variant="outline">Ver evento</Button>
-            </Link>
-          )}
-          <Link to="/"><Button>Ir al inicio</Button></Link>
-        </div>
-      </div>
-    )
+    if (reg?.id) {
+      navigate({ to: '/confirmacion/$registrationId', params: { registrationId: reg.id } })
+      return null
+    }
   }
 
   // Already failed/processed
@@ -105,8 +85,11 @@ function CheckoutPage() {
     if (error) throw new Error(error.message)
 
     if (data?.aprobado) {
-      setPaid(true)
       toast.success(data.mensaje)
+      const regId = (order?.registration as any)?.id
+      if (regId) {
+        navigate({ to: '/confirmacion/$registrationId', params: { registrationId: regId } })
+      }
     } else {
       toast.error(data?.mensaje ?? 'Pago rechazado. Intentá con otra tarjeta.')
       throw new Error(data?.mensaje ?? 'Pago rechazado')
@@ -168,7 +151,7 @@ function CheckoutPage() {
           <CardContent>
             <CheckoutForm
               totalAmount={Number(order.total_amount)}
-              onSuccess={() => setPaid(true)}
+              onSuccess={() => {}}
               onSubmit={handlePayment}
             />
           </CardContent>

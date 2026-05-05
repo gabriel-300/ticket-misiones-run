@@ -15,6 +15,7 @@ import { Route as EventosIndexRouteImport } from './routes/eventos/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as InscripcionEventIdRouteImport } from './routes/inscripcion/$eventId'
 import { Route as EventosSlugRouteImport } from './routes/eventos/$slug'
+import { Route as ConfirmacionRegistrationIdRouteImport } from './routes/confirmacion/$registrationId'
 import { Route as CheckoutOrderIdRouteImport } from './routes/checkout/$orderId'
 import { Route as AuthRegistroRouteImport } from './routes/auth/registro'
 import { Route as AuthRecuperarRouteImport } from './routes/auth/recuperar'
@@ -51,6 +52,12 @@ const EventosSlugRoute = EventosSlugRouteImport.update({
   path: '/eventos/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ConfirmacionRegistrationIdRoute =
+  ConfirmacionRegistrationIdRouteImport.update({
+    id: '/confirmacion/$registrationId',
+    path: '/confirmacion/$registrationId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const CheckoutOrderIdRoute = CheckoutOrderIdRouteImport.update({
   id: '/checkout/$orderId',
   path: '/checkout/$orderId',
@@ -84,6 +91,7 @@ export interface FileRoutesByFullPath {
   '/auth/recuperar': typeof AuthRecuperarRoute
   '/auth/registro': typeof AuthRegistroRoute
   '/checkout/$orderId': typeof CheckoutOrderIdRoute
+  '/confirmacion/$registrationId': typeof ConfirmacionRegistrationIdRoute
   '/eventos/$slug': typeof EventosSlugRoute
   '/inscripcion/$eventId': typeof InscripcionEventIdRoute
   '/admin/': typeof AdminIndexRoute
@@ -97,6 +105,7 @@ export interface FileRoutesByTo {
   '/auth/recuperar': typeof AuthRecuperarRoute
   '/auth/registro': typeof AuthRegistroRoute
   '/checkout/$orderId': typeof CheckoutOrderIdRoute
+  '/confirmacion/$registrationId': typeof ConfirmacionRegistrationIdRoute
   '/eventos/$slug': typeof EventosSlugRoute
   '/inscripcion/$eventId': typeof InscripcionEventIdRoute
   '/admin': typeof AdminIndexRoute
@@ -111,6 +120,7 @@ export interface FileRoutesById {
   '/auth/recuperar': typeof AuthRecuperarRoute
   '/auth/registro': typeof AuthRegistroRoute
   '/checkout/$orderId': typeof CheckoutOrderIdRoute
+  '/confirmacion/$registrationId': typeof ConfirmacionRegistrationIdRoute
   '/eventos/$slug': typeof EventosSlugRoute
   '/inscripcion/$eventId': typeof InscripcionEventIdRoute
   '/admin/': typeof AdminIndexRoute
@@ -126,6 +136,7 @@ export interface FileRouteTypes {
     | '/auth/recuperar'
     | '/auth/registro'
     | '/checkout/$orderId'
+    | '/confirmacion/$registrationId'
     | '/eventos/$slug'
     | '/inscripcion/$eventId'
     | '/admin/'
@@ -139,6 +150,7 @@ export interface FileRouteTypes {
     | '/auth/recuperar'
     | '/auth/registro'
     | '/checkout/$orderId'
+    | '/confirmacion/$registrationId'
     | '/eventos/$slug'
     | '/inscripcion/$eventId'
     | '/admin'
@@ -152,6 +164,7 @@ export interface FileRouteTypes {
     | '/auth/recuperar'
     | '/auth/registro'
     | '/checkout/$orderId'
+    | '/confirmacion/$registrationId'
     | '/eventos/$slug'
     | '/inscripcion/$eventId'
     | '/admin/'
@@ -166,6 +179,7 @@ export interface RootRouteChildren {
   AuthRecuperarRoute: typeof AuthRecuperarRoute
   AuthRegistroRoute: typeof AuthRegistroRoute
   CheckoutOrderIdRoute: typeof CheckoutOrderIdRoute
+  ConfirmacionRegistrationIdRoute: typeof ConfirmacionRegistrationIdRoute
   EventosSlugRoute: typeof EventosSlugRoute
   InscripcionEventIdRoute: typeof InscripcionEventIdRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -217,6 +231,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EventosSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/confirmacion/$registrationId': {
+      id: '/confirmacion/$registrationId'
+      path: '/confirmacion/$registrationId'
+      fullPath: '/confirmacion/$registrationId'
+      preLoaderRoute: typeof ConfirmacionRegistrationIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/checkout/$orderId': {
       id: '/checkout/$orderId'
       path: '/checkout/$orderId'
@@ -262,6 +283,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRecuperarRoute: AuthRecuperarRoute,
   AuthRegistroRoute: AuthRegistroRoute,
   CheckoutOrderIdRoute: CheckoutOrderIdRoute,
+  ConfirmacionRegistrationIdRoute: ConfirmacionRegistrationIdRoute,
   EventosSlugRoute: EventosSlugRoute,
   InscripcionEventIdRoute: InscripcionEventIdRoute,
   AdminIndexRoute: AdminIndexRoute,
