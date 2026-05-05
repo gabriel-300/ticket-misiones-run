@@ -11,7 +11,10 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as MiPerfilIndexRouteImport } from './routes/mi-perfil/index'
+import { Route as EventosIndexRouteImport } from './routes/eventos/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as InscripcionEventIdRouteImport } from './routes/inscripcion/$eventId'
+import { Route as EventosSlugRouteImport } from './routes/eventos/$slug'
 import { Route as AuthRegistroRouteImport } from './routes/auth/registro'
 import { Route as AuthRecuperarRouteImport } from './routes/auth/recuperar'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
@@ -27,9 +30,24 @@ const MiPerfilIndexRoute = MiPerfilIndexRouteImport.update({
   path: '/mi-perfil/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EventosIndexRoute = EventosIndexRouteImport.update({
+  id: '/eventos/',
+  path: '/eventos/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/admin/',
   path: '/admin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InscripcionEventIdRoute = InscripcionEventIdRouteImport.update({
+  id: '/inscripcion/$eventId',
+  path: '/inscripcion/$eventId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventosSlugRoute = EventosSlugRouteImport.update({
+  id: '/eventos/$slug',
+  path: '/eventos/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRegistroRoute = AuthRegistroRouteImport.update({
@@ -59,7 +77,10 @@ export interface FileRoutesByFullPath {
   '/auth/login': typeof AuthLoginRoute
   '/auth/recuperar': typeof AuthRecuperarRoute
   '/auth/registro': typeof AuthRegistroRoute
+  '/eventos/$slug': typeof EventosSlugRoute
+  '/inscripcion/$eventId': typeof InscripcionEventIdRoute
   '/admin/': typeof AdminIndexRoute
+  '/eventos/': typeof EventosIndexRoute
   '/mi-perfil/': typeof MiPerfilIndexRoute
 }
 export interface FileRoutesByTo {
@@ -68,7 +89,10 @@ export interface FileRoutesByTo {
   '/auth/login': typeof AuthLoginRoute
   '/auth/recuperar': typeof AuthRecuperarRoute
   '/auth/registro': typeof AuthRegistroRoute
+  '/eventos/$slug': typeof EventosSlugRoute
+  '/inscripcion/$eventId': typeof InscripcionEventIdRoute
   '/admin': typeof AdminIndexRoute
+  '/eventos': typeof EventosIndexRoute
   '/mi-perfil': typeof MiPerfilIndexRoute
 }
 export interface FileRoutesById {
@@ -78,7 +102,10 @@ export interface FileRoutesById {
   '/auth/login': typeof AuthLoginRoute
   '/auth/recuperar': typeof AuthRecuperarRoute
   '/auth/registro': typeof AuthRegistroRoute
+  '/eventos/$slug': typeof EventosSlugRoute
+  '/inscripcion/$eventId': typeof InscripcionEventIdRoute
   '/admin/': typeof AdminIndexRoute
+  '/eventos/': typeof EventosIndexRoute
   '/mi-perfil/': typeof MiPerfilIndexRoute
 }
 export interface FileRouteTypes {
@@ -89,7 +116,10 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/recuperar'
     | '/auth/registro'
+    | '/eventos/$slug'
+    | '/inscripcion/$eventId'
     | '/admin/'
+    | '/eventos/'
     | '/mi-perfil/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -98,7 +128,10 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/recuperar'
     | '/auth/registro'
+    | '/eventos/$slug'
+    | '/inscripcion/$eventId'
     | '/admin'
+    | '/eventos'
     | '/mi-perfil'
   id:
     | '__root__'
@@ -107,7 +140,10 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/recuperar'
     | '/auth/registro'
+    | '/eventos/$slug'
+    | '/inscripcion/$eventId'
     | '/admin/'
+    | '/eventos/'
     | '/mi-perfil/'
   fileRoutesById: FileRoutesById
 }
@@ -117,7 +153,10 @@ export interface RootRouteChildren {
   AuthLoginRoute: typeof AuthLoginRoute
   AuthRecuperarRoute: typeof AuthRecuperarRoute
   AuthRegistroRoute: typeof AuthRegistroRoute
+  EventosSlugRoute: typeof EventosSlugRoute
+  InscripcionEventIdRoute: typeof InscripcionEventIdRoute
   AdminIndexRoute: typeof AdminIndexRoute
+  EventosIndexRoute: typeof EventosIndexRoute
   MiPerfilIndexRoute: typeof MiPerfilIndexRoute
 }
 
@@ -137,11 +176,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MiPerfilIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/eventos/': {
+      id: '/eventos/'
+      path: '/eventos'
+      fullPath: '/eventos/'
+      preLoaderRoute: typeof EventosIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/': {
       id: '/admin/'
       path: '/admin'
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/inscripcion/$eventId': {
+      id: '/inscripcion/$eventId'
+      path: '/inscripcion/$eventId'
+      fullPath: '/inscripcion/$eventId'
+      preLoaderRoute: typeof InscripcionEventIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/eventos/$slug': {
+      id: '/eventos/$slug'
+      path: '/eventos/$slug'
+      fullPath: '/eventos/$slug'
+      preLoaderRoute: typeof EventosSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth/registro': {
@@ -181,7 +241,10 @@ const rootRouteChildren: RootRouteChildren = {
   AuthLoginRoute: AuthLoginRoute,
   AuthRecuperarRoute: AuthRecuperarRoute,
   AuthRegistroRoute: AuthRegistroRoute,
+  EventosSlugRoute: EventosSlugRoute,
+  InscripcionEventIdRoute: InscripcionEventIdRoute,
   AdminIndexRoute: AdminIndexRoute,
+  EventosIndexRoute: EventosIndexRoute,
   MiPerfilIndexRoute: MiPerfilIndexRoute,
 }
 export const routeTree = rootRouteImport
