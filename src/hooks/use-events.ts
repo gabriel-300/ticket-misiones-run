@@ -25,9 +25,9 @@ export function useEvents(type?: string) {
   })
 }
 
-export function useEvent(slug: string) {
+export function useEvent(value: string, by: 'slug' | 'id' = 'slug') {
   return useQuery({
-    queryKey: ['event', slug],
+    queryKey: ['event', by, value],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('events')
@@ -36,13 +36,13 @@ export function useEvent(slug: string) {
           event_distances(*, pricing_tiers(*)),
           complementary_services(*)
         `)
-        .eq('slug', slug)
+        .eq(by, value)
         .eq('status', 'published')
         .single()
 
       if (error) throw error
       return data
     },
-    enabled: !!slug,
+    enabled: !!value,
   })
 }

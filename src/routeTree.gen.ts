@@ -15,6 +15,7 @@ import { Route as EventosIndexRouteImport } from './routes/eventos/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as InscripcionEventIdRouteImport } from './routes/inscripcion/$eventId'
 import { Route as EventosSlugRouteImport } from './routes/eventos/$slug'
+import { Route as CheckoutOrderIdRouteImport } from './routes/checkout/$orderId'
 import { Route as AuthRegistroRouteImport } from './routes/auth/registro'
 import { Route as AuthRecuperarRouteImport } from './routes/auth/recuperar'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
@@ -50,6 +51,11 @@ const EventosSlugRoute = EventosSlugRouteImport.update({
   path: '/eventos/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CheckoutOrderIdRoute = CheckoutOrderIdRouteImport.update({
+  id: '/checkout/$orderId',
+  path: '/checkout/$orderId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRegistroRoute = AuthRegistroRouteImport.update({
   id: '/auth/registro',
   path: '/auth/registro',
@@ -77,6 +83,7 @@ export interface FileRoutesByFullPath {
   '/auth/login': typeof AuthLoginRoute
   '/auth/recuperar': typeof AuthRecuperarRoute
   '/auth/registro': typeof AuthRegistroRoute
+  '/checkout/$orderId': typeof CheckoutOrderIdRoute
   '/eventos/$slug': typeof EventosSlugRoute
   '/inscripcion/$eventId': typeof InscripcionEventIdRoute
   '/admin/': typeof AdminIndexRoute
@@ -89,6 +96,7 @@ export interface FileRoutesByTo {
   '/auth/login': typeof AuthLoginRoute
   '/auth/recuperar': typeof AuthRecuperarRoute
   '/auth/registro': typeof AuthRegistroRoute
+  '/checkout/$orderId': typeof CheckoutOrderIdRoute
   '/eventos/$slug': typeof EventosSlugRoute
   '/inscripcion/$eventId': typeof InscripcionEventIdRoute
   '/admin': typeof AdminIndexRoute
@@ -102,6 +110,7 @@ export interface FileRoutesById {
   '/auth/login': typeof AuthLoginRoute
   '/auth/recuperar': typeof AuthRecuperarRoute
   '/auth/registro': typeof AuthRegistroRoute
+  '/checkout/$orderId': typeof CheckoutOrderIdRoute
   '/eventos/$slug': typeof EventosSlugRoute
   '/inscripcion/$eventId': typeof InscripcionEventIdRoute
   '/admin/': typeof AdminIndexRoute
@@ -116,6 +125,7 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/recuperar'
     | '/auth/registro'
+    | '/checkout/$orderId'
     | '/eventos/$slug'
     | '/inscripcion/$eventId'
     | '/admin/'
@@ -128,6 +138,7 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/recuperar'
     | '/auth/registro'
+    | '/checkout/$orderId'
     | '/eventos/$slug'
     | '/inscripcion/$eventId'
     | '/admin'
@@ -140,6 +151,7 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/recuperar'
     | '/auth/registro'
+    | '/checkout/$orderId'
     | '/eventos/$slug'
     | '/inscripcion/$eventId'
     | '/admin/'
@@ -153,6 +165,7 @@ export interface RootRouteChildren {
   AuthLoginRoute: typeof AuthLoginRoute
   AuthRecuperarRoute: typeof AuthRecuperarRoute
   AuthRegistroRoute: typeof AuthRegistroRoute
+  CheckoutOrderIdRoute: typeof CheckoutOrderIdRoute
   EventosSlugRoute: typeof EventosSlugRoute
   InscripcionEventIdRoute: typeof InscripcionEventIdRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -204,6 +217,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EventosSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/checkout/$orderId': {
+      id: '/checkout/$orderId'
+      path: '/checkout/$orderId'
+      fullPath: '/checkout/$orderId'
+      preLoaderRoute: typeof CheckoutOrderIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth/registro': {
       id: '/auth/registro'
       path: '/auth/registro'
@@ -241,6 +261,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthLoginRoute: AuthLoginRoute,
   AuthRecuperarRoute: AuthRecuperarRoute,
   AuthRegistroRoute: AuthRegistroRoute,
+  CheckoutOrderIdRoute: CheckoutOrderIdRoute,
   EventosSlugRoute: EventosSlugRoute,
   InscripcionEventIdRoute: InscripcionEventIdRoute,
   AdminIndexRoute: AdminIndexRoute,
