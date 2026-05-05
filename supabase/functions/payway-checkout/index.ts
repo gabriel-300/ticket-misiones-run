@@ -111,12 +111,28 @@ Deno.serve(async (req: Request) => {
       updated_at: new Date().toISOString(),
     }).eq('id', order_id)
 
-    // Update registration status
+    // Update registration status and get registration_id
+    let registrationId: string | null = null
     if (approved) {
-      await admin.from('registrations').update({
-        status: 'paid',
-        updated_at: new Date().toISOString(),
-      }).eq('order_id', order_id)
+      const { data: regData } = await admin
+        .from('registrations')
+        .update({ status: 'paid', updated_at: new Date().toISOString() })
+        .eq('order_id', order_id)
+        .select('id')
+        .single()
+      registrationId = regData?.id ?? null
+
+      // Fire-and-forget confirmation email
+      if (registrationId) {
+        fetch(`${SUPABASE_URL}/functions/v1/send-confirmation-email`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')}`,
+          },
+          body: JSON.stringify({ registration_id: registrationId }),
+        }).catch((e: unknown) => console.error('Email dispatch error:', e))
+      }
     }
 
     const mensaje = approved
@@ -127,7 +143,7 @@ Deno.serve(async (req: Request) => {
 
     console.log(`Pago ${paywayData.status} — ${siteTransactionId} — $${order.total_amount} ARS`)
 
-    return json({ aprobado: approved, mensaje, registration_id: null })
+    return json({ aprobado: approved, mensaje, registration_id: registrationId })
 
   } catch (err) {
     console.error('payway-checkout error:', err)
