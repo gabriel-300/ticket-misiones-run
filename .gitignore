@@ -32,5 +32,8 @@ dist-ssr
 supabase/.branches
 supabase/.temp
 
+# TanStack Router (auto-generated temp files)
+.tanstack/
+
 # OS
 Thumbs.db

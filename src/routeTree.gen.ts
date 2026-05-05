@@ -10,33 +10,115 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as MiPerfilIndexRouteImport } from './routes/mi-perfil/index'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as AuthRegistroRouteImport } from './routes/auth/registro'
+import { Route as AuthRecuperarRouteImport } from './routes/auth/recuperar'
+import { Route as AuthLoginRouteImport } from './routes/auth/login'
+import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MiPerfilIndexRoute = MiPerfilIndexRouteImport.update({
+  id: '/mi-perfil/',
+  path: '/mi-perfil/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRegistroRoute = AuthRegistroRouteImport.update({
+  id: '/auth/registro',
+  path: '/auth/registro',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRecuperarRoute = AuthRecuperarRouteImport.update({
+  id: '/auth/recuperar',
+  path: '/auth/recuperar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthLoginRoute = AuthLoginRouteImport.update({
+  id: '/auth/login',
+  path: '/auth/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthCallbackRoute = AuthCallbackRouteImport.update({
+  id: '/auth/callback',
+  path: '/auth/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth/callback': typeof AuthCallbackRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/recuperar': typeof AuthRecuperarRoute
+  '/auth/registro': typeof AuthRegistroRoute
+  '/admin/': typeof AdminIndexRoute
+  '/mi-perfil/': typeof MiPerfilIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth/callback': typeof AuthCallbackRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/recuperar': typeof AuthRecuperarRoute
+  '/auth/registro': typeof AuthRegistroRoute
+  '/admin': typeof AdminIndexRoute
+  '/mi-perfil': typeof MiPerfilIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/auth/callback': typeof AuthCallbackRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/recuperar': typeof AuthRecuperarRoute
+  '/auth/registro': typeof AuthRegistroRoute
+  '/admin/': typeof AdminIndexRoute
+  '/mi-perfil/': typeof MiPerfilIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth/callback'
+    | '/auth/login'
+    | '/auth/recuperar'
+    | '/auth/registro'
+    | '/admin/'
+    | '/mi-perfil/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth/callback'
+    | '/auth/login'
+    | '/auth/recuperar'
+    | '/auth/registro'
+    | '/admin'
+    | '/mi-perfil'
+  id:
+    | '__root__'
+    | '/'
+    | '/auth/callback'
+    | '/auth/login'
+    | '/auth/recuperar'
+    | '/auth/registro'
+    | '/admin/'
+    | '/mi-perfil/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthCallbackRoute: typeof AuthCallbackRoute
+  AuthLoginRoute: typeof AuthLoginRoute
+  AuthRecuperarRoute: typeof AuthRecuperarRoute
+  AuthRegistroRoute: typeof AuthRegistroRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+  MiPerfilIndexRoute: typeof MiPerfilIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +130,59 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/mi-perfil/': {
+      id: '/mi-perfil/'
+      path: '/mi-perfil'
+      fullPath: '/mi-perfil/'
+      preLoaderRoute: typeof MiPerfilIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/registro': {
+      id: '/auth/registro'
+      path: '/auth/registro'
+      fullPath: '/auth/registro'
+      preLoaderRoute: typeof AuthRegistroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/recuperar': {
+      id: '/auth/recuperar'
+      path: '/auth/recuperar'
+      fullPath: '/auth/recuperar'
+      preLoaderRoute: typeof AuthRecuperarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/login': {
+      id: '/auth/login'
+      path: '/auth/login'
+      fullPath: '/auth/login'
+      preLoaderRoute: typeof AuthLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/callback': {
+      id: '/auth/callback'
+      path: '/auth/callback'
+      fullPath: '/auth/callback'
+      preLoaderRoute: typeof AuthCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthCallbackRoute: AuthCallbackRoute,
+  AuthLoginRoute: AuthLoginRoute,
+  AuthRecuperarRoute: AuthRecuperarRoute,
+  AuthRegistroRoute: AuthRegistroRoute,
+  AdminIndexRoute: AdminIndexRoute,
+  MiPerfilIndexRoute: MiPerfilIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
