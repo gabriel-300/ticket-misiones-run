@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
-import { Users, ArrowRight, ToggleLeft, ToggleRight } from 'lucide-react'
+import { Users, ArrowRight, ToggleLeft, ToggleRight, Plus } from 'lucide-react'
 import { toast } from 'sonner'
 import { AdminLayout, AdminBreadcrumb } from '@/components/admin/admin-layout'
 import { useAdminEvents, useToggleEventStatus } from '@/hooks/use-admin'
@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 
-export const Route = createFileRoute('/admin/eventos')({
+export const Route = createFileRoute('/admin/eventos/')({
   component: AdminEventos,
 })
 
@@ -44,6 +44,12 @@ function AdminEventos() {
           <h1 className="text-xl font-bold">Eventos</h1>
           <p className="text-sm text-muted-foreground">{events?.length ?? 0} eventos en total</p>
         </div>
+        <Link to="/admin/eventos/nuevo">
+          <Button className="gap-2">
+            <Plus className="h-4 w-4" />
+            Nuevo evento
+          </Button>
+        </Link>
       </div>
 
       {isLoading ? (

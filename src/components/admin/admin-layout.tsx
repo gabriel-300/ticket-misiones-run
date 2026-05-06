@@ -4,7 +4,7 @@ import { AdminRoute } from '@/components/layout/protected-route'
 
 const NAV = [
   { to: '/admin',                  label: 'Resumen',        icon: LayoutDashboard },
-  { to: '/admin/eventos',          label: 'Eventos',        icon: CalendarDays },
+  { to: '/admin/eventos/',         label: 'Eventos',        icon: CalendarDays },
   { to: '/admin/inscripciones',    label: 'Inscripciones',  icon: Users },
   { to: '/admin/aptos',            label: 'Aptos médicos',  icon: FileCheck },
 ]

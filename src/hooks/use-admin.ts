@@ -132,3 +132,68 @@ export function useToggleEventStatus() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ['admin-events'] }),
   })
 }
+
+// ─── Create event ─────────────────────────────────────────────────────────────
+
+export interface CreateEventInput {
+  name: string
+  slug: string
+  type: 'running' | 'trail' | 'triathlon' | 'cycling'
+  status: 'draft' | 'published'
+  starts_at: string
+  registration_opens_at: string
+  registration_closes_at: string
+  short_description: string
+  description?: string
+  city: string
+  province: string
+  address?: string
+  cover_image_url?: string
+  distances: Array<{ name: string; distance_km: number; capacity: number }>
+}
+
+export function useCreateEvent() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: async (input: CreateEventInput) => {
+      const { data: event, error: eventError } = await supabase
+        .from('events')
+        .insert({
+          name: input.name,
+          slug: input.slug,
+          type: input.type,
+          status: input.status,
+          starts_at: input.starts_at,
+          registration_opens_at: input.registration_opens_at,
+          registration_closes_at: input.registration_closes_at,
+          short_description: input.short_description,
+          description: input.description || null,
+          location: { city: input.city, province: input.province, address: input.address || '' },
+          cover_image_url: input.cover_image_url || null,
+        })
+        .select('id')
+        .single()
+
+      if (eventError) throw eventError
+
+      const distances = input.distances.map((d, i) => ({
+        event_id: event.id,
+        name: d.name,
+        distance_km: d.distance_km,
+        capacity: d.capacity,
+        sort_order: i + 1,
+        active: true,
+        registered_count: 0,
+      }))
+
+      const { error: distError } = await supabase.from('event_distances').insert(distances)
+      if (distError) throw distError
+
+      return event.id
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin-events'] })
+      qc.invalidateQueries({ queryKey: ['admin-stats'] })
+    },
+  })
+}

@@ -22,10 +22,11 @@ import { Route as AuthRegistroRouteImport } from './routes/auth/registro'
 import { Route as AuthRecuperarRouteImport } from './routes/auth/recuperar'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
 import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
-import { Route as AdminEventosRouteImport } from './routes/admin/eventos'
 import { Route as AdminAptosRouteImport } from './routes/admin/aptos'
 import { Route as AdminInscripcionesIndexRouteImport } from './routes/admin/inscripciones/index'
+import { Route as AdminEventosIndexRouteImport } from './routes/admin/eventos/index'
 import { Route as AdminInscripcionesEventIdRouteImport } from './routes/admin/inscripciones/$eventId'
+import { Route as AdminEventosNuevoRouteImport } from './routes/admin/eventos/nuevo'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -93,11 +94,6 @@ const AuthCallbackRoute = AuthCallbackRouteImport.update({
   path: '/auth/callback',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminEventosRoute = AdminEventosRouteImport.update({
-  id: '/admin/eventos',
-  path: '/admin/eventos',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AdminAptosRoute = AdminAptosRouteImport.update({
   id: '/admin/aptos',
   path: '/admin/aptos',
@@ -108,17 +104,26 @@ const AdminInscripcionesIndexRoute = AdminInscripcionesIndexRouteImport.update({
   path: '/admin/inscripciones/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminEventosIndexRoute = AdminEventosIndexRouteImport.update({
+  id: '/admin/eventos/',
+  path: '/admin/eventos/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminInscripcionesEventIdRoute =
   AdminInscripcionesEventIdRouteImport.update({
     id: '/admin/inscripciones/$eventId',
     path: '/admin/inscripciones/$eventId',
     getParentRoute: () => rootRouteImport,
   } as any)
+const AdminEventosNuevoRoute = AdminEventosNuevoRouteImport.update({
+  id: '/admin/eventos/nuevo',
+  path: '/admin/eventos/nuevo',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin/aptos': typeof AdminAptosRoute
-  '/admin/eventos': typeof AdminEventosRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/recuperar': typeof AuthRecuperarRoute
@@ -131,13 +136,14 @@ export interface FileRoutesByFullPath {
   '/eventos/': typeof EventosIndexRoute
   '/mi-perfil/': typeof MiPerfilIndexRoute
   '/perfil/': typeof PerfilIndexRoute
+  '/admin/eventos/nuevo': typeof AdminEventosNuevoRoute
   '/admin/inscripciones/$eventId': typeof AdminInscripcionesEventIdRoute
+  '/admin/eventos/': typeof AdminEventosIndexRoute
   '/admin/inscripciones/': typeof AdminInscripcionesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin/aptos': typeof AdminAptosRoute
-  '/admin/eventos': typeof AdminEventosRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/recuperar': typeof AuthRecuperarRoute
@@ -150,14 +156,15 @@ export interface FileRoutesByTo {
   '/eventos': typeof EventosIndexRoute
   '/mi-perfil': typeof MiPerfilIndexRoute
   '/perfil': typeof PerfilIndexRoute
+  '/admin/eventos/nuevo': typeof AdminEventosNuevoRoute
   '/admin/inscripciones/$eventId': typeof AdminInscripcionesEventIdRoute
+  '/admin/eventos': typeof AdminEventosIndexRoute
   '/admin/inscripciones': typeof AdminInscripcionesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin/aptos': typeof AdminAptosRoute
-  '/admin/eventos': typeof AdminEventosRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/recuperar': typeof AuthRecuperarRoute
@@ -170,7 +177,9 @@ export interface FileRoutesById {
   '/eventos/': typeof EventosIndexRoute
   '/mi-perfil/': typeof MiPerfilIndexRoute
   '/perfil/': typeof PerfilIndexRoute
+  '/admin/eventos/nuevo': typeof AdminEventosNuevoRoute
   '/admin/inscripciones/$eventId': typeof AdminInscripcionesEventIdRoute
+  '/admin/eventos/': typeof AdminEventosIndexRoute
   '/admin/inscripciones/': typeof AdminInscripcionesIndexRoute
 }
 export interface FileRouteTypes {
@@ -178,7 +187,6 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin/aptos'
-    | '/admin/eventos'
     | '/auth/callback'
     | '/auth/login'
     | '/auth/recuperar'
@@ -191,13 +199,14 @@ export interface FileRouteTypes {
     | '/eventos/'
     | '/mi-perfil/'
     | '/perfil/'
+    | '/admin/eventos/nuevo'
     | '/admin/inscripciones/$eventId'
+    | '/admin/eventos/'
     | '/admin/inscripciones/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/admin/aptos'
-    | '/admin/eventos'
     | '/auth/callback'
     | '/auth/login'
     | '/auth/recuperar'
@@ -210,13 +219,14 @@ export interface FileRouteTypes {
     | '/eventos'
     | '/mi-perfil'
     | '/perfil'
+    | '/admin/eventos/nuevo'
     | '/admin/inscripciones/$eventId'
+    | '/admin/eventos'
     | '/admin/inscripciones'
   id:
     | '__root__'
     | '/'
     | '/admin/aptos'
-    | '/admin/eventos'
     | '/auth/callback'
     | '/auth/login'
     | '/auth/recuperar'
@@ -229,14 +239,15 @@ export interface FileRouteTypes {
     | '/eventos/'
     | '/mi-perfil/'
     | '/perfil/'
+    | '/admin/eventos/nuevo'
     | '/admin/inscripciones/$eventId'
+    | '/admin/eventos/'
     | '/admin/inscripciones/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminAptosRoute: typeof AdminAptosRoute
-  AdminEventosRoute: typeof AdminEventosRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
   AuthLoginRoute: typeof AuthLoginRoute
   AuthRecuperarRoute: typeof AuthRecuperarRoute
@@ -249,7 +260,9 @@ export interface RootRouteChildren {
   EventosIndexRoute: typeof EventosIndexRoute
   MiPerfilIndexRoute: typeof MiPerfilIndexRoute
   PerfilIndexRoute: typeof PerfilIndexRoute
+  AdminEventosNuevoRoute: typeof AdminEventosNuevoRoute
   AdminInscripcionesEventIdRoute: typeof AdminInscripcionesEventIdRoute
+  AdminEventosIndexRoute: typeof AdminEventosIndexRoute
   AdminInscripcionesIndexRoute: typeof AdminInscripcionesIndexRoute
 }
 
@@ -346,13 +359,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/eventos': {
-      id: '/admin/eventos'
-      path: '/admin/eventos'
-      fullPath: '/admin/eventos'
-      preLoaderRoute: typeof AdminEventosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/admin/aptos': {
       id: '/admin/aptos'
       path: '/admin/aptos'
@@ -367,11 +373,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminInscripcionesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/eventos/': {
+      id: '/admin/eventos/'
+      path: '/admin/eventos'
+      fullPath: '/admin/eventos/'
+      preLoaderRoute: typeof AdminEventosIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/inscripciones/$eventId': {
       id: '/admin/inscripciones/$eventId'
       path: '/admin/inscripciones/$eventId'
       fullPath: '/admin/inscripciones/$eventId'
       preLoaderRoute: typeof AdminInscripcionesEventIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/eventos/nuevo': {
+      id: '/admin/eventos/nuevo'
+      path: '/admin/eventos/nuevo'
+      fullPath: '/admin/eventos/nuevo'
+      preLoaderRoute: typeof AdminEventosNuevoRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -380,7 +400,6 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminAptosRoute: AdminAptosRoute,
-  AdminEventosRoute: AdminEventosRoute,
   AuthCallbackRoute: AuthCallbackRoute,
   AuthLoginRoute: AuthLoginRoute,
   AuthRecuperarRoute: AuthRecuperarRoute,
@@ -393,7 +412,9 @@ const rootRouteChildren: RootRouteChildren = {
   EventosIndexRoute: EventosIndexRoute,
   MiPerfilIndexRoute: MiPerfilIndexRoute,
   PerfilIndexRoute: PerfilIndexRoute,
+  AdminEventosNuevoRoute: AdminEventosNuevoRoute,
   AdminInscripcionesEventIdRoute: AdminInscripcionesEventIdRoute,
+  AdminEventosIndexRoute: AdminEventosIndexRoute,
   AdminInscripcionesIndexRoute: AdminInscripcionesIndexRoute,
 }
 export const routeTree = rootRouteImport
