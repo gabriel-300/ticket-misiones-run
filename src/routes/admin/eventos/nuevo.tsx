@@ -5,7 +5,7 @@ import { z } from 'zod'
 import { Plus, Trash2, ChevronLeft } from 'lucide-react'
 import { toast } from 'sonner'
 import { AdminLayout, AdminBreadcrumb } from '@/components/admin/admin-layout'
-import { useCreateEvent } from '@/hooks/use-admin'
+import { useCreateEvent, useAdminOrganizations } from '@/hooks/use-admin'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -36,9 +36,9 @@ function slugify(text: string) {
 
 // ─── Schema ───────────────────────────────────────────────────────────────────
 
-const distanceSchema = z.object({
+const ticketTypeSchema = z.object({
   name: z.string().min(1, 'Requerido'),
-  distance_km: z.coerce.number().positive('Debe ser mayor a 0'),
+  distance_km: z.coerce.number().optional(),
   capacity: z.coerce.number().int().positive('Debe ser mayor a 0'),
 })
 
@@ -48,8 +48,9 @@ const eventSchema = z.object({
     .string()
     .min(3, 'Mínimo 3 caracteres')
     .regex(/^[a-z0-9-]+$/, 'Solo minúsculas, números y guiones'),
-  type: z.enum(['running', 'trail', 'triathlon', 'cycling']),
+  type: z.string().min(1, 'Requerido'),
   status: z.enum(['draft', 'published']),
+  organization_id: z.string().optional(),
   starts_at: z.string().min(1, 'Requerido'),
   registration_opens_at: z.string().min(1, 'Requerido'),
   registration_closes_at: z.string().min(1, 'Requerido'),
@@ -59,7 +60,7 @@ const eventSchema = z.object({
   province: z.string().min(1, 'Requerido'),
   address: z.string().optional(),
   cover_image_url: z.string().optional(),
-  distances: z.array(distanceSchema).min(1, 'Agregá al menos una distancia'),
+  ticket_types: z.array(ticketTypeSchema).min(1, 'Agregá al menos un tipo de entrada'),
 })
 
 type EventFormData = z.infer<typeof eventSchema>
@@ -69,6 +70,7 @@ type EventFormData = z.infer<typeof eventSchema>
 function NuevoEventoPage() {
   const navigate = useNavigate()
   const { mutate: createEvent, isPending } = useCreateEvent()
+  const { data: organizations } = useAdminOrganizations()
 
   const {
     register,
@@ -82,11 +84,11 @@ function NuevoEventoPage() {
       status: 'draft',
       type: 'running',
       province: 'Misiones',
-      distances: [{ name: '', distance_km: 0, capacity: 0 }],
+      ticket_types: [{ name: '', capacity: 0 }],
     },
   })
 
-  const { fields, append, remove } = useFieldArray({ control, name: 'distances' })
+  const { fields, append, remove } = useFieldArray({ control, name: 'ticket_types' })
 
   function onNameChange(e: React.ChangeEvent<HTMLInputElement>) {
     setValue('name', e.target.value)
@@ -94,7 +96,10 @@ function NuevoEventoPage() {
   }
 
   function onSubmit(data: EventFormData) {
-    createEvent(data, {
+    createEvent({
+      ...data,
+      organization_id: data.organization_id || undefined,
+    }, {
       onSuccess: () => {
         toast.success('Evento creado')
         navigate({ to: '/admin/eventos' })
@@ -156,7 +161,7 @@ function NuevoEventoPage() {
                 <Label>Tipo *</Label>
                 <Select
                   defaultValue="running"
-                  onValueChange={(v) => setValue('type', v as EventFormData['type'])}
+                  onValueChange={(v) => setValue('type', v)}
                 >
                   <SelectTrigger>
                     <SelectValue />
@@ -166,8 +171,13 @@ function NuevoEventoPage() {
                     <SelectItem value="trail">Trail</SelectItem>
                     <SelectItem value="triathlon">Triatlón</SelectItem>
                     <SelectItem value="cycling">Ciclismo</SelectItem>
+                    <SelectItem value="concierto">Concierto</SelectItem>
+                    <SelectItem value="teatro">Teatro</SelectItem>
+                    <SelectItem value="conferencia">Conferencia</SelectItem>
+                    <SelectItem value="other">Otro</SelectItem>
                   </SelectContent>
                 </Select>
+                {errors.type && <p className="text-xs text-destructive">{errors.type.message}</p>}
               </div>
 
               <div className="space-y-1.5">
@@ -186,6 +196,22 @@ function NuevoEventoPage() {
                 </Select>
               </div>
             </div>
+
+            {organizations && organizations.length > 0 && (
+              <div className="space-y-1.5">
+                <Label>Organización</Label>
+                <Select onValueChange={(v) => setValue('organization_id', v)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Sin organización asignada" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {organizations.map((org) => (
+                      <SelectItem key={org.id} value={org.id}>{org.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
 
             <div className="space-y-1.5">
               <Label htmlFor="cover_image_url">URL de imagen de portada</Label>
@@ -287,25 +313,25 @@ function NuevoEventoPage() {
           </CardContent>
         </Card>
 
-        {/* ── Distancias ────────────────────────────────────────────────── */}
+        {/* ── Tipos de entrada ──────────────────────────────────────── */}
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle className="text-base">Distancias</CardTitle>
+              <CardTitle className="text-base">Tipos de entrada</CardTitle>
               <Button
                 type="button"
                 variant="outline"
                 size="sm"
                 className="gap-1.5"
-                onClick={() => append({ name: '', distance_km: 0, capacity: 0 })}
+                onClick={() => append({ name: '', capacity: 0 })}
               >
                 <Plus className="h-3.5 w-3.5" /> Agregar
               </Button>
             </div>
           </CardHeader>
           <CardContent className="space-y-3">
-            {(errors.distances as any)?.message && (
-              <p className="text-xs text-destructive">{(errors.distances as any).message}</p>
+            {(errors.ticket_types as any)?.message && (
+              <p className="text-xs text-destructive">{(errors.ticket_types as any).message}</p>
             )}
 
             {fields.map((field, index) => (
@@ -314,39 +340,36 @@ function NuevoEventoPage() {
                   <div className="space-y-1">
                     <Label className="text-xs">Nombre *</Label>
                     <Input
-                      {...register(`distances.${index}.name`)}
-                      placeholder="10K"
+                      {...register(`ticket_types.${index}.name`)}
+                      placeholder="General / VIP / 10K"
                       className="h-8 text-sm"
                     />
-                    {errors.distances?.[index]?.name && (
-                      <p className="text-xs text-destructive">{errors.distances[index].name?.message}</p>
+                    {errors.ticket_types?.[index]?.name && (
+                      <p className="text-xs text-destructive">{errors.ticket_types[index].name?.message}</p>
                     )}
                   </div>
                   <div className="space-y-1">
-                    <Label className="text-xs">Distancia (km) *</Label>
+                    <Label className="text-xs">Distancia km (opcional)</Label>
                     <Input
-                      {...register(`distances.${index}.distance_km`)}
+                      {...register(`ticket_types.${index}.distance_km`)}
                       type="number"
                       step="0.1"
-                      min="0.1"
+                      min="0"
                       placeholder="10"
                       className="h-8 text-sm"
                     />
-                    {errors.distances?.[index]?.distance_km && (
-                      <p className="text-xs text-destructive">{errors.distances[index].distance_km?.message}</p>
-                    )}
                   </div>
                   <div className="space-y-1">
                     <Label className="text-xs">Cupos *</Label>
                     <Input
-                      {...register(`distances.${index}.capacity`)}
+                      {...register(`ticket_types.${index}.capacity`)}
                       type="number"
                       min="1"
                       placeholder="500"
                       className="h-8 text-sm"
                     />
-                    {errors.distances?.[index]?.capacity && (
-                      <p className="text-xs text-destructive">{errors.distances[index].capacity?.message}</p>
+                    {errors.ticket_types?.[index]?.capacity && (
+                      <p className="text-xs text-destructive">{errors.ticket_types[index].capacity?.message}</p>
                     )}
                   </div>
                 </div>

@@ -11,7 +11,7 @@ export function useEvents(type?: string) {
           id, slug, name, short_description, type,
           starts_at, registration_opens_at, registration_closes_at,
           location, cover_image_url, status,
-          event_distances(
+          ticket_types(
             id, name, distance_km, capacity, registered_count, sort_order, active,
             pricing_tiers(id, name, price_ars, starts_at, ends_at, active)
           )
@@ -36,7 +36,7 @@ export function useFeaturedEvent() {
         .from('events')
         .select(`
           id, slug, name, starts_at, location,
-          event_distances(capacity, registered_count, pricing_tiers(price_ars, active, starts_at, ends_at))
+          ticket_types(capacity, registered_count, pricing_tiers(price_ars, active, starts_at, ends_at))
         `)
         .eq('status', 'published')
         .gte('starts_at', new Date().toISOString())
@@ -72,7 +72,7 @@ export function useEvent(value: string, by: 'slug' | 'id' = 'slug') {
         .from('events')
         .select(`
           *,
-          event_distances(*, pricing_tiers(*)),
+          ticket_types(*, pricing_tiers(*)),
           complementary_services(*)
         `)
         .eq(by, value)

@@ -43,10 +43,10 @@ function HeroSection() {
     return () => clearInterval(id)
   }, [featured?.starts_at])
 
-  const allTiers   = (featured as any)?.event_distances?.flatMap((d: any) => d.pricing_tiers ?? []) ?? []
+  const allTiers   = (featured as any)?.ticket_types?.flatMap((d: any) => d.pricing_tiers ?? []) ?? []
   const activeTier = getActiveTier(allTiers)
-  const totalReg   = (featured as any)?.event_distances?.reduce((s: number, d: any) => s + d.registered_count, 0) ?? 0
-  const totalCap   = (featured as any)?.event_distances?.reduce((s: number, d: any) => s + (d.capacity ?? 0), 0) ?? 0
+  const totalReg   = (featured as any)?.ticket_types?.reduce((s: number, d: any) => s + d.registered_count, 0) ?? 0
+  const totalCap   = (featured as any)?.ticket_types?.reduce((s: number, d: any) => s + (d.capacity ?? 0), 0) ?? 0
   const loc        = featured?.location as { city: string; province: string } | null
 
   return (

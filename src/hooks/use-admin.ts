@@ -7,22 +7,89 @@ export function useAdminStats() {
   return useQuery({
     queryKey: ['admin-stats'],
     queryFn: async () => {
-      const [eventsRes, regsRes, revenueRes, aptosRes] = await Promise.all([
+      const [orgsRes, eventsRes, regsRes, revenueRes] = await Promise.all([
+        supabase.from('organizations').select('id, status', { count: 'exact' }),
         supabase.from('events').select('id, status', { count: 'exact' }),
         supabase.from('registrations').select('id, status', { count: 'exact' }),
         supabase.from('orders').select('total_amount').eq('status', 'paid'),
-        supabase.from('profiles').select('id', { count: 'exact' }).eq('apto_medico_status', 'pendiente').not('apto_medico_url', 'is', null),
       ])
 
-      const totalEvents     = eventsRes.count ?? 0
+      const totalOrgs      = orgsRes.count ?? 0
+      const activeOrgs     = orgsRes.data?.filter(o => o.status === 'active').length ?? 0
+      const totalEvents    = eventsRes.count ?? 0
       const publishedEvents = eventsRes.data?.filter(e => e.status === 'published').length ?? 0
-      const totalRegs       = regsRes.count ?? 0
-      const paidRegs        = regsRes.data?.filter(r => r.status === 'paid').length ?? 0
-      const totalRevenue    = revenueRes.data?.reduce((sum, o) => sum + Number(o.total_amount), 0) ?? 0
-      const pendingAptos    = aptosRes.count ?? 0
+      const totalRegs      = regsRes.count ?? 0
+      const paidRegs       = regsRes.data?.filter(r => r.status === 'paid').length ?? 0
+      const totalRevenue   = revenueRes.data?.reduce((sum, o) => sum + Number(o.total_amount), 0) ?? 0
 
-      return { totalEvents, publishedEvents, totalRegs, paidRegs, totalRevenue, pendingAptos }
+      return { totalOrgs, activeOrgs, totalEvents, publishedEvents, totalRegs, paidRegs, totalRevenue }
     },
+  })
+}
+
+// ─── Organizations ────────────────────────────────────────────────────────────
+
+export function useAdminOrganizations() {
+  return useQuery({
+    queryKey: ['admin-organizations'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('organizations')
+        .select(`
+          id, name, slug, contact_email, status, commission_rate,
+          logo_url, created_at,
+          owner:owner_id ( first_name, last_name )
+        `)
+        .order('created_at', { ascending: false })
+
+      if (error) throw error
+      return data
+    },
+  })
+}
+
+export interface CreateOrganizationInput {
+  name: string
+  slug: string
+  contact_email: string
+  phone?: string
+  description?: string
+  logo_url?: string
+  website_url?: string
+  commission_rate: number
+  owner_id?: string
+}
+
+export function useCreateOrganization() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: async (input: CreateOrganizationInput) => {
+      const { data, error } = await supabase
+        .from('organizations')
+        .insert({ ...input, status: 'active' })
+        .select('id')
+        .single()
+      if (error) throw error
+      return data.id
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin-organizations'] })
+      qc.invalidateQueries({ queryKey: ['admin-stats'] })
+    },
+  })
+}
+
+export function useUpdateOrganizationStatus() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: async ({ orgId, status }: { orgId: string; status: string }) => {
+      const { error } = await supabase
+        .from('organizations')
+        .update({ status })
+        .eq('id', orgId)
+      if (error) throw error
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin-organizations'] }),
   })
 }
 
@@ -37,8 +104,9 @@ export function useAdminEvents() {
         .select(`
           id, name, slug, type, status, starts_at,
           registration_opens_at, registration_closes_at,
-          location,
-          event_distances ( id, name, distance_km, capacity, registered_count )
+          location, organization_id,
+          organization:organization_id ( name, slug ),
+          ticket_types ( id, name, distance_km, capacity, registered_count )
         `)
         .order('starts_at', { ascending: false })
 
@@ -58,12 +126,12 @@ export function useAdminRegistrations(eventId: string) {
         .from('registrations')
         .select(`
           id, bib_number, category, status, custom_field_values, created_at,
-          runner:runner_id (
+          buyer:buyer_id (
             first_name, last_name, dni, gender, phone,
             blood_type, apto_medico_status, apto_medico_url,
             emergency_contact
           ),
-          distance:distance_id ( name, distance_km )
+          ticket_type:ticket_type_id ( name, distance_km )
         `)
         .eq('event_id', eventId)
         .order('bib_number', { ascending: true })
@@ -138,8 +206,9 @@ export function useToggleEventStatus() {
 export interface CreateEventInput {
   name: string
   slug: string
-  type: 'running' | 'trail' | 'triathlon' | 'cycling'
+  type: string
   status: 'draft' | 'published'
+  organization_id?: string
   starts_at: string
   registration_opens_at: string
   registration_closes_at: string
@@ -149,7 +218,7 @@ export interface CreateEventInput {
   province: string
   address?: string
   cover_image_url?: string
-  distances: Array<{ name: string; distance_km: number; capacity: number }>
+  ticket_types: Array<{ name: string; distance_km?: number; capacity: number }>
 }
 
 export function useCreateEvent() {
@@ -163,6 +232,7 @@ export function useCreateEvent() {
           slug: input.slug,
           type: input.type,
           status: input.status,
+          organization_id: input.organization_id ?? null,
           starts_at: input.starts_at,
           registration_opens_at: input.registration_opens_at,
           registration_closes_at: input.registration_closes_at,
@@ -176,18 +246,18 @@ export function useCreateEvent() {
 
       if (eventError) throw eventError
 
-      const distances = input.distances.map((d, i) => ({
+      const ticketTypes = input.ticket_types.map((t, i) => ({
         event_id: event.id,
-        name: d.name,
-        distance_km: d.distance_km,
-        capacity: d.capacity,
+        name: t.name,
+        distance_km: t.distance_km ?? null,
+        capacity: t.capacity,
         sort_order: i + 1,
         active: true,
         registered_count: 0,
       }))
 
-      const { error: distError } = await supabase.from('event_distances').insert(distances)
-      if (distError) throw distError
+      const { error: ttError } = await supabase.from('ticket_types').insert(ticketTypes)
+      if (ttError) throw ttError
 
       return event.id
     },

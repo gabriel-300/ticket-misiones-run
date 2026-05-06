@@ -52,10 +52,10 @@ export function useMyRegistrations() {
         .from('registrations')
         .select(`
           id, bib_number, category, status, created_at,
-          distance:distance_id ( name, distance_km ),
+          ticket_type:ticket_type_id ( name, distance_km ),
           event:event_id ( name, slug, starts_at, cover_image_url )
         `)
-        .eq('runner_id', user.id)
+        .eq('buyer_id', user.id)
         .order('created_at', { ascending: false })
 
       if (error) throw error

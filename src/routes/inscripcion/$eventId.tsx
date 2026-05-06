@@ -60,7 +60,7 @@ function InscripcionPage() {
     )
   }
 
-  const distances = (event.event_distances as any[]) ?? []
+  const distances = (event.ticket_types as any[]) ?? []
 
   return (
     <div className="container mx-auto px-4 py-8">

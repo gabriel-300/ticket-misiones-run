@@ -5,8 +5,8 @@ import { MapPin, Calendar, Users, Clock } from 'lucide-react'
 import { getActiveTier, formatARS } from '@/lib/utils'
 
 interface PricingTier { price_ars: number; active: boolean; starts_at: string; ends_at: string }
-interface EventDistance {
-  id: string; name: string; distance_km: number
+interface TicketType {
+  id: string; name: string; distance_km: number | null
   capacity: number | null; registered_count: number; sort_order: number
   pricing_tiers?: PricingTier[]
 }
@@ -17,23 +17,29 @@ export interface EventCardData {
   starts_at: string; registration_closes_at: string
   location: { city: string; province: string }
   cover_image_url: string | null; status: string
-  event_distances?: EventDistance[]
+  ticket_types?: TicketType[]
 }
 
 const TYPE_BADGE: Record<string, { label: string; cls: string }> = {
-  running:   { label: 'Running',   cls: 'bg-navy text-paper' },
-  trail:     { label: 'Trail',     cls: 'bg-jungle text-cream' },
-  triathlon: { label: 'Triatlón', cls: 'bg-[#3D2B5C] text-white' },
-  cycling:   { label: 'Ciclismo', cls: 'bg-navy text-paper' },
-  other:     { label: 'Evento',   cls: 'bg-navy text-paper' },
+  running:     { label: 'Running',     cls: 'bg-navy text-paper' },
+  trail:       { label: 'Trail',       cls: 'bg-jungle text-cream' },
+  triathlon:   { label: 'Triatlón',   cls: 'bg-[#3D2B5C] text-white' },
+  cycling:     { label: 'Ciclismo',   cls: 'bg-navy text-paper' },
+  concierto:   { label: 'Concierto',  cls: 'bg-terra text-paper' },
+  teatro:      { label: 'Teatro',     cls: 'bg-[#3D2B5C] text-white' },
+  conferencia: { label: 'Conferencia', cls: 'bg-[#1B4D6B] text-white' },
+  other:       { label: 'Evento',     cls: 'bg-navy text-paper' },
 }
 
 const PLACEHOLDER_GRAD: Record<string, string> = {
-  running:   'linear-gradient(135deg,#0B1B2B,#1F3A2E)',
-  trail:     'linear-gradient(135deg,#1F3A2E,#0B1B2B)',
-  triathlon: 'linear-gradient(135deg,#3D2B5C,#0B1B2B)',
-  cycling:   'linear-gradient(135deg,#1B4D6B,#0B1B2B)',
-  other:     'linear-gradient(135deg,#C84B22,#1F3A2E)',
+  running:     'linear-gradient(135deg,#0B1B2B,#1F3A2E)',
+  trail:       'linear-gradient(135deg,#1F3A2E,#0B1B2B)',
+  triathlon:   'linear-gradient(135deg,#3D2B5C,#0B1B2B)',
+  cycling:     'linear-gradient(135deg,#1B4D6B,#0B1B2B)',
+  concierto:   'linear-gradient(135deg,#C84B22,#0B1B2B)',
+  teatro:      'linear-gradient(135deg,#3D2B5C,#1F3A2E)',
+  conferencia: 'linear-gradient(135deg,#1B4D6B,#1F3A2E)',
+  other:       'linear-gradient(135deg,#C84B22,#1F3A2E)',
 }
 
 const STRIPE = 'repeating-linear-gradient(135deg,rgba(255,255,255,0.04) 0 2px,transparent 2px 14px)'
@@ -45,12 +51,12 @@ export default function EventCard({ event }: { event: EventCardData }) {
   const isNight    = startsAt.getHours() >= 18
   const location   = event.location as { city: string; province: string }
 
-  const distances  = [...(event.event_distances ?? [])].sort((a, b) => b.distance_km - a.distance_km)
-  const allTiers   = distances.flatMap(d => d.pricing_tiers ?? [])
-  const activeTier = getActiveTier(allTiers)
+  const ticketTypes = [...(event.ticket_types ?? [])].sort((a, b) => a.sort_order - b.sort_order)
+  const allTiers    = ticketTypes.flatMap(t => t.pricing_tiers ?? [])
+  const activeTier  = getActiveTier(allTiers)
 
-  const totalReg = distances.reduce((s, d) => s + d.registered_count, 0)
-  const totalCap = distances.reduce((s, d) => s + (d.capacity ?? 0), 0)
+  const totalReg  = ticketTypes.reduce((s, t) => s + t.registered_count, 0)
+  const totalCap  = ticketTypes.reduce((s, t) => s + (t.capacity ?? 0), 0)
   const spotsLeft = totalCap > 0 ? totalCap - totalReg : null
 
   const badge = TYPE_BADGE[event.type] ?? TYPE_BADGE.other
@@ -106,10 +112,10 @@ export default function EventCard({ event }: { event: EventCardData }) {
             </div>
           </div>
 
-          {/* Status dot */}
+          {/* Availability dot */}
           <div className="absolute bottom-3.5 left-3.5 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-sm text-white font-mono text-[11px] font-semibold tracking-[0.05em]">
             <span className="w-1.5 h-1.5 rounded-full bg-green-400 shadow-[0_0_0_3px_rgba(74,222,128,0.25)]" />
-            {spotsLeft !== null && spotsLeft < 150 ? `Cupos: ${spotsLeft}` : 'Abierta'}
+            {spotsLeft !== null && spotsLeft < 150 ? `Cupos: ${spotsLeft}` : 'Disponible'}
           </div>
         </div>
 
@@ -124,17 +130,17 @@ export default function EventCard({ event }: { event: EventCardData }) {
             </p>
           )}
 
-          {/* Distance pills */}
-          {distances.length > 0 && (
+          {/* Ticket type pills */}
+          {ticketTypes.length > 0 && (
             <div className="flex flex-wrap gap-1.5 mb-4">
-              {distances.map((d, i) => (
+              {ticketTypes.map((t, i) => (
                 <span
-                  key={d.id}
+                  key={t.id}
                   className={`px-2.5 py-[5px] rounded-full font-mono text-[11px] font-semibold ${
                     i === 0 ? 'bg-navy text-yellow' : 'bg-cream text-navy'
                   }`}
                 >
-                  {d.name}
+                  {t.name}
                 </span>
               ))}
             </div>
@@ -164,7 +170,7 @@ export default function EventCard({ event }: { event: EventCardData }) {
               </span>
             </div>
             <span className="inline-flex items-center gap-2 bg-navy text-paper px-[18px] py-3 rounded-full text-[13px] font-semibold group-hover:bg-terra transition-colors">
-              Inscribirme
+              Ver evento
               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
                 <path d="M5 12h14M13 5l7 7-7 7" />
               </svg>

@@ -5,7 +5,7 @@ import { toast } from 'sonner'
 import { useAuth } from '@/hooks/use-auth'
 
 export function Header() {
-  const { isAuthenticated, isAdmin, profile, signOut } = useAuth()
+  const { isAuthenticated, isSuperAdmin, isOrganizer, profile, signOut } = useAuth()
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
 
@@ -18,7 +18,7 @@ export function Header() {
 
   const navLinks = [
     { to: '/eventos' as const, label: 'Eventos' },
-    ...(isAdmin ? [{ to: '/admin' as const, label: 'Admin' }] : []),
+    ...(isSuperAdmin ? [{ to: '/admin' as const, label: 'Admin' }] : []),
   ]
 
   return (

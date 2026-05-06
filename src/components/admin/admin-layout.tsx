@@ -1,12 +1,13 @@
 import { Link, useRouterState } from '@tanstack/react-router'
-import { LayoutDashboard, CalendarDays, Users, FileCheck, ChevronRight } from 'lucide-react'
+import { LayoutDashboard, CalendarDays, Users, FileCheck, Building2, ChevronRight } from 'lucide-react'
 import { AdminRoute } from '@/components/layout/protected-route'
 
 const NAV = [
-  { to: '/admin',                  label: 'Resumen',        icon: LayoutDashboard },
-  { to: '/admin/eventos',          label: 'Eventos',        icon: CalendarDays },
-  { to: '/admin/inscripciones',    label: 'Inscripciones',  icon: Users },
-  { to: '/admin/aptos',            label: 'Aptos médicos',  icon: FileCheck },
+  { to: '/admin',                  label: 'Resumen',         icon: LayoutDashboard },
+  { to: '/admin/organizaciones',   label: 'Organizaciones',  icon: Building2 },
+  { to: '/admin/eventos',          label: 'Eventos',         icon: CalendarDays },
+  { to: '/admin/inscripciones',    label: 'Inscripciones',   icon: Users },
+  { to: '/admin/aptos',            label: 'Aptos médicos',   icon: FileCheck },
 ]
 
 export function AdminLayout({ children }: { children: React.ReactNode }) {

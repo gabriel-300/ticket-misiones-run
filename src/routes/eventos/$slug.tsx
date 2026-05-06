@@ -82,7 +82,7 @@ function EventoDetallePage() {
   const coverUrl = event.cover_image_url ??
     `https://images.unsplash.com/photo-1513593771513-7b58b6c4af38?w=1200&q=80`
 
-  const distances = (event.event_distances as any[]) ?? []
+  const distances = (event.ticket_types as any[]) ?? []
 
   return (
     <div>

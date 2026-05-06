@@ -53,7 +53,7 @@ export function useToggleServiceInterest(registrationId: string) {
       } else {
         const { error } = await supabase
           .from('service_interests')
-          .insert({ registration_id: registrationId, service_id: serviceId, runner_id: user.id })
+          .insert({ registration_id: registrationId, service_id: serviceId, buyer_id: user.id })
         if (error) throw error
       }
     },

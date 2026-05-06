@@ -1,10 +1,44 @@
+export type UserRole = 'buyer' | 'organizer' | 'super_admin'
+
+export interface Organization {
+  id: string
+  name: string
+  slug: string
+  description: string | null
+  logoUrl: string | null
+  websiteUrl: string | null
+  contactEmail: string
+  phone: string | null
+  ownerId: string | null
+  commissionRate: number
+  status: 'pending' | 'active' | 'suspended'
+  createdAt: string
+}
+
+export interface UserProfile {
+  id: string
+  role: UserRole
+  firstName: string
+  lastName: string
+  dni: string
+  dniType: 'DNI' | 'PASAPORTE' | 'CI'
+  birthDate: string
+  gender: 'M' | 'F' | 'X'
+  phone: string
+  email?: string
+  aptoMedicoStatus: 'pendiente' | 'aprobado' | 'rechazado' | null
+  aptoMedicoUrl: string | null
+  aptoMedicoIssuedAt: string | null
+}
+
 export interface Event {
   id: string
   slug: string
   name: string
   shortDescription: string | null
   description: string | null
-  type: 'running' | 'trail' | 'triathlon' | 'cycling' | 'other'
+  type: string
+  organizationId: string | null
   startsAt: string
   endsAt: string | null
   registrationOpensAt: string
@@ -22,15 +56,15 @@ export interface EventLocation {
   province: string
   country: string
   address: string
-  lat: number
-  lng: number
+  lat?: number
+  lng?: number
 }
 
-export interface EventDistance {
+export interface TicketType {
   id: string
   eventId: string
   name: string
-  distanceKm: number
+  distanceKm: number | null
   capacity: number | null
   registeredCount: number
   startTime: string | null
@@ -43,7 +77,7 @@ export interface EventDistance {
 export interface PricingTier {
   id: string
   eventId: string
-  distanceId: string | null
+  ticketTypeId: string | null
   name: string
   priceArs: number
   startsAt: string
@@ -52,27 +86,11 @@ export interface PricingTier {
   sortOrder: number
 }
 
-export interface Runner {
-  id: string
-  role: 'runner' | 'admin'
-  firstName: string
-  lastName: string
-  dni: string
-  dniType: 'DNI' | 'PASAPORTE' | 'CI'
-  birthDate: string
-  gender: 'M' | 'F' | 'X'
-  phone: string
-  email?: string
-  aptoMedicoStatus: 'pendiente' | 'aprobado' | 'rechazado'
-  aptoMedicoUrl: string | null
-  aptoMedicoIssuedAt: string | null
-}
-
 export interface Registration {
   id: string
   eventId: string
-  distanceId: string
-  runnerId: string
+  ticketTypeId: string
+  buyerId: string
   bibNumber: number | null
   category: string | null
   status: 'pending_payment' | 'paid' | 'cancelled' | 'refunded' | 'transferred'
@@ -85,6 +103,7 @@ export interface Registration {
 export interface ComplementaryService {
   id: string
   eventId: string | null
+  organizationId: string | null
   category: 'hospedaje' | 'comida' | 'transporte' | 'wellness' | 'equipamiento' | 'experiencia' | 'otro'
   subcategory: string | null
   partnerName: string

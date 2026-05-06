@@ -23,7 +23,7 @@ function AdminInscripciones() {
       ) : (
         <div className="space-y-3">
           {events?.map(event => {
-            const distances = (event.event_distances as any[]) ?? []
+            const distances = (event.ticket_types as any[]) ?? []
             const totalReg  = distances.reduce((s: number, d: any) => s + d.registered_count, 0)
             return (
               <Link key={event.id} to="/admin/inscripciones/$eventId" params={{ eventId: event.id }}>

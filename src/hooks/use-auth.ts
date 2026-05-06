@@ -85,12 +85,14 @@ export function useAuth() {
     return { data, error }
   }
 
-  const isAdmin = state.profile?.role === 'admin'
+  const isSuperAdmin  = state.profile?.role === 'super_admin'
+  const isOrganizer   = state.profile?.role === 'organizer' || isSuperAdmin
   const isAuthenticated = !!state.user && !!state.session
 
   return {
     ...state,
-    isAdmin,
+    isSuperAdmin,
+    isOrganizer,
     isAuthenticated,
     signUp,
     signIn,

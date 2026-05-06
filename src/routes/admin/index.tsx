@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { Users, CalendarDays, DollarSign, FileCheck, TrendingUp, ArrowRight } from 'lucide-react'
+import { Users, CalendarDays, DollarSign, Building2, TrendingUp, ArrowRight } from 'lucide-react'
 import { AdminLayout } from '@/components/admin/admin-layout'
 import { useAdminStats, useAdminEvents } from '@/hooks/use-admin'
 import { Card, CardContent } from '@/components/ui/card'
@@ -52,11 +52,11 @@ function AdminHome() {
           </div>
         ) : stats && (
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
-            <StatCard title="Eventos publicados" value={stats.publishedEvents} sub={`${stats.totalEvents} en total`} icon={CalendarDays} accent="bg-blue-100 text-blue-700" />
+            <StatCard title="Organizaciones" value={stats.activeOrgs} sub={`${stats.totalOrgs} en total`} icon={Building2} accent="bg-blue-100 text-blue-700" />
+            <StatCard title="Eventos publicados" value={stats.publishedEvents} sub={`${stats.totalEvents} en total`} icon={CalendarDays} accent="bg-indigo-100 text-indigo-700" />
             <StatCard title="Inscripciones" value={stats.totalRegs} sub={`${stats.paidRegs} pagas`} icon={Users} accent="bg-green-100 text-green-700" />
             <StatCard title="Recaudación" value={formatARS(stats.totalRevenue)} sub="órdenes pagas" icon={DollarSign} accent="bg-emerald-100 text-emerald-700" />
             <StatCard title="Tasa de conversión" value={stats.totalRegs > 0 ? `${Math.round((stats.paidRegs / stats.totalRegs) * 100)}%` : '—'} sub="inscriptos → pagos" icon={TrendingUp} accent="bg-purple-100 text-purple-700" />
-            <StatCard title="Aptos pendientes" value={stats.pendingAptos} sub="requieren validación" icon={FileCheck} accent={stats.pendingAptos > 0 ? 'bg-orange-100 text-orange-700' : 'bg-muted'} />
           </div>
         )}
 
@@ -73,7 +73,7 @@ function AdminHome() {
           ) : (
             <div className="space-y-3">
               {events?.slice(0, 4).map(event => {
-                const distances = (event.event_distances as any[]) ?? []
+                const distances = (event.ticket_types as any[]) ?? []
                 const totalCap  = distances.reduce((s: number, d: any) => s + (d.capacity ?? 0), 0)
                 const totalReg  = distances.reduce((s: number, d: any) => s + d.registered_count, 0)
                 return (

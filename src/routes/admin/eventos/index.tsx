@@ -57,7 +57,7 @@ function AdminEventos() {
       ) : (
         <div className="space-y-3">
           {events?.map(event => {
-            const distances = (event.event_distances as any[]) ?? []
+            const distances = (event.ticket_types as any[]) ?? []
             const totalReg  = distances.reduce((s: number, d: any) => s + d.registered_count, 0)
             const totalCap  = distances.reduce((s: number, d: any) => s + (d.capacity ?? 0), 0)
             const pct       = totalCap > 0 ? Math.round((totalReg / totalCap) * 100) : null
@@ -84,7 +84,7 @@ function AdminEventos() {
                           {totalReg}{totalCap > 0 ? `/${totalCap}` : ''} inscriptos
                           {pct !== null && ` (${pct}%)`}
                         </span>
-                        <span>{distances.length} distancia{distances.length !== 1 ? 's' : ''}</span>
+                        <span>{distances.length} tipo{distances.length !== 1 ? 's' : ''} de entrada</span>
                       </div>
                     </div>
 

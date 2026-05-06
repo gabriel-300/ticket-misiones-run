@@ -25,7 +25,7 @@ const STATUS_LABEL: Record<string, string> = {
 function exportCSV(registrations: any[], eventName: string) {
   const headers = ['Dorsal','Categoría','Apellido','Nombre','DNI','Género','Distancia','Talle','Club','Grupo sangre','Contacto emergencia','Estado']
   const rows = registrations.map(r => {
-    const runner = r.runner as any
+    const runner = r.buyer as any
     const dist   = r.distance as any
     const cf     = r.custom_field_values as any ?? {}
     const ec     = runner?.emergency_contact as any
@@ -65,7 +65,7 @@ function AdminInscripcionesEvento() {
   const filtered = regs?.filter(r => {
     if (!search) return true
     const q = search.toLowerCase()
-    const runner = r.runner as any
+    const runner = r.buyer as any
     return (
       runner?.first_name?.toLowerCase().includes(q) ||
       runner?.last_name?.toLowerCase().includes(q) ||
@@ -133,8 +133,8 @@ function AdminInscripcionesEvento() {
                   <tr><td colSpan={8} className="px-3 py-8 text-center text-muted-foreground text-sm">Sin resultados</td></tr>
                 )}
                 {filtered?.map(r => {
-                  const runner = r.runner as any
-                  const dist   = r.distance as any
+                  const runner = r.buyer as any
+                  const dist   = r.ticket_type as any
                   const cf     = r.custom_field_values as any ?? {}
                   return (
                     <tr key={r.id} className="hover:bg-muted/30 transition-colors">

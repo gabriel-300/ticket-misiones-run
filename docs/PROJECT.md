@@ -1,46 +1,52 @@
 # PROJECT.md — Visión y alcance
 
-## Contexto del cliente
-**Misiones Online** es un medio digital de Misiones, Argentina. Ofrecen su plataforma `ticketmisiones.com/shop` pero está pensada para espectáculos musicales, no para eventos deportivos. Nos dieron luz verde para construir una plataforma propia, novedosa, orientada a carreras de running y adaptable a cualquier tipo de evento.
+## Qué es Misiona Hub
 
-## Visión
-Construir la plataforma de inscripción a eventos deportivos **más completa de la región Misiones / NEA**, con un diferencial claro: después de inscribirte a la carrera, te ofrecemos todo lo que necesitás para tu **race-cation** — hospedaje, comida, transporte, masajes, fotos, experiencias.
+**Misiona Hub** es una plataforma SaaS de ticketing multi-organizador para Misiones, Argentina.
+Cualquier tipo de evento puede venderse aquí: carreras de running, conciertos, teatro, conferencias, ferias, etc.
 
-## Alcance Fase 1 (lo que se codea ahora)
+**Misiona Hub** (la empresa) vende el servicio a **organizadores** (bandas, empresas de running, teatros, etc.).
+Los organizadores crean sus eventos, configuran tipos de entrada y servicios complementarios.
+Los compradores descubren eventos, compran entradas y opcionalmente suman add-ons (transporte, hospedaje, comida).
 
-### Funciones incluidas
-1. **Auth y perfiles de corredores** (Supabase Auth con email + password).
-2. **Catálogo de eventos** (multi-evento, multi-distancia).
-3. **Formulario de inscripción dinámico** con validación.
-4. **Subida de apto médico** (PDF/imagen) con vencimiento a 1 año.
-5. **Deslinde de responsabilidad** firmado digitalmente con timestamp.
-6. **Pago con Payway** (tokenización + autorización + webhook).
-7. **Upsell estático post-pago**: pantalla de confirmación con servicios complementarios curados manualmente. Las reservas de upsell en Fase 1 se gestionan **por email**.
-8. **Emails transaccionales** (confirmación, recordatorios pre-carrera).
-9. **Dashboard de admin** (Misiones Online): ver inscriptos, exportar CSV, validar aptos médicos, asignar dorsales.
-10. **Landing pública del evento** con countdown, mapa, galería, FAQs.
-11. **Facturación electrónica AFIP/ARCA** — opcional/diferible.
+**Misiones Online** es un socio de distribución y potencialmente de pasarela de pagos (por su volumen de operaciones).
+No son clientes ni propietarios de la plataforma.
 
-### Funciones EXPLÍCITAMENTE excluidas de Fase 1
-- ❌ Onboarding self-service de proveedores
-- ❌ Sistema de listings con CRUD para proveedores
-- ❌ Calendario de disponibilidad
-- ❌ KYC fiscal automatizado
-- ❌ Split de pagos / payouts a proveedores
+## Roles
+
+| Rol | Descripción |
+|---|---|
+| `super_admin` | Equipo de Misiona Hub. Gestiona organizaciones, ve todo. Panel en `/admin` |
+| `organizer` | Empresa u organizador de eventos. Gestiona sus eventos y add-ons. Panel en `/org` |
+| `buyer` | Comprador final. Compra entradas y servicios complementarios |
+
+## Modelo de negocio
+
+- Misiona Hub cobra un **porcentaje de comisión** por evento (configurable por organización, default 8%)
+- El % se suma al precio base y se muestra desglosado al comprador
+- Los servicios complementarios (add-ons) son configurados por el organizador como "proveedores oficiales"
+- El comprador puede agregarlos al flujo de compra antes o después de pagar la entrada
+
+## Alcance Fase 1 (MVP actual)
+
+1. **Auth y perfiles** (Supabase Auth, email + password)
+2. **Multi-organización**: super_admin crea organizaciones, asigna owner
+3. **Multi-evento y multi-tipo**: running, trail, concierto, teatro, conferencia, etc.
+4. **Catálogo público** de eventos
+5. **Formulario de compra/inscripción** con tipos de entrada configurables
+6. **Servicios complementarios** como add-ons opcionales en el flujo de compra
+7. **Pago con Payway** (tokenización + webhook)
+8. **Emails transaccionales** (confirmación, recordatorio)
+9. **Dashboard admin** (super_admin): gestión de organizaciones, eventos, inscripciones
+10. **Dashboard organizador** (organizer): sus eventos, sus ventas, sus add-ons
+11. **Mi perfil** (buyer): historial de compras
+
+## Funciones diferidas (Fase 2)
+
+- ❌ Onboarding self-service de organizadores (registro público)
+- ❌ Split de pagos / payouts automáticos a organizadores
+- ❌ Marketplace de servicios complementarios (listings con CRUD público)
 - ❌ Reviews y ratings
-- ❌ Search y filtros de servicios complementarios
-- ❌ Bundle builder dinámico
-- ❌ Multi-idioma
 - ❌ App nativa
 - ❌ Cronometraje en vivo
-- ❌ Integración con Strava
-
-## Roles de usuario en Fase 1
-1. **Anonymous** — ve landings públicos, puede registrarse.
-2. **Runner** — corredor inscripto.
-3. **Admin** — empleado de Misiones Online.
-
-## Modelo de negocio Fase 1
-- Misiones Online cobra el 100% de la inscripción vía Payway.
-- Fee de servicio configurable por evento (default 8%), desglosado al corredor.
-- Upsell: acuerdos comerciales bilaterales, el corredor expresa interés y Misiones Online conecta con el partner.
+- ❌ Multi-idioma

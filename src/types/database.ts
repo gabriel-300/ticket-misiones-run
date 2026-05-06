@@ -7,13 +7,120 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instantiate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "14.5"
   }
   public: {
     Tables: {
+      organizations: {
+        Row: {
+          id: string
+          name: string
+          slug: string
+          description: string | null
+          logo_url: string | null
+          website_url: string | null
+          contact_email: string
+          phone: string | null
+          owner_id: string | null
+          commission_rate: number
+          status: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          slug: string
+          description?: string | null
+          logo_url?: string | null
+          website_url?: string | null
+          contact_email: string
+          phone?: string | null
+          owner_id?: string | null
+          commission_rate?: number
+          status?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          slug?: string
+          description?: string | null
+          logo_url?: string | null
+          website_url?: string | null
+          contact_email?: string
+          phone?: string | null
+          owner_id?: string | null
+          commission_rate?: number
+          status?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organizations_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ticket_types: {
+        Row: {
+          active: boolean
+          age_max: number | null
+          age_min: number | null
+          capacity: number | null
+          created_at: string
+          distance_km: number | null
+          event_id: string
+          id: string
+          name: string
+          registered_count: number
+          sort_order: number
+          start_time: string | null
+        }
+        Insert: {
+          active?: boolean
+          age_max?: number | null
+          age_min?: number | null
+          capacity?: number | null
+          created_at?: string
+          distance_km?: number | null
+          event_id: string
+          id?: string
+          name: string
+          registered_count?: number
+          sort_order?: number
+          start_time?: string | null
+        }
+        Update: {
+          active?: boolean
+          age_max?: number | null
+          age_min?: number | null
+          capacity?: number | null
+          created_at?: string
+          distance_km?: number | null
+          event_id?: string
+          id?: string
+          name?: string
+          registered_count?: number
+          sort_order?: number
+          start_time?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ticket_types_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       complementary_services: {
         Row: {
           active: boolean
@@ -27,6 +134,7 @@ export type Database = {
           event_id: string | null
           id: string
           image_url: string | null
+          organization_id: string | null
           partner_name: string
           price_from: number | null
           subcategory: string | null
@@ -44,6 +152,7 @@ export type Database = {
           event_id?: string | null
           id?: string
           image_url?: string | null
+          organization_id?: string | null
           partner_name: string
           price_from?: number | null
           subcategory?: string | null
@@ -61,6 +170,7 @@ export type Database = {
           event_id?: string | null
           id?: string
           image_url?: string | null
+          organization_id?: string | null
           partner_name?: string
           price_from?: number | null
           subcategory?: string | null
@@ -72,6 +182,13 @@ export type Database = {
             columns: ["event_id"]
             isOneToOne: false
             referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "complementary_services_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
         ]
@@ -176,59 +293,6 @@ export type Database = {
           },
         ]
       }
-      event_distances: {
-        Row: {
-          active: boolean
-          age_max: number | null
-          age_min: number | null
-          capacity: number | null
-          created_at: string
-          distance_km: number
-          event_id: string
-          id: string
-          name: string
-          registered_count: number
-          sort_order: number
-          start_time: string | null
-        }
-        Insert: {
-          active?: boolean
-          age_max?: number | null
-          age_min?: number | null
-          capacity?: number | null
-          created_at?: string
-          distance_km: number
-          event_id: string
-          id?: string
-          name: string
-          registered_count?: number
-          sort_order?: number
-          start_time?: string | null
-        }
-        Update: {
-          active?: boolean
-          age_max?: number | null
-          age_min?: number | null
-          capacity?: number | null
-          created_at?: string
-          distance_km?: number
-          event_id?: string
-          id?: string
-          name?: string
-          registered_count?: number
-          sort_order?: number
-          start_time?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "event_distances_event_id_fkey"
-            columns: ["event_id"]
-            isOneToOne: false
-            referencedRelation: "events"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       events: {
         Row: {
           course_geojson_url: string | null
@@ -245,6 +309,7 @@ export type Database = {
           location: Json
           medical_certificate_min_distance_km: number | null
           name: string
+          organization_id: string | null
           registration_closes_at: string
           registration_opens_at: string
           regulation_url: string | null
@@ -274,6 +339,7 @@ export type Database = {
           location: Json
           medical_certificate_min_distance_km?: number | null
           name: string
+          organization_id?: string | null
           registration_closes_at: string
           registration_opens_at: string
           regulation_url?: string | null
@@ -303,6 +369,7 @@ export type Database = {
           location?: Json
           medical_certificate_min_distance_km?: number | null
           name?: string
+          organization_id?: string | null
           registration_closes_at?: string
           registration_opens_at?: string
           regulation_url?: string | null
@@ -317,7 +384,15 @@ export type Database = {
           updated_at?: string
           waiver_text?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "events_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       orders: {
         Row: {
@@ -391,7 +466,7 @@ export type Database = {
         Row: {
           active: boolean
           created_at: string
-          distance_id: string | null
+          ticket_type_id: string | null
           ends_at: string
           event_id: string
           id: string
@@ -403,7 +478,7 @@ export type Database = {
         Insert: {
           active?: boolean
           created_at?: string
-          distance_id?: string | null
+          ticket_type_id?: string | null
           ends_at: string
           event_id: string
           id?: string
@@ -415,7 +490,7 @@ export type Database = {
         Update: {
           active?: boolean
           created_at?: string
-          distance_id?: string | null
+          ticket_type_id?: string | null
           ends_at?: string
           event_id?: string
           id?: string
@@ -426,10 +501,10 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "pricing_tiers_distance_id_fkey"
-            columns: ["distance_id"]
+            foreignKeyName: "pricing_tiers_ticket_type_id_fkey"
+            columns: ["ticket_type_id"]
             isOneToOne: false
-            referencedRelation: "event_distances"
+            referencedRelation: "ticket_types"
             referencedColumns: ["id"]
           },
           {
@@ -550,13 +625,13 @@ export type Database = {
           created_at: string
           custom_field_values: Json | null
           discount_amount: number | null
-          distance_id: string
+          ticket_type_id: string
           estimated_time: string | null
           event_id: string
           id: string
           order_id: string | null
           pricing_tier_id: string | null
-          runner_id: string
+          buyer_id: string
           service_fee: number
           status: string
           team_name: string | null
@@ -572,13 +647,13 @@ export type Database = {
           created_at?: string
           custom_field_values?: Json | null
           discount_amount?: number | null
-          distance_id: string
+          ticket_type_id: string
           estimated_time?: string | null
           event_id: string
           id?: string
           order_id?: string | null
           pricing_tier_id?: string | null
-          runner_id: string
+          buyer_id: string
           service_fee?: number
           status?: string
           team_name?: string | null
@@ -594,13 +669,13 @@ export type Database = {
           created_at?: string
           custom_field_values?: Json | null
           discount_amount?: number | null
-          distance_id?: string
+          ticket_type_id?: string
           estimated_time?: string | null
           event_id?: string
           id?: string
           order_id?: string | null
           pricing_tier_id?: string | null
-          runner_id?: string
+          buyer_id?: string
           service_fee?: number
           status?: string
           team_name?: string | null
@@ -623,10 +698,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "registrations_distance_id_fkey"
-            columns: ["distance_id"]
+            foreignKeyName: "registrations_ticket_type_id_fkey"
+            columns: ["ticket_type_id"]
             isOneToOne: false
-            referencedRelation: "event_distances"
+            referencedRelation: "ticket_types"
             referencedColumns: ["id"]
           },
           {
@@ -644,8 +719,8 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "registrations_runner_id_fkey"
-            columns: ["runner_id"]
+            foreignKeyName: "registrations_buyer_id_fkey"
+            columns: ["buyer_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -660,7 +735,7 @@ export type Database = {
           id: string
           notes: string | null
           registration_id: string
-          runner_id: string
+          buyer_id: string
           service_id: string
           status: string
         }
@@ -671,7 +746,7 @@ export type Database = {
           id?: string
           notes?: string | null
           registration_id: string
-          runner_id: string
+          buyer_id: string
           service_id: string
           status?: string
         }
@@ -682,7 +757,7 @@ export type Database = {
           id?: string
           notes?: string | null
           registration_id?: string
-          runner_id?: string
+          buyer_id?: string
           service_id?: string
           status?: string
         }
@@ -695,8 +770,8 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "service_interests_runner_id_fkey"
-            columns: ["runner_id"]
+            foreignKeyName: "service_interests_buyer_id_fkey"
+            columns: ["buyer_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -715,7 +790,9 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      is_admin: { Args: { uid: string }; Returns: boolean }
+      is_admin:       { Args: { uid: string }; Returns: boolean }
+      is_super_admin: { Args: { uid: string }; Returns: boolean }
+      is_organizer:   { Args: { uid: string }; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
