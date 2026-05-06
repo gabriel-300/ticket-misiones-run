@@ -77,7 +77,7 @@ function NuevoEventoPage() {
     control,
     formState: { errors },
   } = useForm<EventFormData>({
-    resolver: zodResolver(eventSchema),
+    resolver: zodResolver(eventSchema) as any,
     defaultValues: {
       status: 'draft',
       type: 'running',
