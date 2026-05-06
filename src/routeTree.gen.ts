@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PerfilIndexRouteImport } from './routes/perfil/index'
 import { Route as MiPerfilIndexRouteImport } from './routes/mi-perfil/index'
 import { Route as EventosIndexRouteImport } from './routes/eventos/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
@@ -29,6 +30,11 @@ import { Route as AdminInscripcionesEventIdRouteImport } from './routes/admin/in
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PerfilIndexRoute = PerfilIndexRouteImport.update({
+  id: '/perfil/',
+  path: '/perfil/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MiPerfilIndexRoute = MiPerfilIndexRouteImport.update({
@@ -124,6 +130,7 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/eventos/': typeof EventosIndexRoute
   '/mi-perfil/': typeof MiPerfilIndexRoute
+  '/perfil/': typeof PerfilIndexRoute
   '/admin/inscripciones/$eventId': typeof AdminInscripcionesEventIdRoute
   '/admin/inscripciones/': typeof AdminInscripcionesIndexRoute
 }
@@ -142,6 +149,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminIndexRoute
   '/eventos': typeof EventosIndexRoute
   '/mi-perfil': typeof MiPerfilIndexRoute
+  '/perfil': typeof PerfilIndexRoute
   '/admin/inscripciones/$eventId': typeof AdminInscripcionesEventIdRoute
   '/admin/inscripciones': typeof AdminInscripcionesIndexRoute
 }
@@ -161,6 +169,7 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/eventos/': typeof EventosIndexRoute
   '/mi-perfil/': typeof MiPerfilIndexRoute
+  '/perfil/': typeof PerfilIndexRoute
   '/admin/inscripciones/$eventId': typeof AdminInscripcionesEventIdRoute
   '/admin/inscripciones/': typeof AdminInscripcionesIndexRoute
 }
@@ -181,6 +190,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/eventos/'
     | '/mi-perfil/'
+    | '/perfil/'
     | '/admin/inscripciones/$eventId'
     | '/admin/inscripciones/'
   fileRoutesByTo: FileRoutesByTo
@@ -199,6 +209,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/eventos'
     | '/mi-perfil'
+    | '/perfil'
     | '/admin/inscripciones/$eventId'
     | '/admin/inscripciones'
   id:
@@ -217,6 +228,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/eventos/'
     | '/mi-perfil/'
+    | '/perfil/'
     | '/admin/inscripciones/$eventId'
     | '/admin/inscripciones/'
   fileRoutesById: FileRoutesById
@@ -236,6 +248,7 @@ export interface RootRouteChildren {
   AdminIndexRoute: typeof AdminIndexRoute
   EventosIndexRoute: typeof EventosIndexRoute
   MiPerfilIndexRoute: typeof MiPerfilIndexRoute
+  PerfilIndexRoute: typeof PerfilIndexRoute
   AdminInscripcionesEventIdRoute: typeof AdminInscripcionesEventIdRoute
   AdminInscripcionesIndexRoute: typeof AdminInscripcionesIndexRoute
 }
@@ -247,6 +260,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/perfil/': {
+      id: '/perfil/'
+      path: '/perfil'
+      fullPath: '/perfil/'
+      preLoaderRoute: typeof PerfilIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/mi-perfil/': {
@@ -372,6 +392,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminIndexRoute: AdminIndexRoute,
   EventosIndexRoute: EventosIndexRoute,
   MiPerfilIndexRoute: MiPerfilIndexRoute,
+  PerfilIndexRoute: PerfilIndexRoute,
   AdminInscripcionesEventIdRoute: AdminInscripcionesEventIdRoute,
   AdminInscripcionesIndexRoute: AdminInscripcionesIndexRoute,
 }
