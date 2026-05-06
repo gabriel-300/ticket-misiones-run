@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
-import { Plus, Users, ToggleLeft, ToggleRight } from 'lucide-react'
+import { Plus, Users, ToggleLeft, ToggleRight, ChevronRight } from 'lucide-react'
 import { toast } from 'sonner'
 import { OrgLayout, OrgBreadcrumb } from '@/components/org/org-layout'
 import { useMyOrganization, useOrgEvents, useOrgToggleEventStatus } from '@/hooks/use-organizer'
@@ -75,7 +75,7 @@ function OrgEventos() {
               <Card key={event.id}>
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1 min-w-0">
+                    <Link to="/org/eventos/$eventId" params={{ eventId: event.id }} className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
                         <Badge variant={STATUS_VARIANTS[event.status] ?? 'secondary'}>
                           {STATUS_LABELS[event.status] ?? event.status}
@@ -94,20 +94,27 @@ function OrgEventos() {
                         </span>
                         <span>{tickets.length} tipo{tickets.length !== 1 ? 's' : ''} de entrada</span>
                       </div>
-                    </div>
+                    </Link>
 
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="h-8 text-xs gap-1 shrink-0"
-                      disabled={isPending}
-                      onClick={() => handleToggle(event.id, event.status)}
-                    >
-                      {event.status === 'published'
-                        ? <><ToggleRight className="h-3.5 w-3.5 text-green-600" /> Publicado</>
-                        : <><ToggleLeft className="h-3.5 w-3.5" /> Publicar</>
-                      }
-                    </Button>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="h-8 text-xs gap-1"
+                        disabled={isPending}
+                        onClick={() => handleToggle(event.id, event.status)}
+                      >
+                        {event.status === 'published'
+                          ? <><ToggleRight className="h-3.5 w-3.5 text-green-600" /> Publicado</>
+                          : <><ToggleLeft className="h-3.5 w-3.5" /> Publicar</>
+                        }
+                      </Button>
+                      <Link to="/org/eventos/$eventId" params={{ eventId: event.id }}>
+                        <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
+                          <ChevronRight className="h-4 w-4" />
+                        </Button>
+                      </Link>
+                    </div>
                   </div>
                 </CardContent>
               </Card>

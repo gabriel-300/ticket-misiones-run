@@ -163,3 +163,62 @@ export function useToggleAddon(orgId: string) {
     onSuccess: () => qc.invalidateQueries({ queryKey: ['org-addons', orgId] }),
   })
 }
+
+// ─── Event detail (for organizer) ────────────────────────────────────────────
+
+export function useOrgEventDetail(eventId: string) {
+  return useQuery({
+    queryKey: ['org-event-detail', eventId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('events')
+        .select(`
+          id, name, slug, type, status, starts_at,
+          registration_opens_at, registration_closes_at, location,
+          short_description, description, cover_image_url,
+          ticket_types (
+            id, name, distance_km, capacity, registered_count, active,
+            pricing_tiers ( id, name, price_ars, starts_at, ends_at, active )
+          )
+        `)
+        .eq('id', eventId)
+        .single()
+      if (error) throw error
+      return data
+    },
+    enabled: !!eventId,
+  })
+}
+
+// ─── Pricing tiers ───────────────────────────────────────────────────────────
+
+export interface CreatePricingTierInput {
+  event_id: string
+  ticket_type_id: string
+  name: string
+  price_ars: number
+  starts_at: string
+  ends_at: string
+}
+
+export function useCreatePricingTier(eventId: string) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: async (input: CreatePricingTierInput) => {
+      const { error } = await supabase.from('pricing_tiers').insert({ ...input, active: true })
+      if (error) throw error
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['org-event-detail', eventId] }),
+  })
+}
+
+export function useDeletePricingTier(eventId: string) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: async (tierId: string) => {
+      const { error } = await supabase.from('pricing_tiers').delete().eq('id', tierId)
+      if (error) throw error
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['org-event-detail', eventId] }),
+  })
+}
