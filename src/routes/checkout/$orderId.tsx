@@ -70,7 +70,7 @@ function CheckoutPage() {
 
   const reg = order.registration as any
   const event = reg?.event as any
-  const distance = reg?.distance as any
+  const ticketType = reg?.ticket_type as any
   const items = (order.items as any[])?.[0] ?? {}
   const basePriceFromItems = items.base_price as number | undefined
   const serviceFeeFromItems = items.service_fee as number | undefined
@@ -110,7 +110,11 @@ function CheckoutPage() {
             {event && (
               <div className="space-y-1 text-sm">
                 <p className="font-semibold text-base">{event.name}</p>
-                {distance && <p className="text-muted-foreground">{distance.name} — {distance.distance_km} km</p>}
+                {ticketType && (
+                  <p className="text-muted-foreground">
+                    {ticketType.name}{ticketType.distance_km != null ? ` — ${ticketType.distance_km} km` : ''}
+                  </p>
+                )}
                 {event.starts_at && (
                   <p className="text-muted-foreground flex items-center gap-1.5">
                     <Calendar className="h-3.5 w-3.5" />

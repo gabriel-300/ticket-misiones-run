@@ -41,9 +41,9 @@ const profileSchema = z.object({
 type ProfileForm = z.infer<typeof profileSchema>
 
 const TABS = [
-  { id: 'datos',     label: 'Mis datos',        icon: User },
-  { id: 'carreras',  label: 'Mis carreras',      icon: Medal },
-  { id: 'apto',      label: 'Apto médico',       icon: FileCheck },
+  { id: 'datos',     label: 'Mis datos',    icon: User },
+  { id: 'carreras',  label: 'Mis entradas', icon: Medal },
+  { id: 'apto',      label: 'Apto médico',  icon: FileCheck },
 ]
 
 const REG_STATUS_CONFIG: Record<string, { label: string; icon: React.ReactNode; color: string }> = {

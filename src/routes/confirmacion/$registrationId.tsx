@@ -24,7 +24,7 @@ function ConfirmacionPage() {
   const { profile } = useAuth()
   const { data: reg, isLoading, error } = useRegistrationDetail(registrationId)
   const event = reg?.event as any
-  const distance = reg?.distance as any
+  const ticketType = reg?.ticket_type as any
 
   const { data: services } = useComplementaryServices(event?.id ?? '')
   const { data: interestedIds } = useServiceInterests(registrationId)
@@ -84,7 +84,10 @@ function ConfirmacionPage() {
           )}
           <div className="flex items-center gap-2 text-muted-foreground">
             <Tag className="h-4 w-4 shrink-0" />
-            <span>{distance?.name} — {distance?.distance_km} km</span>
+            <span>
+              {ticketType?.name}
+              {ticketType?.distance_km != null && ` — ${ticketType.distance_km} km`}
+            </span>
           </div>
           {reg.category && (
             <div className="flex items-center gap-2 text-muted-foreground">
