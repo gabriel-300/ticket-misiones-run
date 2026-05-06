@@ -5,7 +5,7 @@ import { toast } from 'sonner'
 import { useAuth } from '@/hooks/use-auth'
 
 export function Header() {
-  const { isAuthenticated, isSuperAdmin, isOrganizer, profile, signOut } = useAuth()
+  const { isAuthenticated, isSuperAdmin, profile, signOut } = useAuth()
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
 

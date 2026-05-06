@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 import { Plus, Building2, ArrowRight, ToggleLeft, ToggleRight } from 'lucide-react'
 import { toast } from 'sonner'
 import { AdminLayout, AdminBreadcrumb } from '@/components/admin/admin-layout'

@@ -234,7 +234,7 @@ function PerfilPage() {
             </div>
           ) : registrations?.map(reg => {
             const event    = reg.event as any
-            const distance = reg.distance as any
+            const distance = reg.ticket_type as any
             const status   = REG_STATUS_CONFIG[reg.status] ?? REG_STATUS_CONFIG.pending_payment
             return (
               <Card key={reg.id} className="overflow-hidden">
