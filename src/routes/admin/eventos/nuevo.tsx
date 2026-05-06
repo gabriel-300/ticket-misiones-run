@@ -97,7 +97,7 @@ function NuevoEventoPage() {
     createEvent(data, {
       onSuccess: () => {
         toast.success('Evento creado')
-        navigate({ to: '/admin/eventos/' })
+        navigate({ to: '/admin/eventos' })
       },
       onError: (err: any) => {
         toast.error(err?.message ?? 'Error al crear el evento')
@@ -110,13 +110,13 @@ function NuevoEventoPage() {
       <AdminBreadcrumb
         items={[
           { label: 'Admin', to: '/admin' },
-          { label: 'Eventos', to: '/admin/eventos/' },
+          { label: 'Eventos', to: '/admin/eventos' },
           { label: 'Nuevo evento' },
         ]}
       />
 
       <div className="flex items-center gap-3 mb-6">
-        <Link to="/admin/eventos/">
+        <Link to="/admin/eventos">
           <Button variant="ghost" size="sm" className="gap-1.5">
             <ChevronLeft className="h-4 w-4" /> Volver
           </Button>
@@ -374,7 +374,7 @@ function NuevoEventoPage() {
           <Button type="submit" disabled={isPending} className="min-w-36">
             {isPending ? 'Guardando...' : 'Crear evento'}
           </Button>
-          <Link to="/admin/eventos/">
+          <Link to="/admin/eventos">
             <Button type="button" variant="outline">Cancelar</Button>
           </Link>
         </div>
