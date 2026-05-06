@@ -1,32 +1,95 @@
 import { Link } from '@tanstack/react-router'
 
+const LINKS = {
+  Eventos: [
+    { label: 'Próximos eventos', to: '/eventos' },
+    { label: 'Por distancia',   to: '/eventos' },
+    { label: 'Trail running',   to: '/eventos?tipo=trail' },
+  ],
+  'Race-cation': [
+    { label: 'Alojamientos',     to: '/' },
+    { label: 'Traslados',        to: '/' },
+    { label: 'Gastronomía',     to: '/' },
+    { label: 'Experiencias',    to: '/' },
+  ],
+  Soporte: [
+    { label: 'Apto médico',             to: '/perfil' },
+    { label: 'Términos y condiciones',  to: '/' },
+    { label: 'Política de privacidad',  to: '/' },
+    { label: 'Contacto',               to: '/' },
+  ],
+}
+
+function SocialIcon({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <a
+      href="#"
+      aria-label={label}
+      className="w-9 h-9 rounded-full border border-white/15 grid place-items-center text-paper/70 hover:bg-yellow hover:text-ink hover:border-yellow transition-all"
+    >
+      {children}
+    </a>
+  )
+}
+
 export function Footer() {
   return (
-    <footer className="border-t bg-muted/40 mt-16">
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div>
-            <p className="font-bold text-lg">MISIONA HUB</p>
-            <p className="text-sm text-muted-foreground mt-1">
-              La plataforma de carreras del NEA. Inscribite, preparate y viví tu race‑cation.
+    <footer className="bg-navy text-paper">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-10">
+
+        {/* Main grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-16 py-16 border-b border-white/10">
+
+          {/* Brand */}
+          <div className="lg:col-span-1">
+            <div className="flex items-center gap-2.5 font-display text-[18px] tracking-[0.02em]">
+              <span className="w-9 h-9 bg-yellow text-ink rounded-[10px] grid place-items-center text-lg font-display">M</span>
+              MISIONA HUB
+            </div>
+            <p className="text-paper/60 text-[14px] leading-[1.5] mt-5 mb-6 max-w-xs">
+              La plataforma oficial de carreras del NEA. Inscribite, preparate y viví tu race‑cation completa en Misiones.
             </p>
+            <div className="flex gap-2">
+              <SocialIcon label="Instagram">
+                <svg className="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                  <rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" />
+                  <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" />
+                </svg>
+              </SocialIcon>
+              <SocialIcon label="Facebook">
+                <svg className="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+                </svg>
+              </SocialIcon>
+              <SocialIcon label="WhatsApp">
+                <svg className="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                  <path d="M21 12a9 9 0 1 1-3.8-7.3L21 3l-1.3 4.2A9 9 0 0 1 21 12z" />
+                </svg>
+              </SocialIcon>
+            </div>
           </div>
-          <div>
-            <p className="font-semibold text-sm mb-2">Eventos</p>
-            <ul className="space-y-1 text-sm text-muted-foreground">
-              <li><Link to="/eventos" className="hover:text-foreground transition-colors">Ver todos los eventos</Link></li>
-            </ul>
-          </div>
-          <div>
-            <p className="font-semibold text-sm mb-2">Legal</p>
-            <ul className="space-y-1 text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-foreground transition-colors">Términos y condiciones</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Política de privacidad</a></li>
-            </ul>
-          </div>
+
+          {/* Link columns */}
+          {Object.entries(LINKS).map(([title, links]) => (
+            <div key={title}>
+              <h5 className="font-mono text-[12px] uppercase tracking-[0.12em] text-yellow mb-4">{title}</h5>
+              <ul className="space-y-3">
+                {links.map(l => (
+                  <li key={l.label}>
+                    <Link to={l.to as any} className="text-paper/70 text-[14px] hover:text-paper transition-colors">
+                      {l.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
-        <div className="border-t mt-8 pt-4 text-center text-xs text-muted-foreground">
-          © {new Date().getFullYear()} MISIONA HUB · Misiones Online · Todos los derechos reservados
+
+        {/* Bottom bar */}
+        <div className="flex flex-col sm:flex-row justify-between items-center py-8 gap-3 font-mono text-[12px] text-paper/50">
+          <span>© {new Date().getFullYear()} MISIONA HUB · Misiones Online · Todos los derechos reservados</span>
+          <span>Hecho en Misiones, Argentina 🇦🇷</span>
         </div>
       </div>
     </footer>
