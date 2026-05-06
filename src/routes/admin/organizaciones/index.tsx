@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { Plus, Building2, ArrowRight, ToggleLeft, ToggleRight } from 'lucide-react'
 import { toast } from 'sonner'
 import { AdminLayout, AdminBreadcrumb } from '@/components/admin/admin-layout'
@@ -40,10 +40,12 @@ function AdminOrganizaciones() {
           <h1 className="text-xl font-bold">Organizaciones</h1>
           <p className="text-sm text-muted-foreground">{orgs?.length ?? 0} organizaciones registradas</p>
         </div>
-        <Button className="gap-2" disabled>
-          <Plus className="h-4 w-4" />
-          Nueva organización
-        </Button>
+        <Link to="/admin/organizaciones/nueva">
+          <Button className="gap-2">
+            <Plus className="h-4 w-4" />
+            Nueva organización
+          </Button>
+        </Link>
       </div>
 
       {isLoading ? (

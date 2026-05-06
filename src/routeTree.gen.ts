@@ -26,6 +26,7 @@ import { Route as AdminAptosRouteImport } from './routes/admin/aptos'
 import { Route as AdminOrganizacionesIndexRouteImport } from './routes/admin/organizaciones/index'
 import { Route as AdminInscripcionesIndexRouteImport } from './routes/admin/inscripciones/index'
 import { Route as AdminEventosIndexRouteImport } from './routes/admin/eventos/index'
+import { Route as AdminOrganizacionesNuevaRouteImport } from './routes/admin/organizaciones/nueva'
 import { Route as AdminInscripcionesEventIdRouteImport } from './routes/admin/inscripciones/$eventId'
 import { Route as AdminEventosNuevoRouteImport } from './routes/admin/eventos/nuevo'
 
@@ -116,6 +117,12 @@ const AdminEventosIndexRoute = AdminEventosIndexRouteImport.update({
   path: '/admin/eventos/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminOrganizacionesNuevaRoute =
+  AdminOrganizacionesNuevaRouteImport.update({
+    id: '/admin/organizaciones/nueva',
+    path: '/admin/organizaciones/nueva',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AdminInscripcionesEventIdRoute =
   AdminInscripcionesEventIdRouteImport.update({
     id: '/admin/inscripciones/$eventId',
@@ -145,6 +152,7 @@ export interface FileRoutesByFullPath {
   '/perfil/': typeof PerfilIndexRoute
   '/admin/eventos/nuevo': typeof AdminEventosNuevoRoute
   '/admin/inscripciones/$eventId': typeof AdminInscripcionesEventIdRoute
+  '/admin/organizaciones/nueva': typeof AdminOrganizacionesNuevaRoute
   '/admin/eventos/': typeof AdminEventosIndexRoute
   '/admin/inscripciones/': typeof AdminInscripcionesIndexRoute
   '/admin/organizaciones/': typeof AdminOrganizacionesIndexRoute
@@ -166,6 +174,7 @@ export interface FileRoutesByTo {
   '/perfil': typeof PerfilIndexRoute
   '/admin/eventos/nuevo': typeof AdminEventosNuevoRoute
   '/admin/inscripciones/$eventId': typeof AdminInscripcionesEventIdRoute
+  '/admin/organizaciones/nueva': typeof AdminOrganizacionesNuevaRoute
   '/admin/eventos': typeof AdminEventosIndexRoute
   '/admin/inscripciones': typeof AdminInscripcionesIndexRoute
   '/admin/organizaciones': typeof AdminOrganizacionesIndexRoute
@@ -188,6 +197,7 @@ export interface FileRoutesById {
   '/perfil/': typeof PerfilIndexRoute
   '/admin/eventos/nuevo': typeof AdminEventosNuevoRoute
   '/admin/inscripciones/$eventId': typeof AdminInscripcionesEventIdRoute
+  '/admin/organizaciones/nueva': typeof AdminOrganizacionesNuevaRoute
   '/admin/eventos/': typeof AdminEventosIndexRoute
   '/admin/inscripciones/': typeof AdminInscripcionesIndexRoute
   '/admin/organizaciones/': typeof AdminOrganizacionesIndexRoute
@@ -211,6 +221,7 @@ export interface FileRouteTypes {
     | '/perfil/'
     | '/admin/eventos/nuevo'
     | '/admin/inscripciones/$eventId'
+    | '/admin/organizaciones/nueva'
     | '/admin/eventos/'
     | '/admin/inscripciones/'
     | '/admin/organizaciones/'
@@ -232,6 +243,7 @@ export interface FileRouteTypes {
     | '/perfil'
     | '/admin/eventos/nuevo'
     | '/admin/inscripciones/$eventId'
+    | '/admin/organizaciones/nueva'
     | '/admin/eventos'
     | '/admin/inscripciones'
     | '/admin/organizaciones'
@@ -253,6 +265,7 @@ export interface FileRouteTypes {
     | '/perfil/'
     | '/admin/eventos/nuevo'
     | '/admin/inscripciones/$eventId'
+    | '/admin/organizaciones/nueva'
     | '/admin/eventos/'
     | '/admin/inscripciones/'
     | '/admin/organizaciones/'
@@ -275,6 +288,7 @@ export interface RootRouteChildren {
   PerfilIndexRoute: typeof PerfilIndexRoute
   AdminEventosNuevoRoute: typeof AdminEventosNuevoRoute
   AdminInscripcionesEventIdRoute: typeof AdminInscripcionesEventIdRoute
+  AdminOrganizacionesNuevaRoute: typeof AdminOrganizacionesNuevaRoute
   AdminEventosIndexRoute: typeof AdminEventosIndexRoute
   AdminInscripcionesIndexRoute: typeof AdminInscripcionesIndexRoute
   AdminOrganizacionesIndexRoute: typeof AdminOrganizacionesIndexRoute
@@ -401,6 +415,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminEventosIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/organizaciones/nueva': {
+      id: '/admin/organizaciones/nueva'
+      path: '/admin/organizaciones/nueva'
+      fullPath: '/admin/organizaciones/nueva'
+      preLoaderRoute: typeof AdminOrganizacionesNuevaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/inscripciones/$eventId': {
       id: '/admin/inscripciones/$eventId'
       path: '/admin/inscripciones/$eventId'
@@ -435,6 +456,7 @@ const rootRouteChildren: RootRouteChildren = {
   PerfilIndexRoute: PerfilIndexRoute,
   AdminEventosNuevoRoute: AdminEventosNuevoRoute,
   AdminInscripcionesEventIdRoute: AdminInscripcionesEventIdRoute,
+  AdminOrganizacionesNuevaRoute: AdminOrganizacionesNuevaRoute,
   AdminEventosIndexRoute: AdminEventosIndexRoute,
   AdminInscripcionesIndexRoute: AdminInscripcionesIndexRoute,
   AdminOrganizacionesIndexRoute: AdminOrganizacionesIndexRoute,
