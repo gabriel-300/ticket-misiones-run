@@ -28,8 +28,8 @@ Deno.serve(async (req: Request) => {
       .from('registrations')
       .select(`
         id, bib_number, category, status,
-        runner:runner_id ( first_name, last_name ),
-        distance:distance_id ( name, distance_km, start_time ),
+        buyer:buyer_id ( id, first_name, last_name ),
+        ticket_type:ticket_type_id ( name, distance_km, start_time ),
         event:event_id ( name, starts_at, location, cover_image_url )
       `)
       .eq('id', registration_id)
@@ -39,17 +39,17 @@ Deno.serve(async (req: Request) => {
       return new Response(JSON.stringify({ error: 'Inscripción no encontrada' }), { status: 404, headers: cors })
     }
 
-    // Get runner email from auth.users
-    const { data: userData } = await admin.auth.admin.getUserById((reg.runner as any).id ?? '')
-    const runnerEmail = userData?.user?.email
-    if (!runnerEmail) {
-      return new Response(JSON.stringify({ error: 'Email del corredor no encontrado' }), { status: 404, headers: cors })
+    // Get buyer email from auth.users
+    const { data: userData } = await admin.auth.admin.getUserById((reg.buyer as any).id ?? '')
+    const buyerEmail = userData?.user?.email
+    if (!buyerEmail) {
+      return new Response(JSON.stringify({ error: 'Email del comprador no encontrado' }), { status: 404, headers: cors })
     }
 
-    const runner   = reg.runner as any
-    const event    = reg.event as any
-    const distance = reg.distance as any
-    const location = event.location as { city: string; province: string; address?: string }
+    const buyer      = reg.buyer as any
+    const event      = reg.event as any
+    const ticketType = reg.ticket_type as any
+    const location   = event.location as { city: string; province: string; address?: string }
 
     const eventDate = new Date(event.starts_at)
     const formattedDate = eventDate.toLocaleDateString('es-AR', {
@@ -57,15 +57,15 @@ Deno.serve(async (req: Request) => {
     })
 
     const html = buildConfirmationEmail({
-      firstName:    runner.first_name,
-      lastName:     runner.last_name,
+      firstName:    buyer.first_name,
+      lastName:     buyer.last_name,
       eventName:    event.name,
       eventDate:    formattedDate,
       city:         location.city,
       province:     location.province,
-      distanceName: distance.name,
-      distanceKm:   distance.distance_km,
-      startTime:    distance.start_time ?? null,
+      ticketName:   ticketType.name,
+      distanceKm:   ticketType.distance_km ?? null,
+      startTime:    ticketType.start_time ?? null,
       category:     reg.category ?? null,
       bibNumber:    reg.bib_number ?? null,
       registrationId: reg.id,
@@ -80,7 +80,7 @@ Deno.serve(async (req: Request) => {
       },
       body: JSON.stringify({
         from:    FROM_EMAIL,
-        to:      [runnerEmail],
+        to:      [buyerEmail],
         subject: `✅ Inscripción confirmada — ${event.name}`,
         html,
       }),
@@ -90,14 +90,14 @@ Deno.serve(async (req: Request) => {
 
     if (!resendRes.ok) {
       console.error('Resend error:', JSON.stringify(resendData))
-      await logEmail(admin, { registrationId: reg.id, recipientEmail: runnerEmail, status: 'failed', error: JSON.stringify(resendData), subject: `Inscripción confirmada — ${event.name}` })
+      await logEmail(admin, { registrationId: reg.id, recipientEmail: buyerEmail, status: 'failed', error: JSON.stringify(resendData), subject: `Inscripción confirmada — ${event.name}` })
       return new Response(JSON.stringify({ error: resendData?.message ?? 'Error al enviar email' }), { status: 500, headers: cors })
     }
 
     // Log success
-    await logEmail(admin, { registrationId: reg.id, recipientEmail: runnerEmail, resendId: resendData.id, status: 'sent', subject: `Inscripción confirmada — ${event.name}` })
+    await logEmail(admin, { registrationId: reg.id, recipientEmail: buyerEmail, resendId: resendData.id, status: 'sent', subject: `Inscripción confirmada — ${event.name}` })
 
-    console.log(`Email enviado a ${runnerEmail} — resend_id: ${resendData.id}`)
+    console.log(`Email enviado a ${buyerEmail} — resend_id: ${resendData.id}`)
     return new Response(JSON.stringify({ ok: true, resend_id: resendData.id }), { headers: { ...cors, 'Content-Type': 'application/json' } })
 
   } catch (err) {
@@ -135,8 +135,8 @@ interface TemplateData {
   eventDate: string
   city: string
   province: string
-  distanceName: string
-  distanceKm: number
+  ticketName: string
+  distanceKm: number | null
   startTime: string | null
   category: string | null
   bibNumber: number | null
@@ -188,8 +188,8 @@ function buildConfirmationEmail(d: TemplateData): string {
               </tr>
               <tr>
                 <td style="padding:8px 0;border-bottom:1px solid #f3f4f6;">
-                  <span style="font-size:13px;color:#6b7280;">🏁 Distancia</span><br/>
-                  <span style="font-size:14px;font-weight:600;color:#111827;">${d.distanceName} — ${d.distanceKm} km${d.startTime ? ` · Largada: ${d.startTime}` : ''}</span>
+                  <span style="font-size:13px;color:#6b7280;">🎟️ Entrada</span><br/>
+                  <span style="font-size:14px;font-weight:600;color:#111827;">${d.ticketName}${d.distanceKm != null ? ` — ${d.distanceKm} km` : ''}${d.startTime ? ` · Largada: ${d.startTime}` : ''}</span>
                 </td>
               </tr>
               ${d.category ? `

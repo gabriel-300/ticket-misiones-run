@@ -26,7 +26,7 @@ function exportCSV(registrations: any[], eventName: string) {
   const headers = ['Dorsal','Categoría','Apellido','Nombre','DNI','Género','Distancia','Talle','Club','Grupo sangre','Contacto emergencia','Estado']
   const rows = registrations.map(r => {
     const runner = r.buyer as any
-    const dist   = r.distance as any
+    const dist   = r.ticket_type as any
     const cf     = r.custom_field_values as any ?? {}
     const ec     = runner?.emergency_contact as any
     return [
