@@ -4,6 +4,7 @@ import { z } from 'zod'
 import EventCard from '@/components/eventos/event-card'
 import { useEvents } from '@/hooks/use-events'
 import { Button } from '@/components/ui/button'
+import { useSeo } from '@/hooks/use-seo'
 
 const searchSchema = z.object({ tipo: z.string().optional() })
 
@@ -21,6 +22,7 @@ const TIPOS = [
 ]
 
 function EventosPage() {
+  useSeo('Eventos', 'Encontrá todas las carreras de running disponibles en Misiones y el NEA.')
   const { tipo } = Route.useSearch()
   const [selected, setSelected] = useState(tipo ?? '')
   const { data: events, isLoading } = useEvents(selected || undefined)

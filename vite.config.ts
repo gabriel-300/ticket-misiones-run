@@ -5,7 +5,7 @@ import path from 'path'
 
 export default defineConfig({
   plugins: [
-    TanStackRouterVite({ routesDirectory: './src/routes' }),
+    TanStackRouterVite({ routesDirectory: './src/routes', autoCodeSplitting: true }),
     react(),
   ],
   resolve: {

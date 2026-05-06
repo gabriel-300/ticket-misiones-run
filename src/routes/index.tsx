@@ -3,12 +3,14 @@ import { ArrowRight, MapPin, Shield, Star } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import EventCard from '@/components/eventos/event-card'
 import { useEvents } from '@/hooks/use-events'
+import { useSeo } from '@/hooks/use-seo'
 
 export const Route = createFileRoute('/')({
   component: HomePage,
 })
 
 function HomePage() {
+  useSeo('Inscripciones a carreras en Misiones', 'Inscribite a las mejores carreras de running del NEA y armá tu race‑cation completa: hospedaje, traslados, gastronomía y más.')
   const { data: events, isLoading } = useEvents()
 
   return (

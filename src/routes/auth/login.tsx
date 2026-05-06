@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate, useSearch } from '@tanstack/react-router'
+import { useSeo } from '@/hooks/use-seo'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
@@ -18,6 +19,7 @@ export const Route = createFileRoute('/auth/login')({
 })
 
 function LoginPage() {
+  useSeo('Iniciar sesión')
   const { signIn } = useAuth()
   const navigate = useNavigate()
   const { next } = useSearch({ from: '/auth/login' })

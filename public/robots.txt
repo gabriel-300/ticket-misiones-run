@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /checkout/
+Disallow: /mi-perfil/
+Disallow: /perfil/
+
+Sitemap: https://misionahub.com.ar/sitemap.xml

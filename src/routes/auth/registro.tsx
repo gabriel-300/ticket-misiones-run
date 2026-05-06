@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
+import { useSeo } from '@/hooks/use-seo'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
@@ -16,6 +17,7 @@ export const Route = createFileRoute('/auth/registro')({
 })
 
 function RegisterPage() {
+  useSeo('Crear cuenta')
   const { signUp } = useAuth()
   const navigate = useNavigate()
 

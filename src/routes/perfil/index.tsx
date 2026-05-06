@@ -21,6 +21,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useSeo } from '@/hooks/use-seo'
 
 export const Route = createFileRoute('/perfil/')({
   component: () => <ProtectedRoute><PerfilPage /></ProtectedRoute>,
@@ -58,6 +59,7 @@ const APTO_STATUS_CONFIG: Record<string, { label: string; color: string }> = {
 }
 
 function PerfilPage() {
+  useSeo('Mi perfil')
   const [tab, setTab] = useState<'datos' | 'carreras' | 'apto'>('datos')
   const { profile, user } = useAuth()
   const { data: registrations, isLoading: regsLoading } = useMyRegistrations()

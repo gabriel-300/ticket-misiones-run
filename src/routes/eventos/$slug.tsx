@@ -4,6 +4,7 @@ import { es } from 'date-fns/locale'
 import { MapPin, Calendar, Clock, Users, ChevronRight, AlertCircle } from 'lucide-react'
 import { lazy, Suspense } from 'react'
 import { useEvent } from '@/hooks/use-events'
+import { useSeo } from '@/hooks/use-seo'
 import Countdown from '@/components/eventos/countdown'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -48,6 +49,7 @@ function EventoDetallePage() {
   const { slug } = Route.useParams()
   const { data: event, isLoading, error } = useEvent(slug)
   const { isAuthenticated } = useAuth()
+  useSeo(event?.name ?? 'Evento', event?.description ?? undefined)
 
   if (isLoading) {
     return (
