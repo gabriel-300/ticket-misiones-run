@@ -19,11 +19,14 @@ export const Route = createFileRoute('/eventos/$slug')({
 })
 
 const TYPE_LABELS: Record<string, string> = {
-  running: 'Running',
-  trail: 'Trail Running',
-  triathlon: 'Triatlón',
-  cycling: 'Ciclismo',
-  other: 'Otro',
+  running:     'Running',
+  trail:       'Trail Running',
+  triathlon:   'Triatlón',
+  cycling:     'Ciclismo',
+  concierto:   'Concierto',
+  teatro:      'Teatro',
+  conferencia: 'Conferencia',
+  other:       'Otro',
 }
 
 function PricingTierBadge({ tier }: { tier: { name: string; price_ars: number; starts_at: string; ends_at: string; active: boolean } }) {
@@ -140,9 +143,9 @@ function EventoDetallePage() {
               </div>
             )}
 
-            {/* Distancias y precios */}
+            {/* Entradas y precios */}
             <div>
-              <h2 className="text-xl font-bold mb-4">Distancias y precios</h2>
+              <h2 className="text-xl font-bold mb-4">Entradas</h2>
               <div className="space-y-4">
                 {distances.sort((a: any, b: any) => a.sort_order - b.sort_order).map((d: any) => {
                   const spotsLeft = d.capacity ? d.capacity - d.registered_count : null
@@ -157,7 +160,9 @@ function EventoDetallePage() {
                     <Card key={d.id}>
                       <CardHeader className="pb-2">
                         <div className="flex items-center justify-between">
-                          <CardTitle className="text-base">{d.name} — {d.distance_km} km</CardTitle>
+                          <CardTitle className="text-base">
+                            {d.name}{d.distance_km != null ? ` — ${d.distance_km} km` : ''}
+                          </CardTitle>
                           {isFull
                             ? <Badge variant="destructive">Cupos agotados</Badge>
                             : spotsLeft !== null && spotsLeft <= 50
@@ -222,7 +227,7 @@ function EventoDetallePage() {
                   {distances.length > 0 && (
                     <div className="flex items-center gap-2 text-muted-foreground">
                       <Users className="h-4 w-4" />
-                      <span>{distances.length} distancia{distances.length > 1 ? 's' : ''}</span>
+                      <span>{distances.length} tipo{distances.length !== 1 ? 's' : ''} de entrada</span>
                     </div>
                   )}
                 </div>

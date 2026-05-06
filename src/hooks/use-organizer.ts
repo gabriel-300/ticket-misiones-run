@@ -102,3 +102,64 @@ export function useOrgToggleEventStatus(orgId: string) {
     onSuccess: () => qc.invalidateQueries({ queryKey: ['org-events', orgId] }),
   })
 }
+
+// ─── Add-ons (complementary services) ────────────────────────────────────────
+
+export function useOrgAddons(orgId: string) {
+  return useQuery({
+    queryKey: ['org-addons', orgId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('complementary_services')
+        .select('*, event:event_id(id, name)')
+        .eq('organization_id', orgId)
+        .order('created_at', { ascending: false })
+      if (error) throw error
+      return data
+    },
+    enabled: !!orgId,
+  })
+}
+
+interface CreateAddonPayload {
+  organization_id: string
+  event_id: string
+  title: string
+  description?: string
+  type: string
+  price_ars: number
+  max_units?: number | null
+  image_url?: string
+}
+
+export function useCreateAddon() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: async (payload: CreateAddonPayload) => {
+      const { data, error } = await supabase
+        .from('complementary_services')
+        .insert({ ...payload, active: true })
+        .select()
+        .single()
+      if (error) throw error
+      return data
+    },
+    onSuccess: (_data, vars) => {
+      qc.invalidateQueries({ queryKey: ['org-addons', vars.organization_id] })
+    },
+  })
+}
+
+export function useToggleAddon(orgId: string) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: async ({ addonId, active }: { addonId: string; active: boolean }) => {
+      const { error } = await supabase
+        .from('complementary_services')
+        .update({ active })
+        .eq('id', addonId)
+      if (error) throw error
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['org-addons', orgId] }),
+  })
+}

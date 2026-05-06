@@ -13,15 +13,19 @@ export const Route = createFileRoute('/eventos/')({
 })
 
 const FILTERS = [
-  { value: '',         label: 'Todos' },
-  { value: 'running',  label: 'Running' },
-  { value: 'trail',    label: 'Trail' },
-  { value: 'triathlon',label: 'Triatlón' },
-  { value: 'cycling',  label: 'Ciclismo' },
+  { value: '',            label: 'Todos' },
+  { value: 'running',     label: 'Running' },
+  { value: 'trail',       label: 'Trail' },
+  { value: 'triathlon',   label: 'Triatlón' },
+  { value: 'cycling',     label: 'Ciclismo' },
+  { value: 'concierto',   label: 'Conciertos' },
+  { value: 'teatro',      label: 'Teatro' },
+  { value: 'conferencia', label: 'Conferencias' },
+  { value: 'other',       label: 'Otros' },
 ]
 
 function EventosPage() {
-  useSeo('Eventos', 'Encontrá todas las carreras de running disponibles en Misiones y el NEA.')
+  useSeo('Eventos', 'Encontrá todos los eventos disponibles en Misiones: carreras, conciertos, teatro, conferencias y más.')
   const { tipo } = Route.useSearch()
   const [selected, setSelected] = useState(tipo ?? '')
   const { data: events, isLoading } = useEvents(selected || undefined)

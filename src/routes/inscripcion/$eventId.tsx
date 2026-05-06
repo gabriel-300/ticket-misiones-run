@@ -76,6 +76,7 @@ function InscripcionPage() {
         eventId={event.id}
         eventName={event.name}
         userEmail={user?.email ?? ''}
+        eventType={event.type}
         distances={distances}
         requiresMedicalCert={event.requires_medical_certificate ?? false}
         medicalCertMinKm={event.medical_certificate_min_distance_km ?? null}

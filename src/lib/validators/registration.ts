@@ -13,10 +13,10 @@ export const step1Schema = z.object({
   nationality: z.string().min(2, 'Nacionalidad requerida'),
 })
 
-// Step 2: sports data
+// Step 2: ticket / sports data
 export const step2Schema = z.object({
-  distance_id: z.string().min(1, 'Seleccioná una distancia'),
-  shirt_size: z.enum(['XS', 'S', 'M', 'L', 'XL', 'XXL']).refine(v => !!v, { message: 'Talle requerido' }),
+  distance_id: z.string().min(1, 'Seleccioná una entrada'),
+  shirt_size: z.enum(['XS', 'S', 'M', 'L', 'XL', 'XXL']).optional(),
   is_first_race: z.boolean(),
   club: z.string().optional(),
 })
@@ -49,4 +49,4 @@ export type Step3Data = z.infer<typeof step3Schema>
 export type Step4Data = z.infer<typeof step4Schema>
 export type Step5Data = z.infer<typeof step5Schema>
 
-export type RegistrationFormData = Step1Data & Step2Data & Step3Data & Step4Data & Step5Data
+export type RegistrationFormData = Step1Data & Step2Data & Partial<Step3Data> & Step4Data & Step5Data

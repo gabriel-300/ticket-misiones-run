@@ -23,19 +23,40 @@ import { useUpload } from '@/hooks/use-upload'
 import { useCreateRegistration } from '@/hooks/use-registration'
 import type { Tables } from '@/types/database'
 
+const SPORTS_TYPES = ['running', 'trail', 'triathlon', 'cycling']
+
 interface RegistrationFormProps {
   eventId: string
   eventName: string
   userEmail: string
-  distances: { id: string; name: string; distance_km: number; capacity: number | null; registered_count: number; pricing_tiers: { price_ars: number; active: boolean; starts_at: string; ends_at: string }[] }[]
+  eventType: string
+  distances: {
+    id: string
+    name: string
+    distance_km: number | null
+    capacity: number | null
+    registered_count: number
+    pricing_tiers: { price_ars: number; active: boolean; starts_at: string; ends_at: string }[]
+  }[]
   requiresMedicalCert: boolean
   medicalCertMinKm: number | null
   profile: Tables<'profiles'> | null
 }
 
-const STEPS = ['Datos personales', 'Datos deportivos', 'Seguridad', 'Apto médico', 'Aceptaciones']
+export default function RegistrationForm({
+  eventId, eventName, userEmail, eventType, distances,
+  requiresMedicalCert, medicalCertMinKm, profile,
+}: RegistrationFormProps) {
+  const isSports = SPORTS_TYPES.includes(eventType)
 
-export default function RegistrationForm({ eventId, eventName, userEmail, distances, requiresMedicalCert, medicalCertMinKm, profile }: RegistrationFormProps) {
+  const STEPS = isSports
+    ? ['Datos personales', 'Datos deportivos', 'Seguridad', 'Apto médico', 'Aceptaciones']
+    : ['Datos personales', 'Selección de entrada', 'Aceptaciones']
+
+  const STEP_KEYS = isSports
+    ? ['personal', 'sports', 'emergency', 'medical', 'terms'] as const
+    : ['personal', 'ticket', 'terms'] as const
+
   const [step, setStep] = useState(0)
   const [formData, setFormData] = useState<Partial<RegistrationFormData>>({})
   const [certFile, setCertFile] = useState<File | null>(null)
@@ -43,66 +64,73 @@ export default function RegistrationForm({ eventId, eventName, userEmail, distan
   const { uploadMedicalCert, uploading } = useUpload()
   const { mutateAsync: createRegistration, isPending } = useCreateRegistration()
 
-  const form1 = useForm<Step1Data>({ resolver: zodResolver(step1Schema), defaultValues: {
-    first_name: profile?.first_name ?? '',
-    last_name: profile?.last_name ?? '',
-    email: userEmail,
-    phone: profile?.phone ?? '',
-    birth_date: profile?.birth_date ?? '',
-    gender: (profile?.gender as 'M' | 'F' | 'X') ?? undefined,
-    dni_type: (profile?.dni_type as 'DNI' | 'PASAPORTE' | 'CI') ?? 'DNI',
-    dni: profile?.dni ?? '',
-    nationality: profile?.nationality ?? 'Argentina',
-  }})
+  const form1 = useForm<Step1Data>({
+    resolver: zodResolver(step1Schema),
+    defaultValues: {
+      first_name: profile?.first_name ?? '',
+      last_name: profile?.last_name ?? '',
+      email: userEmail,
+      phone: profile?.phone ?? '',
+      birth_date: profile?.birth_date ?? '',
+      gender: (profile?.gender as 'M' | 'F' | 'X') ?? undefined,
+      dni_type: (profile?.dni_type as 'DNI' | 'PASAPORTE' | 'CI') ?? 'DNI',
+      dni: profile?.dni ?? '',
+      nationality: profile?.nationality ?? 'Argentina',
+    },
+  })
 
-  const form2 = useForm<Step2Data>({ resolver: zodResolver(step2Schema), defaultValues: {
-    distance_id: '',
-    shirt_size: undefined,
-    is_first_race: false,
-    club: '',
-  }})
+  const form2 = useForm<Step2Data>({
+    resolver: zodResolver(step2Schema),
+    defaultValues: { distance_id: '', shirt_size: undefined, is_first_race: false, club: '' },
+  })
 
-  const form3 = useForm<Step3Data>({ resolver: zodResolver(step3Schema), defaultValues: {
-    emergency_contact_name: '',
-    emergency_contact_phone: '',
-    blood_type: undefined,
-    medical_conditions: '',
-    allergies: '',
-  }})
+  const form3 = useForm<Step3Data>({
+    resolver: zodResolver(step3Schema),
+    defaultValues: {
+      emergency_contact_name: '',
+      emergency_contact_phone: '',
+      blood_type: undefined,
+      medical_conditions: '',
+      allergies: '',
+    },
+  })
 
   const form4 = useForm<Step4Data>({ resolver: zodResolver(step4Schema) })
-  const form5 = useForm<Step5Data>({ resolver: zodResolver(step5Schema), defaultValues: {
-    accepts_terms: undefined,
-    accepts_waiver: undefined,
-    accepts_image_rights: false,
-  }})
 
-  const forms = [form1, form2, form3, form4, form5]
+  const form5 = useForm<Step5Data>({
+    resolver: zodResolver(step5Schema),
+    defaultValues: { accepts_terms: undefined, accepts_waiver: undefined, accepts_image_rights: false },
+  })
+
+  const forms = isSports ? [form1, form2, form3, form4, form5] : [form1, form2, form5]
   const currentForm = forms[step]
+  const currentStepKey = STEP_KEYS[step]
 
   const selectedDistanceId = form2.watch('distance_id')
   const selectedDistance = distances.find(d => d.id === selectedDistanceId)
-  const needsCert = requiresMedicalCert && medicalCertMinKm !== null && selectedDistance
-    ? selectedDistance.distance_km >= medicalCertMinKm
-    : false
+  const needsCert =
+    requiresMedicalCert &&
+    medicalCertMinKm !== null &&
+    selectedDistance?.distance_km != null
+      ? selectedDistance.distance_km >= medicalCertMinKm
+      : false
 
-  const getActivePriceForDistance = (d: typeof distances[0]) => {
+  function getActivePrice(d: typeof distances[0]) {
     const now = new Date()
-    const tier = d.pricing_tiers?.find(t => {
-      if (!t.active) return false
-      return now >= new Date(t.starts_at) && now <= new Date(t.ends_at)
-    })
+    const tier = d.pricing_tiers?.find(t => t.active && now >= new Date(t.starts_at) && now <= new Date(t.ends_at))
     return tier?.price_ars ?? null
+  }
+
+  function formatARS(n: number) {
+    return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(n)
   }
 
   async function handleNext() {
     const valid = await currentForm.trigger()
     if (!valid) return
-
     const stepData = currentForm.getValues()
     const merged = { ...formData, ...stepData }
     setFormData(merged)
-
     if (step < STEPS.length - 1) {
       setStep(s => s + 1)
     } else {
@@ -115,18 +143,9 @@ export default function RegistrationForm({ eventId, eventName, userEmail, distan
       let medicalCertUrl: string | undefined
       if (certFile && needsCert) {
         const { data: { user } } = await import('@/lib/supabase').then(m => m.supabase.auth.getUser())
-        if (user) {
-          medicalCertUrl = await uploadMedicalCert(certFile, user.id)
-        }
+        if (user) medicalCertUrl = await uploadMedicalCert(certFile, user.id)
       }
-
-      const result = await createRegistration({
-        eventId,
-        distanceId: data.distance_id,
-        formData: data,
-        medicalCertUrl,
-      })
-
+      const result = await createRegistration({ eventId, distanceId: data.distance_id, formData: data, medicalCertUrl })
       toast.success('¡Inscripción registrada! Procesando pago...')
       navigate({ to: '/checkout/$orderId', params: { orderId: result.order_id } })
     } catch (err: any) {
@@ -138,7 +157,7 @@ export default function RegistrationForm({ eventId, eventName, userEmail, distan
 
   return (
     <div className="max-w-2xl mx-auto">
-      {/* Progress bar */}
+      {/* Progress */}
       <div className="mb-8">
         <div className="flex justify-between text-xs text-muted-foreground mb-2">
           {STEPS.map((s, i) => (
@@ -146,11 +165,13 @@ export default function RegistrationForm({ eventId, eventName, userEmail, distan
           ))}
         </div>
         <Progress value={((step + 1) / STEPS.length) * 100} className="h-2" />
-        <p className="text-sm text-muted-foreground mt-2">Paso {step + 1} de {STEPS.length}: <span className="font-medium text-foreground">{STEPS[step]}</span></p>
+        <p className="text-sm text-muted-foreground mt-2">
+          Paso {step + 1} de {STEPS.length}: <span className="font-medium text-foreground">{STEPS[step]}</span>
+        </p>
       </div>
 
-      {/* Step 1: datos personales */}
-      {step === 0 && (
+      {/* Step: personal data */}
+      {currentStepKey === 'personal' && (
         <Card>
           <CardContent className="p-6 space-y-4">
             <div className="grid grid-cols-2 gap-4">
@@ -221,8 +242,8 @@ export default function RegistrationForm({ eventId, eventName, userEmail, distan
         </Card>
       )}
 
-      {/* Step 2: datos deportivos */}
-      {step === 1 && (
+      {/* Step: sports data (isSports only) */}
+      {currentStepKey === 'sports' && (
         <Card>
           <CardContent className="p-6 space-y-6">
             <div className="space-y-3">
@@ -232,18 +253,16 @@ export default function RegistrationForm({ eventId, eventName, userEmail, distan
                 defaultValue={form2.getValues('distance_id')}
               >
                 {distances.map(d => {
-                  const price = getActivePriceForDistance(d)
+                  const price = getActivePrice(d)
                   const isFull = d.capacity !== null && d.registered_count >= d.capacity
                   return (
                     <div key={d.id} className={`flex items-center gap-3 p-3 rounded-lg border ${isFull ? 'opacity-50 cursor-not-allowed' : 'hover:bg-muted/40 cursor-pointer'}`}>
-                      <RadioGroupItem value={d.id} id={d.id} disabled={isFull} />
-                      <Label htmlFor={d.id} className="flex-1 cursor-pointer">
+                      <RadioGroupItem value={d.id} id={`s-${d.id}`} disabled={isFull} />
+                      <Label htmlFor={`s-${d.id}`} className="flex-1 cursor-pointer">
                         <span className="font-medium">{d.name}</span>
-                        <span className="text-muted-foreground ml-2">— {d.distance_km} km</span>
+                        {d.distance_km != null && <span className="text-muted-foreground ml-2">— {d.distance_km} km</span>}
                       </Label>
-                      <span className="text-sm font-semibold">
-                        {price ? new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(price) : '—'}
-                      </span>
+                      <span className="text-sm font-semibold">{price ? formatARS(price) : '—'}</span>
                       {isFull && <span className="text-xs text-destructive">Agotado</span>}
                     </div>
                   )
@@ -284,8 +303,39 @@ export default function RegistrationForm({ eventId, eventName, userEmail, distan
         </Card>
       )}
 
-      {/* Step 3: seguridad */}
-      {step === 2 && (
+      {/* Step: ticket selection (non-sports) */}
+      {currentStepKey === 'ticket' && (
+        <Card>
+          <CardContent className="p-6 space-y-6">
+            <div className="space-y-3">
+              <Label className="text-base font-semibold">Tipo de entrada *</Label>
+              <RadioGroup
+                onValueChange={v => form2.setValue('distance_id', v)}
+                defaultValue={form2.getValues('distance_id')}
+              >
+                {distances.map(d => {
+                  const price = getActivePrice(d)
+                  const isFull = d.capacity !== null && d.registered_count >= d.capacity
+                  return (
+                    <div key={d.id} className={`flex items-center gap-3 p-3 rounded-lg border ${isFull ? 'opacity-50 cursor-not-allowed' : 'hover:bg-muted/40 cursor-pointer'}`}>
+                      <RadioGroupItem value={d.id} id={`t-${d.id}`} disabled={isFull} />
+                      <Label htmlFor={`t-${d.id}`} className="flex-1 cursor-pointer">
+                        <span className="font-medium">{d.name}</span>
+                      </Label>
+                      <span className="text-sm font-semibold">{price ? formatARS(price) : '—'}</span>
+                      {isFull && <span className="text-xs text-destructive">Agotado</span>}
+                    </div>
+                  )
+                })}
+              </RadioGroup>
+              {form2.formState.errors.distance_id && <p className="text-xs text-destructive">{form2.formState.errors.distance_id.message}</p>}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Step: emergency / safety (sports only) */}
+      {currentStepKey === 'emergency' && (
         <Card>
           <CardContent className="p-6 space-y-4">
             <div>
@@ -332,8 +382,8 @@ export default function RegistrationForm({ eventId, eventName, userEmail, distan
         </Card>
       )}
 
-      {/* Step 4: apto médico */}
-      {step === 3 && (
+      {/* Step: medical certificate (sports only) */}
+      {currentStepKey === 'medical' && (
         <Card>
           <CardContent className="p-6 space-y-4">
             {needsCert ? (
@@ -360,10 +410,7 @@ export default function RegistrationForm({ eventId, eventName, userEmail, distan
                       type="file"
                       className="hidden"
                       accept=".pdf,.jpg,.jpeg,.png"
-                      onChange={e => {
-                        const file = e.target.files?.[0]
-                        if (file) setCertFile(file)
-                      }}
+                      onChange={e => { const f = e.target.files?.[0]; if (f) setCertFile(f) }}
                     />
                   </label>
                 </div>
@@ -379,15 +426,18 @@ export default function RegistrationForm({ eventId, eventName, userEmail, distan
         </Card>
       )}
 
-      {/* Step 5: aceptaciones */}
-      {step === 4 && (
+      {/* Step: terms & confirmation */}
+      {currentStepKey === 'terms' && (
         <Card>
           <CardContent className="p-6 space-y-6">
             <div>
               <h3 className="font-semibold mb-1">Resumen de inscripción</h3>
               <p className="text-sm text-muted-foreground">{eventName}</p>
               {selectedDistance && (
-                <p className="text-sm font-medium mt-1">{selectedDistance.name} — {selectedDistance.distance_km} km</p>
+                <p className="text-sm font-medium mt-1">
+                  {selectedDistance.name}
+                  {selectedDistance.distance_km != null && ` — ${selectedDistance.distance_km} km`}
+                </p>
               )}
             </div>
 
@@ -413,7 +463,7 @@ export default function RegistrationForm({ eventId, eventName, userEmail, distan
                   onCheckedChange={v => form5.setValue('accepts_waiver', v === true ? true : undefined as any)}
                 />
                 <Label htmlFor="waiver" className="cursor-pointer text-sm leading-relaxed">
-                  Acepto el deslinde de responsabilidad y declaro participar en buen estado físico. *
+                  Acepto el deslinde de responsabilidad y confirmo que mis datos son correctos. *
                 </Label>
               </div>
               {form5.formState.errors.accepts_waiver && <p className="text-xs text-destructive ml-7">{form5.formState.errors.accepts_waiver.message}</p>}
@@ -435,15 +485,9 @@ export default function RegistrationForm({ eventId, eventName, userEmail, distan
 
       {/* Navigation */}
       <div className="flex justify-between mt-6">
-        <Button
-          variant="outline"
-          onClick={() => setStep(s => s - 1)}
-          disabled={step === 0}
-          className="gap-2"
-        >
+        <Button variant="outline" onClick={() => setStep(s => s - 1)} disabled={step === 0} className="gap-2">
           <ChevronLeft className="h-4 w-4" /> Anterior
         </Button>
-
         <Button onClick={handleNext} disabled={isSubmitting} className="gap-2">
           {isSubmitting ? (
             <><Loader2 className="h-4 w-4 animate-spin" /> Procesando...</>
