@@ -127,6 +127,8 @@ interface CreateAddonPayload {
   title: string
   description?: string
   type: string
+  category?: string
+  partner_name?: string
   price_ars: number
   max_units?: number | null
   image_url?: string
@@ -138,7 +140,8 @@ export function useCreateAddon() {
     mutationFn: async (payload: CreateAddonPayload) => {
       const { data, error } = await supabase
         .from('complementary_services')
-        .insert({ ...payload, active: true })
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .insert({ ...payload, active: true, category: payload.category ?? payload.type, partner_name: payload.partner_name ?? '' } as any)
         .select()
         .single()
       if (error) throw error

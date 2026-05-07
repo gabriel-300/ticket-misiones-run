@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState } from 'react'
-import { Plus, ToggleLeft, ToggleRight, Trash2, ChevronLeft } from 'lucide-react'
+import { Plus, ToggleLeft, ToggleRight, ChevronLeft } from 'lucide-react'
 import { toast } from 'sonner'
 import { OrgLayout, OrgBreadcrumb } from '@/components/org/org-layout'
 import {
@@ -13,7 +13,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import {
