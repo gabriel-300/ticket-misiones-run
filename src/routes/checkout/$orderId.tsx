@@ -49,7 +49,7 @@ function CheckoutPage() {
 
   // Already paid — redirect to confirmation
   if (order.status === 'paid') {
-    const reg = order.registration as any
+    const reg = (order as any).registration
     if (reg?.id) {
       navigate({ to: '/confirmacion/$registrationId', params: { registrationId: reg.id } })
       return null
@@ -86,7 +86,7 @@ function CheckoutPage() {
 
     if (data?.aprobado) {
       toast.success(data.mensaje)
-      const regId = (order?.registration as any)?.id
+      const regId = data.registration_id ?? (order?.registration as any)?.id
       if (regId) {
         navigate({ to: '/confirmacion/$registrationId', params: { registrationId: regId } })
       }
