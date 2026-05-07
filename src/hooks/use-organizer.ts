@@ -126,11 +126,11 @@ interface CreateAddonPayload {
   event_id: string
   title: string
   description?: string
-  type: string
-  category?: string
+  category: string
   partner_name?: string
-  price_ars: number
-  max_units?: number | null
+  price_from: number | null
+  contact_method?: string
+  contact_value?: string
   image_url?: string
 }
 
@@ -141,7 +141,19 @@ export function useCreateAddon() {
       const { data, error } = await supabase
         .from('complementary_services')
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .insert({ ...payload, active: true, category: payload.category ?? payload.type, partner_name: payload.partner_name ?? '' } as any)
+        .insert({
+          organization_id: payload.organization_id,
+          event_id: payload.event_id,
+          title: payload.title,
+          description: payload.description ?? null,
+          category: payload.category,
+          partner_name: payload.partner_name ?? '',
+          price_from: payload.price_from,
+          contact_method: payload.contact_method ?? 'form',
+          contact_value: payload.contact_value ?? null,
+          image_url: payload.image_url ?? null,
+          active: true,
+        } as any)
         .select()
         .single()
       if (error) throw error

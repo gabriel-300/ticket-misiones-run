@@ -29,11 +29,13 @@ export const Route = createFileRoute('/org/addons/')({
 })
 
 const ADDON_TYPE_LABELS: Record<string, string> = {
-  lodging:    'Hospedaje',
-  food:       'Gastronomía',
-  transport:  'Transporte',
-  experience: 'Experiencia',
-  other:      'Otro',
+  hospedaje:    'Hospedaje',
+  comida:       'Gastronomía',
+  transporte:   'Transporte',
+  wellness:     'Wellness',
+  equipamiento: 'Equipamiento',
+  experiencia:  'Experiencia',
+  otro:         'Otro',
 }
 
 function OrgAddonsPage() {
@@ -48,14 +50,15 @@ function OrgAddonsPage() {
     event_id: '',
     title: '',
     description: '',
-    type: 'other',
-    price_ars: '',
-    max_units: '',
+    category: 'otro',
+    price_from: '',
+    contact_method: 'form',
+    contact_value: '',
     image_url: '',
   })
 
   function handleCreate() {
-    if (!org?.id || !form.event_id || !form.title || !form.price_ars) {
+    if (!org?.id || !form.event_id || !form.title) {
       toast.error('Completá los campos obligatorios')
       return
     }
@@ -64,15 +67,16 @@ function OrgAddonsPage() {
       event_id: form.event_id,
       title: form.title,
       description: form.description || undefined,
-      type: form.type,
-      price_ars: Number(form.price_ars),
-      max_units: form.max_units ? Number(form.max_units) : null,
+      category: form.category,
+      price_from: form.price_from ? Number(form.price_from) : null,
+      contact_method: form.contact_method,
+      contact_value: form.contact_value || undefined,
       image_url: form.image_url || undefined,
     }, {
       onSuccess: () => {
         toast.success('Add-on creado')
         setOpen(false)
-        setForm({ event_id: '', title: '', description: '', type: 'other', price_ars: '', max_units: '', image_url: '' })
+        setForm({ event_id: '', title: '', description: '', category: 'otro', price_from: '', contact_method: 'form', contact_value: '', image_url: '' })
       },
       onError: (err: any) => toast.error(err?.message ?? 'Error al crear el add-on'),
     })
@@ -140,8 +144,8 @@ function OrgAddonsPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <Label>Tipo *</Label>
-                  <Select defaultValue="other" onValueChange={v => setForm(f => ({ ...f, type: v }))}>
+                  <Label>Categoría *</Label>
+                  <Select defaultValue="otro" onValueChange={v => setForm(f => ({ ...f, category: v }))}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
                       {Object.entries(ADDON_TYPE_LABELS).map(([v, l]) => (
@@ -151,35 +155,46 @@ function OrgAddonsPage() {
                   </Select>
                 </div>
                 <div className="space-y-1.5">
-                  <Label>Precio ARS *</Label>
+                  <Label>Precio desde (ARS)</Label>
                   <Input
                     type="number"
                     min="0"
                     placeholder="5000"
-                    value={form.price_ars}
-                    onChange={e => setForm(f => ({ ...f, price_ars: e.target.value }))}
+                    value={form.price_from}
+                    onChange={e => setForm(f => ({ ...f, price_from: e.target.value }))}
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <Label>Cupos máx. (opcional)</Label>
-                  <Input
-                    type="number"
-                    min="1"
-                    placeholder="100"
-                    value={form.max_units}
-                    onChange={e => setForm(f => ({ ...f, max_units: e.target.value }))}
-                  />
+                  <Label>Contacto</Label>
+                  <Select defaultValue="form" onValueChange={v => setForm(f => ({ ...f, contact_method: v }))}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="form">Sin contacto directo</SelectItem>
+                      <SelectItem value="whatsapp">WhatsApp</SelectItem>
+                      <SelectItem value="email">Email</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div className="space-y-1.5">
-                  <Label>URL de imagen</Label>
-                  <Input
-                    placeholder="https://..."
-                    value={form.image_url}
-                    onChange={e => setForm(f => ({ ...f, image_url: e.target.value }))}
-                  />
+                  <Label>
+                    {form.contact_method === 'whatsapp' ? 'Número WhatsApp' : form.contact_method === 'email' ? 'Email' : 'URL imagen'}
+                  </Label>
+                  {form.contact_method === 'form' ? (
+                    <Input
+                      placeholder="https://..."
+                      value={form.image_url}
+                      onChange={e => setForm(f => ({ ...f, image_url: e.target.value }))}
+                    />
+                  ) : (
+                    <Input
+                      placeholder={form.contact_method === 'whatsapp' ? '5493764000000' : 'info@proveedor.com'}
+                      value={form.contact_value}
+                      onChange={e => setForm(f => ({ ...f, contact_value: e.target.value }))}
+                    />
+                  )}
                 </div>
               </div>
 
@@ -227,8 +242,9 @@ function OrgAddonsPage() {
                       <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{addon.description}</p>
                     )}
                     <div className="flex items-center gap-3 mt-1.5 text-xs text-muted-foreground">
-                      <span className="font-semibold text-foreground">{formatARS(addon.price_ars)}</span>
-                      {addon.max_units && <span>Cupos: {addon.max_units}</span>}
+                      {addon.price_from != null && (
+                        <span className="font-semibold text-foreground">Desde {formatARS(addon.price_from)}</span>
+                      )}
                       {addon.event?.name && <span>· {addon.event.name}</span>}
                     </div>
                   </div>
