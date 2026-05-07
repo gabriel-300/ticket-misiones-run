@@ -10,10 +10,10 @@ export function useUpload() {
       const ext = file.name.split('.').pop()
       const path = `medical-certs/${userId}/${Date.now()}.${ext}`
       const { error } = await supabase.storage
-        .from('documents')
+        .from('medical-certs')
         .upload(path, file, { upsert: true })
       if (error) throw error
-      const { data } = supabase.storage.from('documents').getPublicUrl(path)
+      const { data } = supabase.storage.from('medical-certs').getPublicUrl(path)
       return data.publicUrl
     } finally {
       setUploading(false)
