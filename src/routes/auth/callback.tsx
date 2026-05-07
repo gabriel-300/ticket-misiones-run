@@ -32,8 +32,7 @@ function AuthCallbackPage() {
         return
       }
       if (type === 'recovery') {
-        toast.info('Podés cambiar tu contraseña desde tu perfil.')
-        navigate({ to: '/mi-perfil' })
+        navigate({ to: '/auth/nueva-contrasena' })
       } else {
         toast.success('¡Email confirmado! Ya podés usar tu cuenta.')
         navigate({ to: '/' })
