@@ -14,9 +14,9 @@ const LINKS = {
   ],
   Soporte: [
     { label: 'Apto médico',             to: '/perfil' },
-    { label: 'Términos y condiciones',  to: '/' },
-    { label: 'Política de privacidad',  to: '/' },
-    { label: 'Contacto',               to: '/' },
+    { label: 'Términos y condiciones',  to: '/legal/terminos' },
+    { label: 'Política de privacidad',  to: '/legal/terminos' },
+    { label: 'Contacto',               to: '/legal/terminos' },
   ],
 }
 
