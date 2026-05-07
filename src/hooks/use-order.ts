@@ -5,12 +5,12 @@ export function useOrder(orderId: string) {
   return useQuery({
     queryKey: ['order', orderId],
     queryFn: async () => {
-      // orders ← registrations.order_id (reverse FK, returns array)
+      // orders.registration_id → registrations.id (added by registration_function migration)
       const { data, error } = await supabase
         .from('orders')
         .select(`
           id, total_amount, currency, status, items,
-          registrations!order_id (
+          registration:registration_id (
             id, bib_number, category, status,
             ticket_type:ticket_type_id ( name, distance_km ),
             event:event_id ( name, slug, starts_at )
@@ -20,13 +20,7 @@ export function useOrder(orderId: string) {
         .single()
 
       if (error) throw error
-
-      // Flatten the array to a single registration (1-to-1)
-      const reg = Array.isArray((data as any)?.registrations)
-        ? (data as any).registrations[0] ?? null
-        : null
-
-      return { ...data, registration: reg }
+      return data
     },
     enabled: !!orderId,
   })
