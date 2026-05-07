@@ -122,7 +122,12 @@ function CheckoutPage() {
       body: { order_id: orderId, token, bin, payment_method_id: paymentMethodId, installments },
     })
 
-    if (error) throw new Error(error.message)
+    if (error) {
+      const detail = (error as any)?.context
+        ? await (error as any).context.text?.().catch(() => null)
+        : null
+      throw new Error(detail ?? error.message)
+    }
 
     if (data?.aprobado) {
       cart.clear()

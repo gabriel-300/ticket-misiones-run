@@ -1,10 +1,15 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-const PRIVATE_KEY   = Deno.env.get('PAYWAY_PRIVATE_KEY') ?? ''
-const IS_TEST       = Deno.env.get('PAYWAY_TEST_MODE') !== 'false'
-const SUPABASE_URL  = Deno.env.get('SUPABASE_URL') ?? ''
-const SERVICE_KEY   = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-const ANON_KEY      = Deno.env.get('SUPABASE_ANON_KEY') ?? ''
+const PRIVATE_KEY  = Deno.env.get('PAYWAY_PRIVATE_KEY') ?? ''
+const IS_TEST      = Deno.env.get('PAYWAY_TEST_MODE') !== 'false'
+const SUPABASE_URL = Deno.env.get('SUPABASE_URL') ?? ''
+
+// Support both legacy keys and new SUPABASE_SECRET_KEYS / SUPABASE_PUBLISHABLE_KEYS formats
+function parseJsonKey(envVar: string): string {
+  try { return JSON.parse(Deno.env.get(envVar) ?? '{}').default ?? '' } catch { return '' }
+}
+const SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || parseJsonKey('SUPABASE_SECRET_KEYS')
+const ANON_KEY    = Deno.env.get('SUPABASE_ANON_KEY')         || parseJsonKey('SUPABASE_PUBLISHABLE_KEYS')
 
 const PAYWAY_API = IS_TEST
   ? 'https://developers.decidir.com/api/v2'
