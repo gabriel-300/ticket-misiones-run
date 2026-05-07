@@ -15,12 +15,14 @@ import { Route as OrgIndexRouteImport } from './routes/org/index'
 import { Route as MiPerfilIndexRouteImport } from './routes/mi-perfil/index'
 import { Route as EventosIndexRouteImport } from './routes/eventos/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as LegalTerminosRouteImport } from './routes/legal/terminos'
 import { Route as InscripcionEventIdRouteImport } from './routes/inscripcion/$eventId'
 import { Route as EventosSlugRouteImport } from './routes/eventos/$slug'
 import { Route as ConfirmacionRegistrationIdRouteImport } from './routes/confirmacion/$registrationId'
 import { Route as CheckoutOrderIdRouteImport } from './routes/checkout/$orderId'
 import { Route as AuthRegistroRouteImport } from './routes/auth/registro'
 import { Route as AuthRecuperarRouteImport } from './routes/auth/recuperar'
+import { Route as AuthNuevaContrasenaRouteImport } from './routes/auth/nueva-contrasena'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
 import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
 import { Route as AdminAptosRouteImport } from './routes/admin/aptos'
@@ -29,10 +31,13 @@ import { Route as OrgAddonsIndexRouteImport } from './routes/org/addons/index'
 import { Route as AdminOrganizacionesIndexRouteImport } from './routes/admin/organizaciones/index'
 import { Route as AdminInscripcionesIndexRouteImport } from './routes/admin/inscripciones/index'
 import { Route as AdminEventosIndexRouteImport } from './routes/admin/eventos/index'
+import { Route as OrgInscripcionesEventIdRouteImport } from './routes/org/inscripciones/$eventId'
 import { Route as OrgEventosNuevoRouteImport } from './routes/org/eventos/nuevo'
+import { Route as OrgEventosEventIdRouteImport } from './routes/org/eventos/$eventId'
 import { Route as AdminOrganizacionesNuevaRouteImport } from './routes/admin/organizaciones/nueva'
 import { Route as AdminInscripcionesEventIdRouteImport } from './routes/admin/inscripciones/$eventId'
 import { Route as AdminEventosNuevoRouteImport } from './routes/admin/eventos/nuevo'
+import { Route as AdminEventosEventIdRouteImport } from './routes/admin/eventos/$eventId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -64,6 +69,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/admin/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LegalTerminosRoute = LegalTerminosRouteImport.update({
+  id: '/legal/terminos',
+  path: '/legal/terminos',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const InscripcionEventIdRoute = InscripcionEventIdRouteImport.update({
   id: '/inscripcion/$eventId',
   path: '/inscripcion/$eventId',
@@ -93,6 +103,11 @@ const AuthRegistroRoute = AuthRegistroRouteImport.update({
 const AuthRecuperarRoute = AuthRecuperarRouteImport.update({
   id: '/auth/recuperar',
   path: '/auth/recuperar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthNuevaContrasenaRoute = AuthNuevaContrasenaRouteImport.update({
+  id: '/auth/nueva-contrasena',
+  path: '/auth/nueva-contrasena',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthLoginRoute = AuthLoginRouteImport.update({
@@ -136,9 +151,19 @@ const AdminEventosIndexRoute = AdminEventosIndexRouteImport.update({
   path: '/admin/eventos/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OrgInscripcionesEventIdRoute = OrgInscripcionesEventIdRouteImport.update({
+  id: '/org/inscripciones/$eventId',
+  path: '/org/inscripciones/$eventId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OrgEventosNuevoRoute = OrgEventosNuevoRouteImport.update({
   id: '/org/eventos/nuevo',
   path: '/org/eventos/nuevo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OrgEventosEventIdRoute = OrgEventosEventIdRouteImport.update({
+  id: '/org/eventos/$eventId',
+  path: '/org/eventos/$eventId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminOrganizacionesNuevaRoute =
@@ -158,27 +183,37 @@ const AdminEventosNuevoRoute = AdminEventosNuevoRouteImport.update({
   path: '/admin/eventos/nuevo',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminEventosEventIdRoute = AdminEventosEventIdRouteImport.update({
+  id: '/admin/eventos/$eventId',
+  path: '/admin/eventos/$eventId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin/aptos': typeof AdminAptosRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/login': typeof AuthLoginRoute
+  '/auth/nueva-contrasena': typeof AuthNuevaContrasenaRoute
   '/auth/recuperar': typeof AuthRecuperarRoute
   '/auth/registro': typeof AuthRegistroRoute
   '/checkout/$orderId': typeof CheckoutOrderIdRoute
   '/confirmacion/$registrationId': typeof ConfirmacionRegistrationIdRoute
   '/eventos/$slug': typeof EventosSlugRoute
   '/inscripcion/$eventId': typeof InscripcionEventIdRoute
+  '/legal/terminos': typeof LegalTerminosRoute
   '/admin/': typeof AdminIndexRoute
   '/eventos/': typeof EventosIndexRoute
   '/mi-perfil/': typeof MiPerfilIndexRoute
   '/org/': typeof OrgIndexRoute
   '/perfil/': typeof PerfilIndexRoute
+  '/admin/eventos/$eventId': typeof AdminEventosEventIdRoute
   '/admin/eventos/nuevo': typeof AdminEventosNuevoRoute
   '/admin/inscripciones/$eventId': typeof AdminInscripcionesEventIdRoute
   '/admin/organizaciones/nueva': typeof AdminOrganizacionesNuevaRoute
+  '/org/eventos/$eventId': typeof OrgEventosEventIdRoute
   '/org/eventos/nuevo': typeof OrgEventosNuevoRoute
+  '/org/inscripciones/$eventId': typeof OrgInscripcionesEventIdRoute
   '/admin/eventos/': typeof AdminEventosIndexRoute
   '/admin/inscripciones/': typeof AdminInscripcionesIndexRoute
   '/admin/organizaciones/': typeof AdminOrganizacionesIndexRoute
@@ -190,21 +225,26 @@ export interface FileRoutesByTo {
   '/admin/aptos': typeof AdminAptosRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/login': typeof AuthLoginRoute
+  '/auth/nueva-contrasena': typeof AuthNuevaContrasenaRoute
   '/auth/recuperar': typeof AuthRecuperarRoute
   '/auth/registro': typeof AuthRegistroRoute
   '/checkout/$orderId': typeof CheckoutOrderIdRoute
   '/confirmacion/$registrationId': typeof ConfirmacionRegistrationIdRoute
   '/eventos/$slug': typeof EventosSlugRoute
   '/inscripcion/$eventId': typeof InscripcionEventIdRoute
+  '/legal/terminos': typeof LegalTerminosRoute
   '/admin': typeof AdminIndexRoute
   '/eventos': typeof EventosIndexRoute
   '/mi-perfil': typeof MiPerfilIndexRoute
   '/org': typeof OrgIndexRoute
   '/perfil': typeof PerfilIndexRoute
+  '/admin/eventos/$eventId': typeof AdminEventosEventIdRoute
   '/admin/eventos/nuevo': typeof AdminEventosNuevoRoute
   '/admin/inscripciones/$eventId': typeof AdminInscripcionesEventIdRoute
   '/admin/organizaciones/nueva': typeof AdminOrganizacionesNuevaRoute
+  '/org/eventos/$eventId': typeof OrgEventosEventIdRoute
   '/org/eventos/nuevo': typeof OrgEventosNuevoRoute
+  '/org/inscripciones/$eventId': typeof OrgInscripcionesEventIdRoute
   '/admin/eventos': typeof AdminEventosIndexRoute
   '/admin/inscripciones': typeof AdminInscripcionesIndexRoute
   '/admin/organizaciones': typeof AdminOrganizacionesIndexRoute
@@ -217,21 +257,26 @@ export interface FileRoutesById {
   '/admin/aptos': typeof AdminAptosRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/login': typeof AuthLoginRoute
+  '/auth/nueva-contrasena': typeof AuthNuevaContrasenaRoute
   '/auth/recuperar': typeof AuthRecuperarRoute
   '/auth/registro': typeof AuthRegistroRoute
   '/checkout/$orderId': typeof CheckoutOrderIdRoute
   '/confirmacion/$registrationId': typeof ConfirmacionRegistrationIdRoute
   '/eventos/$slug': typeof EventosSlugRoute
   '/inscripcion/$eventId': typeof InscripcionEventIdRoute
+  '/legal/terminos': typeof LegalTerminosRoute
   '/admin/': typeof AdminIndexRoute
   '/eventos/': typeof EventosIndexRoute
   '/mi-perfil/': typeof MiPerfilIndexRoute
   '/org/': typeof OrgIndexRoute
   '/perfil/': typeof PerfilIndexRoute
+  '/admin/eventos/$eventId': typeof AdminEventosEventIdRoute
   '/admin/eventos/nuevo': typeof AdminEventosNuevoRoute
   '/admin/inscripciones/$eventId': typeof AdminInscripcionesEventIdRoute
   '/admin/organizaciones/nueva': typeof AdminOrganizacionesNuevaRoute
+  '/org/eventos/$eventId': typeof OrgEventosEventIdRoute
   '/org/eventos/nuevo': typeof OrgEventosNuevoRoute
+  '/org/inscripciones/$eventId': typeof OrgInscripcionesEventIdRoute
   '/admin/eventos/': typeof AdminEventosIndexRoute
   '/admin/inscripciones/': typeof AdminInscripcionesIndexRoute
   '/admin/organizaciones/': typeof AdminOrganizacionesIndexRoute
@@ -245,21 +290,26 @@ export interface FileRouteTypes {
     | '/admin/aptos'
     | '/auth/callback'
     | '/auth/login'
+    | '/auth/nueva-contrasena'
     | '/auth/recuperar'
     | '/auth/registro'
     | '/checkout/$orderId'
     | '/confirmacion/$registrationId'
     | '/eventos/$slug'
     | '/inscripcion/$eventId'
+    | '/legal/terminos'
     | '/admin/'
     | '/eventos/'
     | '/mi-perfil/'
     | '/org/'
     | '/perfil/'
+    | '/admin/eventos/$eventId'
     | '/admin/eventos/nuevo'
     | '/admin/inscripciones/$eventId'
     | '/admin/organizaciones/nueva'
+    | '/org/eventos/$eventId'
     | '/org/eventos/nuevo'
+    | '/org/inscripciones/$eventId'
     | '/admin/eventos/'
     | '/admin/inscripciones/'
     | '/admin/organizaciones/'
@@ -271,21 +321,26 @@ export interface FileRouteTypes {
     | '/admin/aptos'
     | '/auth/callback'
     | '/auth/login'
+    | '/auth/nueva-contrasena'
     | '/auth/recuperar'
     | '/auth/registro'
     | '/checkout/$orderId'
     | '/confirmacion/$registrationId'
     | '/eventos/$slug'
     | '/inscripcion/$eventId'
+    | '/legal/terminos'
     | '/admin'
     | '/eventos'
     | '/mi-perfil'
     | '/org'
     | '/perfil'
+    | '/admin/eventos/$eventId'
     | '/admin/eventos/nuevo'
     | '/admin/inscripciones/$eventId'
     | '/admin/organizaciones/nueva'
+    | '/org/eventos/$eventId'
     | '/org/eventos/nuevo'
+    | '/org/inscripciones/$eventId'
     | '/admin/eventos'
     | '/admin/inscripciones'
     | '/admin/organizaciones'
@@ -297,21 +352,26 @@ export interface FileRouteTypes {
     | '/admin/aptos'
     | '/auth/callback'
     | '/auth/login'
+    | '/auth/nueva-contrasena'
     | '/auth/recuperar'
     | '/auth/registro'
     | '/checkout/$orderId'
     | '/confirmacion/$registrationId'
     | '/eventos/$slug'
     | '/inscripcion/$eventId'
+    | '/legal/terminos'
     | '/admin/'
     | '/eventos/'
     | '/mi-perfil/'
     | '/org/'
     | '/perfil/'
+    | '/admin/eventos/$eventId'
     | '/admin/eventos/nuevo'
     | '/admin/inscripciones/$eventId'
     | '/admin/organizaciones/nueva'
+    | '/org/eventos/$eventId'
     | '/org/eventos/nuevo'
+    | '/org/inscripciones/$eventId'
     | '/admin/eventos/'
     | '/admin/inscripciones/'
     | '/admin/organizaciones/'
@@ -324,21 +384,26 @@ export interface RootRouteChildren {
   AdminAptosRoute: typeof AdminAptosRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
   AuthLoginRoute: typeof AuthLoginRoute
+  AuthNuevaContrasenaRoute: typeof AuthNuevaContrasenaRoute
   AuthRecuperarRoute: typeof AuthRecuperarRoute
   AuthRegistroRoute: typeof AuthRegistroRoute
   CheckoutOrderIdRoute: typeof CheckoutOrderIdRoute
   ConfirmacionRegistrationIdRoute: typeof ConfirmacionRegistrationIdRoute
   EventosSlugRoute: typeof EventosSlugRoute
   InscripcionEventIdRoute: typeof InscripcionEventIdRoute
+  LegalTerminosRoute: typeof LegalTerminosRoute
   AdminIndexRoute: typeof AdminIndexRoute
   EventosIndexRoute: typeof EventosIndexRoute
   MiPerfilIndexRoute: typeof MiPerfilIndexRoute
   OrgIndexRoute: typeof OrgIndexRoute
   PerfilIndexRoute: typeof PerfilIndexRoute
+  AdminEventosEventIdRoute: typeof AdminEventosEventIdRoute
   AdminEventosNuevoRoute: typeof AdminEventosNuevoRoute
   AdminInscripcionesEventIdRoute: typeof AdminInscripcionesEventIdRoute
   AdminOrganizacionesNuevaRoute: typeof AdminOrganizacionesNuevaRoute
+  OrgEventosEventIdRoute: typeof OrgEventosEventIdRoute
   OrgEventosNuevoRoute: typeof OrgEventosNuevoRoute
+  OrgInscripcionesEventIdRoute: typeof OrgInscripcionesEventIdRoute
   AdminEventosIndexRoute: typeof AdminEventosIndexRoute
   AdminInscripcionesIndexRoute: typeof AdminInscripcionesIndexRoute
   AdminOrganizacionesIndexRoute: typeof AdminOrganizacionesIndexRoute
@@ -390,6 +455,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/legal/terminos': {
+      id: '/legal/terminos'
+      path: '/legal/terminos'
+      fullPath: '/legal/terminos'
+      preLoaderRoute: typeof LegalTerminosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/inscripcion/$eventId': {
       id: '/inscripcion/$eventId'
       path: '/inscripcion/$eventId'
@@ -430,6 +502,13 @@ declare module '@tanstack/react-router' {
       path: '/auth/recuperar'
       fullPath: '/auth/recuperar'
       preLoaderRoute: typeof AuthRecuperarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/nueva-contrasena': {
+      id: '/auth/nueva-contrasena'
+      path: '/auth/nueva-contrasena'
+      fullPath: '/auth/nueva-contrasena'
+      preLoaderRoute: typeof AuthNuevaContrasenaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth/login': {
@@ -488,11 +567,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminEventosIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/org/inscripciones/$eventId': {
+      id: '/org/inscripciones/$eventId'
+      path: '/org/inscripciones/$eventId'
+      fullPath: '/org/inscripciones/$eventId'
+      preLoaderRoute: typeof OrgInscripcionesEventIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/org/eventos/nuevo': {
       id: '/org/eventos/nuevo'
       path: '/org/eventos/nuevo'
       fullPath: '/org/eventos/nuevo'
       preLoaderRoute: typeof OrgEventosNuevoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/org/eventos/$eventId': {
+      id: '/org/eventos/$eventId'
+      path: '/org/eventos/$eventId'
+      fullPath: '/org/eventos/$eventId'
+      preLoaderRoute: typeof OrgEventosEventIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/organizaciones/nueva': {
@@ -516,6 +609,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminEventosNuevoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/eventos/$eventId': {
+      id: '/admin/eventos/$eventId'
+      path: '/admin/eventos/$eventId'
+      fullPath: '/admin/eventos/$eventId'
+      preLoaderRoute: typeof AdminEventosEventIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -524,21 +624,26 @@ const rootRouteChildren: RootRouteChildren = {
   AdminAptosRoute: AdminAptosRoute,
   AuthCallbackRoute: AuthCallbackRoute,
   AuthLoginRoute: AuthLoginRoute,
+  AuthNuevaContrasenaRoute: AuthNuevaContrasenaRoute,
   AuthRecuperarRoute: AuthRecuperarRoute,
   AuthRegistroRoute: AuthRegistroRoute,
   CheckoutOrderIdRoute: CheckoutOrderIdRoute,
   ConfirmacionRegistrationIdRoute: ConfirmacionRegistrationIdRoute,
   EventosSlugRoute: EventosSlugRoute,
   InscripcionEventIdRoute: InscripcionEventIdRoute,
+  LegalTerminosRoute: LegalTerminosRoute,
   AdminIndexRoute: AdminIndexRoute,
   EventosIndexRoute: EventosIndexRoute,
   MiPerfilIndexRoute: MiPerfilIndexRoute,
   OrgIndexRoute: OrgIndexRoute,
   PerfilIndexRoute: PerfilIndexRoute,
+  AdminEventosEventIdRoute: AdminEventosEventIdRoute,
   AdminEventosNuevoRoute: AdminEventosNuevoRoute,
   AdminInscripcionesEventIdRoute: AdminInscripcionesEventIdRoute,
   AdminOrganizacionesNuevaRoute: AdminOrganizacionesNuevaRoute,
+  OrgEventosEventIdRoute: OrgEventosEventIdRoute,
   OrgEventosNuevoRoute: OrgEventosNuevoRoute,
+  OrgInscripcionesEventIdRoute: OrgInscripcionesEventIdRoute,
   AdminEventosIndexRoute: AdminEventosIndexRoute,
   AdminInscripcionesIndexRoute: AdminInscripcionesIndexRoute,
   AdminOrganizacionesIndexRoute: AdminOrganizacionesIndexRoute,
