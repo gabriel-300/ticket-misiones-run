@@ -53,7 +53,8 @@ export function useMyRegistrations() {
         .select(`
           id, bib_number, category, status, created_at,
           ticket_type:ticket_type_id ( name, distance_km ),
-          event:event_id ( name, slug, starts_at, cover_image_url )
+          event:event_id ( name, slug, starts_at, cover_image_url ),
+          orders ( id, status )
         `)
         .eq('buyer_id', user.id)
         .order('created_at', { ascending: false })

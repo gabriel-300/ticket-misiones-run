@@ -269,6 +269,16 @@ function PerfilPage() {
                           Ver detalles <ChevronRight className="h-3 w-3" />
                         </Link>
                       )}
+                      {reg.status === 'pending_payment' && (() => {
+                        const orders = (reg as any).orders as { id: string; status: string }[] | null
+                        const pendingOrder = orders?.find(o => o.status === 'pending')
+                        return pendingOrder ? (
+                          <Link to="/checkout/$orderId" params={{ orderId: pendingOrder.id }}
+                            className="text-xs text-orange-600 hover:underline ml-auto flex items-center gap-0.5 font-medium">
+                            Completar pago <ChevronRight className="h-3 w-3" />
+                          </Link>
+                        ) : null
+                      })()}
                     </div>
                   </div>
                 </CardContent>
