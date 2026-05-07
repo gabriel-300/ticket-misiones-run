@@ -179,6 +179,76 @@ export function useToggleAddon(orgId: string) {
   })
 }
 
+// ─── Complementary services by event ─────────────────────────────────────────
+
+export function useEventServices(eventId: string) {
+  return useQuery({
+    queryKey: ['event-services', eventId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('complementary_services')
+        .select('*')
+        .eq('event_id', eventId)
+        .order('display_order', { ascending: true })
+      if (error) throw error
+      return data
+    },
+    enabled: !!eventId,
+  })
+}
+
+export interface CreateServiceInput {
+  event_id: string
+  category: string
+  partner_name: string
+  title: string
+  description?: string
+  price_from?: number | null
+  image_url?: string
+  contact_method: string
+  contact_value?: string
+}
+
+export function useCreateService(eventId: string) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: async (input: CreateServiceInput) => {
+      const { error } = await supabase.from('complementary_services').insert({
+        ...input,
+        active: true,
+        display_order: 0,
+      } as any)
+      if (error) throw error
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['event-services', eventId] }),
+  })
+}
+
+export function useDeleteService(eventId: string) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: async (serviceId: string) => {
+      const { error } = await supabase.from('complementary_services').delete().eq('id', serviceId)
+      if (error) throw error
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['event-services', eventId] }),
+  })
+}
+
+export function useToggleService(eventId: string) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: async ({ serviceId, active }: { serviceId: string; active: boolean }) => {
+      const { error } = await supabase
+        .from('complementary_services')
+        .update({ active })
+        .eq('id', serviceId)
+      if (error) throw error
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['event-services', eventId] }),
+  })
+}
+
 // ─── Event detail (for organizer) ────────────────────────────────────────────
 
 export function useOrgEventDetail(eventId: string) {

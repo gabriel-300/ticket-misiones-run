@@ -2,13 +2,17 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState } from 'react'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
-import { ChevronLeft, Plus, Trash2, Tag, Users, Calendar, ToggleLeft, ToggleRight, ClipboardList } from 'lucide-react'
+import {
+  ChevronLeft, Plus, Trash2, Tag, Users, Calendar,
+  ToggleLeft, ToggleRight, ClipboardList, Package,
+} from 'lucide-react'
 import { toast } from 'sonner'
 import { AdminLayout, AdminBreadcrumb } from '@/components/admin/admin-layout'
 import { useToggleEventStatus } from '@/hooks/use-admin'
 import {
   useOrgEventDetail, useCreatePricingTier, useDeletePricingTier,
-  type CreatePricingTierInput,
+  useEventServices, useCreateService, useDeleteService, useToggleService,
+  type CreatePricingTierInput, type CreateServiceInput,
 } from '@/hooks/use-organizer'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -35,6 +39,24 @@ const STATUS_VARIANTS: Record<string, 'default' | 'secondary' | 'destructive' | 
   draft: 'secondary', published: 'default', closed: 'outline',
   finished: 'outline', cancelled: 'destructive',
 }
+
+const SERVICE_CATEGORIES = [
+  { value: 'transporte',   label: 'Transporte',   emoji: '🚌' },
+  { value: 'hospedaje',    label: 'Hospedaje',    emoji: '🏠' },
+  { value: 'comida',       label: 'Gastronomía',  emoji: '🍽️' },
+  { value: 'wellness',     label: 'Wellness',     emoji: '💆' },
+  { value: 'equipamiento', label: 'Equipamiento', emoji: '🎒' },
+  { value: 'experiencia',  label: 'Experiencia',  emoji: '🎟️' },
+  { value: 'otro',         label: 'Otro',         emoji: '📦' },
+]
+
+const CONTACT_METHODS = [
+  { value: 'email',     label: 'Email' },
+  { value: 'whatsapp',  label: 'WhatsApp' },
+  { value: 'form',      label: 'Formulario web' },
+]
+
+// ─── Pricing tier form ────────────────────────────────────────────────────────
 
 function PricingTierForm({ eventId, ticketTypeId, onClose }: {
   eventId: string; ticketTypeId: string; onClose: () => void
@@ -91,6 +113,8 @@ function PricingTierForm({ eventId, ticketTypeId, onClose }: {
     </form>
   )
 }
+
+// ─── Ticket type card ─────────────────────────────────────────────────────────
 
 function TicketTypeCard({ tt, eventId }: { tt: any; eventId: string }) {
   const [open, setOpen] = useState(false)
@@ -170,6 +194,205 @@ function TicketTypeCard({ tt, eventId }: { tt: any; eventId: string }) {
     </Card>
   )
 }
+
+// ─── Service form ─────────────────────────────────────────────────────────────
+
+function ServiceForm({ eventId, onClose }: { eventId: string; onClose: () => void }) {
+  const { mutate: create, isPending } = useCreateService(eventId)
+
+  const [category, setCategory]       = useState('transporte')
+  const [title, setTitle]             = useState('')
+  const [partnerName, setPartnerName] = useState('')
+  const [description, setDescription] = useState('')
+  const [priceFrom, setPriceFrom]     = useState('')
+  const [contactMethod, setContactMethod] = useState('email')
+  const [contactValue, setContactValue]   = useState('')
+  const [imageUrl, setImageUrl]       = useState('')
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!title || !partnerName) { toast.error('Completá título y proveedor'); return }
+
+    const input: CreateServiceInput = {
+      event_id: eventId,
+      category,
+      title,
+      partner_name: partnerName,
+      description: description || undefined,
+      price_from: priceFrom ? Number(priceFrom) : null,
+      contact_method: contactMethod,
+      contact_value: contactValue || undefined,
+      image_url: imageUrl || undefined,
+    }
+    create(input, {
+      onSuccess: () => { toast.success('Servicio agregado'); onClose() },
+      onError: (err: any) => toast.error(err?.message ?? 'Error al guardar'),
+    })
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4 pt-2">
+      <div className="space-y-1.5">
+        <Label>Categoría</Label>
+        <select
+          value={category}
+          onChange={e => setCategory(e.target.value)}
+          className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm"
+        >
+          {SERVICE_CATEGORIES.map(c => (
+            <option key={c.value} value={c.value}>{c.emoji} {c.label}</option>
+          ))}
+        </select>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        <div className="space-y-1.5">
+          <Label>Título del servicio *</Label>
+          <Input value={title} onChange={e => setTitle(e.target.value)} placeholder="Traslado Posadas → evento" />
+        </div>
+        <div className="space-y-1.5">
+          <Label>Proveedor *</Label>
+          <Input value={partnerName} onChange={e => setPartnerName(e.target.value)} placeholder="Nombre del proveedor" />
+        </div>
+      </div>
+
+      <div className="space-y-1.5">
+        <Label>Descripción</Label>
+        <Input value={description} onChange={e => setDescription(e.target.value)} placeholder="Breve descripción para el usuario" />
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        <div className="space-y-1.5">
+          <Label>Precio desde (ARS)</Label>
+          <Input type="number" min="0" step="1" value={priceFrom} onChange={e => setPriceFrom(e.target.value)} placeholder="Dejar vacío = A consultar" />
+        </div>
+        <div className="space-y-1.5">
+          <Label>Imagen (URL)</Label>
+          <Input value={imageUrl} onChange={e => setImageUrl(e.target.value)} placeholder="https://..." />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        <div className="space-y-1.5">
+          <Label>Método de contacto</Label>
+          <select
+            value={contactMethod}
+            onChange={e => setContactMethod(e.target.value)}
+            className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm"
+          >
+            {CONTACT_METHODS.map(m => (
+              <option key={m.value} value={m.value}>{m.label}</option>
+            ))}
+          </select>
+        </div>
+        <div className="space-y-1.5">
+          <Label>Valor de contacto</Label>
+          <Input value={contactValue} onChange={e => setContactValue(e.target.value)} placeholder="email / número / URL" />
+        </div>
+      </div>
+
+      <div className="flex gap-3 pt-1">
+        <Button type="submit" disabled={isPending} className="flex-1">
+          {isPending ? 'Guardando...' : 'Agregar servicio'}
+        </Button>
+        <Button type="button" variant="outline" onClick={onClose}>Cancelar</Button>
+      </div>
+    </form>
+  )
+}
+
+// ─── Services section ─────────────────────────────────────────────────────────
+
+function ServicesSection({ eventId }: { eventId: string }) {
+  const [open, setOpen] = useState(false)
+  const { data: services, isLoading } = useEventServices(eventId)
+  const { mutate: deleteService, isPending: deleting } = useDeleteService(eventId)
+  const { mutate: toggleService } = useToggleService(eventId)
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="font-semibold text-base">Servicios complementarios</h2>
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger asChild>
+            <Button size="sm" variant="outline" className="gap-1.5 h-8 text-xs">
+              <Plus className="h-3.5 w-3.5" /> Agregar servicio
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-lg">
+            <DialogHeader>
+              <DialogTitle>Nuevo servicio complementario</DialogTitle>
+            </DialogHeader>
+            <ServiceForm eventId={eventId} onClose={() => setOpen(false)} />
+          </DialogContent>
+        </Dialog>
+      </div>
+
+      {isLoading ? (
+        <div className="space-y-2">
+          <Skeleton className="h-14 rounded-lg" />
+          <Skeleton className="h-14 rounded-lg" />
+        </div>
+      ) : !services || services.length === 0 ? (
+        <div className="border border-dashed rounded-xl py-10 text-center">
+          <Package className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+          <p className="text-sm text-muted-foreground">Sin servicios. Agregá traslados, hospedaje o gastronomía para ofrecerlos en el upsell.</p>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {services.map((s: any) => {
+            const cat = SERVICE_CATEGORIES.find(c => c.value === s.category)
+            return (
+              <div
+                key={s.id}
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg border text-sm transition-opacity ${
+                  s.active ? 'bg-white border-border' : 'bg-muted/30 border-dashed opacity-60'
+                }`}
+              >
+                <span className="text-[18px] shrink-0">{cat?.emoji ?? '📦'}</span>
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium truncate">{s.title}</p>
+                  <p className="text-xs text-muted-foreground truncate">
+                    {s.partner_name}
+                    {s.price_from ? ` · ${formatARS(Number(s.price_from))}` : ' · A consultar'}
+                    {' · '}{cat?.label}
+                  </p>
+                </div>
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <button
+                    onClick={() => toggleService({ serviceId: s.id, active: !s.active }, {
+                      onSuccess: () => toast.success(s.active ? 'Servicio desactivado' : 'Servicio activado'),
+                      onError: () => toast.error('No se pudo cambiar el estado'),
+                    })}
+                    className={`text-xs px-2 py-1 rounded-full border transition-colors ${
+                      s.active
+                        ? 'border-green-200 text-green-700 bg-green-50 hover:bg-green-100'
+                        : 'border-muted text-muted-foreground hover:border-green-200 hover:text-green-700'
+                    }`}
+                  >
+                    {s.active ? 'Activo' : 'Inactivo'}
+                  </button>
+                  <button
+                    onClick={() => deleteService(s.id, {
+                      onSuccess: () => toast.success('Servicio eliminado'),
+                      onError: () => toast.error('No se pudo eliminar'),
+                    })}
+                    disabled={deleting}
+                    className="text-muted-foreground hover:text-destructive transition-colors p-1"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ─── Main page ────────────────────────────────────────────────────────────────
 
 function AdminEventDetailPage() {
   const { eventId } = Route.useParams()
@@ -287,6 +510,8 @@ function AdminEventDetailPage() {
             </div>
           )}
         </div>
+
+        <ServicesSection eventId={eventId} />
       </div>
     </AdminLayout>
   )
