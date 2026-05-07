@@ -6,10 +6,8 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 import { loginSchema, type LoginForm } from '@/lib/validators/auth'
 import { useAuth } from '@/hooks/use-auth'
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 
 const searchSchema = z.object({ next: z.string().optional() })
 
@@ -45,31 +43,55 @@ function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-muted/40 px-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold">Iniciar sesión</CardTitle>
-          <CardDescription>Ingresá con tu email y contraseña</CardDescription>
-        </CardHeader>
+    <div className="min-h-[calc(100vh-4rem)] flex">
+      {/* Left panel */}
+      <div className="hidden lg:flex lg:w-1/2 bg-navy flex-col justify-between p-16">
+        <Link to="/" className="flex items-center gap-2.5 font-display text-[18px] tracking-[0.02em] text-paper">
+          <span className="w-9 h-9 bg-yellow text-ink rounded-[10px] grid place-items-center text-lg font-display">M</span>
+          MISIONA HUB
+        </Link>
+        <div>
+          <h2 className="font-display text-[clamp(36px,4vw,56px)] leading-[0.97] tracking-[-0.02em] text-paper mb-4">
+            Las mejores<br />carreras del NEA<br />te esperan.
+          </h2>
+          <p className="text-paper/60 text-[16px]">
+            Inscribite, pagá y armá tu race-cation completa desde Misiones.
+          </p>
+        </div>
+        <div className="flex items-center gap-2.5 font-mono text-[12px] uppercase tracking-[0.16em] text-yellow">
+          <span className="w-6 h-px bg-yellow" />
+          Plataforma oficial · Misiones, Argentina
+        </div>
+      </div>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+      {/* Right panel */}
+      <div className="flex-1 flex items-center justify-center px-4 py-12 bg-paper">
+        <div className="w-full max-w-md">
+          <div className="mb-8">
+            <h1 className="font-display text-[32px] leading-none tracking-[-0.01em] text-navy mb-2">
+              Iniciar sesión
+            </h1>
+            <p className="text-brand-muted text-[15px]">Ingresá con tu email y contraseña</p>
+          </div>
+
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+            <div className="space-y-1.5">
+              <Label htmlFor="email" className="font-mono text-[12px] uppercase tracking-[0.1em] text-navy">Email</Label>
               <Input
                 id="email"
                 type="email"
                 placeholder="tu@email.com"
                 autoComplete="email"
+                className="h-12 rounded-[10px] border-line bg-white text-navy"
                 {...register('email')}
               />
-              {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
+              {errors.email && <p className="text-[13px] text-terra">{errors.email.message}</p>}
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <div className="flex items-center justify-between">
-                <Label htmlFor="password">Contraseña</Label>
-                <Link to="/auth/recuperar" className="text-sm text-primary hover:underline">
+                <Label htmlFor="password" className="font-mono text-[12px] uppercase tracking-[0.1em] text-navy">Contraseña</Label>
+                <Link to="/auth/recuperar" className="text-[13px] text-brand-muted hover:text-navy transition-colors">
                   ¿Olvidaste tu contraseña?
                 </Link>
               </div>
@@ -77,25 +99,29 @@ function LoginPage() {
                 id="password"
                 type="password"
                 autoComplete="current-password"
+                className="h-12 rounded-[10px] border-line bg-white text-navy"
                 {...register('password')}
               />
-              {errors.password && <p className="text-sm text-destructive">{errors.password.message}</p>}
+              {errors.password && <p className="text-[13px] text-terra">{errors.password.message}</p>}
             </div>
-          </CardContent>
 
-          <CardFooter className="flex flex-col gap-3">
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full h-12 rounded-full bg-navy text-paper text-[15px] font-semibold hover:bg-terra transition-colors disabled:opacity-50"
+            >
               {isSubmitting ? 'Ingresando...' : 'Ingresar'}
-            </Button>
-            <p className="text-sm text-muted-foreground text-center">
+            </button>
+
+            <p className="text-[14px] text-brand-muted text-center">
               ¿No tenés cuenta?{' '}
-              <Link to="/auth/registro" className="text-primary hover:underline font-medium">
-                Registrate
+              <Link to="/auth/registro" className="text-navy font-semibold hover:text-terra transition-colors">
+                Registrate gratis
               </Link>
             </p>
-          </CardFooter>
-        </form>
-      </Card>
+          </form>
+        </div>
+      </div>
     </div>
   )
 }

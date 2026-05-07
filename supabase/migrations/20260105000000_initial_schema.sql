@@ -54,7 +54,7 @@ CREATE TABLE events (
   name TEXT NOT NULL,
   short_description TEXT,
   description TEXT,
-  type TEXT NOT NULL DEFAULT 'running' CHECK (type IN ('running', 'trail', 'triathlon', 'cycling', 'other')),
+  type TEXT NOT NULL DEFAULT 'running' CHECK (type IN ('running', 'trail', 'triathlon', 'cycling', 'concierto', 'teatro', 'conferencia', 'other')),
 
   starts_at TIMESTAMPTZ NOT NULL,
   ends_at TIMESTAMPTZ,

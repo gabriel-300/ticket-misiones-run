@@ -11,7 +11,7 @@ export function useOrder(orderId: string) {
         .select(`
           id, total_amount, currency, status, items,
           registration:registration_id (
-            id, bib_number, category, status,
+            id, event_id, bib_number, category, status,
             ticket_type:ticket_type_id ( name, distance_km ),
             event:event_id ( name, slug, starts_at )
           )

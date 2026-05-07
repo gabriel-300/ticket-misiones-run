@@ -7,9 +7,7 @@ import { useRegistrationDetail } from '@/hooks/use-registration-detail'
 import { useComplementaryServices, useServiceInterests } from '@/hooks/use-complementary-services'
 import { useAuth } from '@/hooks/use-auth'
 import ServiceCard from '@/components/confirmacion/service-card'
-import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Separator } from '@/components/ui/separator'
 
 export const Route = createFileRoute('/confirmacion/$registrationId')({
   component: () => (
@@ -31,20 +29,28 @@ function ConfirmacionPage() {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-2xl space-y-4">
-        <Skeleton className="h-32 rounded-xl" />
-        <Skeleton className="h-24 rounded-xl" />
-        <Skeleton className="h-64 rounded-xl" />
+      <div className="bg-paper min-h-screen">
+        <div className="max-w-2xl mx-auto px-4 py-12 space-y-4">
+          <Skeleton className="h-32 rounded-[18px]" />
+          <Skeleton className="h-24 rounded-[18px]" />
+          <Skeleton className="h-64 rounded-[18px]" />
+        </div>
       </div>
     )
   }
 
   if (error || !reg) {
     return (
-      <div className="container mx-auto px-4 py-16 text-center">
-        <AlertCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-        <h2 className="text-xl font-semibold">Inscripción no encontrada</h2>
-        <Link to="/"><Button className="mt-6">Ir al inicio</Button></Link>
+      <div className="bg-paper min-h-screen flex items-center justify-center px-4">
+        <div className="text-center">
+          <AlertCircle className="h-12 w-12 text-terra mx-auto mb-4" />
+          <h2 className="font-display text-2xl text-navy mb-2">Inscripción no encontrada</h2>
+          <Link to="/">
+            <button className="mt-4 px-6 py-3 rounded-full bg-navy text-paper font-semibold text-[14px]">
+              Ir al inicio
+            </button>
+          </Link>
+        </div>
       </div>
     )
   }
@@ -52,105 +58,136 @@ function ConfirmacionPage() {
   const location = event?.location as { city: string; province: string } | null
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-2xl">
+    <div className="bg-paper min-h-screen">
 
-      {/* Hero confirmación */}
-      <div className="text-center mb-8">
-        <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-100 mb-4">
-          <CheckCircle2 className="h-10 w-10 text-green-600" />
+      {/* ── Hero confirmación ── */}
+      <div className="bg-navy text-paper px-4 md:px-10 pt-16 pb-14">
+        <div className="max-w-2xl mx-auto text-center">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-yellow/10 border-2 border-yellow/30 mb-6">
+            <CheckCircle2 className="h-10 w-10 text-yellow" />
+          </div>
+          <h1 className="font-display text-[clamp(32px,5vw,56px)] leading-[0.97] tracking-[-0.02em]">
+            ¡Estás inscripto{profile?.gender === 'F' ? 'a' : ''}!
+          </h1>
+          <p className="text-paper/70 text-[17px] mt-3">
+            Hola <strong className="text-paper">{profile?.first_name}</strong>, tu lugar está reservado en{' '}
+            <strong className="text-yellow">{event?.name}</strong>.
+          </p>
+          <p className="font-mono text-[13px] text-paper/50 mt-2">
+            Vas a recibir un email de confirmación pronto.
+          </p>
         </div>
-        <h1 className="text-2xl font-extrabold">
-          ¡Estás inscripto{profile?.gender === 'F' ? 'a' : ''}!
-        </h1>
-        <p className="text-muted-foreground mt-1">
-          Hola {profile?.first_name}, tu lugar está reservado.
-        </p>
       </div>
 
-      {/* Detalle inscripción */}
-      <div className="bg-muted/40 rounded-xl p-5 mb-8 space-y-3">
-        <h2 className="font-bold text-lg">{event?.name}</h2>
+      <div className="max-w-2xl mx-auto px-4 py-10 space-y-8">
 
-        <div className="grid grid-cols-2 gap-3 text-sm">
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <Calendar className="h-4 w-4 shrink-0" />
-            <span>{event?.starts_at ? format(new Date(event.starts_at), "d 'de' MMMM yyyy", { locale: es }) : '—'}</span>
+        {/* ── Detalle inscripción ── */}
+        <div className="bg-white border border-line rounded-[18px] p-6">
+          <div className="flex items-center gap-2.5 font-mono text-[12px] uppercase tracking-[0.16em] text-terra mb-4">
+            <span className="w-6 h-px bg-terra" />
+            Tu inscripción
           </div>
-          {location && (
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <MapPin className="h-4 w-4 shrink-0" />
-              <span>{location.city}, {location.province}</span>
+
+          <h2 className="font-display text-[24px] text-navy mb-4">{event?.name}</h2>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-cream rounded-[12px] p-3 flex items-start gap-2">
+              <Calendar className="h-4 w-4 text-terra shrink-0 mt-0.5" />
+              <div>
+                <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-brand-muted block">Fecha</span>
+                <span className="font-semibold text-[13px] text-navy">
+                  {event?.starts_at ? format(new Date(event.starts_at), "d 'de' MMMM yyyy", { locale: es }) : '—'}
+                </span>
+              </div>
             </div>
-          )}
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <Tag className="h-4 w-4 shrink-0" />
-            <span>
-              {ticketType?.name}
-              {ticketType?.distance_km != null && ` — ${ticketType.distance_km} km`}
-            </span>
+
+            {location && (
+              <div className="bg-cream rounded-[12px] p-3 flex items-start gap-2">
+                <MapPin className="h-4 w-4 text-terra shrink-0 mt-0.5" />
+                <div>
+                  <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-brand-muted block">Lugar</span>
+                  <span className="font-semibold text-[13px] text-navy">{location.city}</span>
+                </div>
+              </div>
+            )}
+
+            <div className="bg-cream rounded-[12px] p-3 flex items-start gap-2">
+              <Tag className="h-4 w-4 text-terra shrink-0 mt-0.5" />
+              <div>
+                <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-brand-muted block">Entrada</span>
+                <span className="font-semibold text-[13px] text-navy">
+                  {ticketType?.name}
+                  {ticketType?.distance_km != null && ` — ${ticketType.distance_km} km`}
+                </span>
+              </div>
+            </div>
+
+            {reg.category && (
+              <div className="bg-cream rounded-[12px] p-3 flex items-start gap-2">
+                <Medal className="h-4 w-4 text-terra shrink-0 mt-0.5" />
+                <div>
+                  <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-brand-muted block">Categoría</span>
+                  <span className="font-semibold text-[13px] text-navy">{reg.category}</span>
+                </div>
+              </div>
+            )}
           </div>
-          {reg.category && (
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <Medal className="h-4 w-4 shrink-0" />
-              <span>Categoría {reg.category}</span>
+
+          {reg.bib_number && (
+            <div className="mt-5 pt-5 border-t border-line text-center">
+              <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-brand-muted mb-1">Número de dorsal</p>
+              <p className="font-display text-[72px] leading-none text-navy">
+                <span className="text-terra">#</span>{reg.bib_number}
+              </p>
             </div>
           )}
         </div>
 
-        {reg.bib_number && (
-          <>
-            <Separator />
-            <div className="text-center py-2">
-              <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Número de dorsal</p>
-              <p className="text-5xl font-extrabold text-primary">#{reg.bib_number}</p>
+        {/* ── Upsell race-cation ── */}
+        {services && services.length > 0 && (
+          <div>
+            <div className="mb-5">
+              <div className="flex items-center gap-2.5 font-mono text-[12px] uppercase tracking-[0.16em] text-terra mb-2">
+                <span className="w-6 h-px bg-terra" />
+                Race-cation
+              </div>
+              <h2 className="font-display text-[28px] leading-[1.05] text-navy">
+                Armá tu estadía en {location?.city ?? 'Misiones'}
+              </h2>
+              <p className="text-brand-muted text-[15px] mt-2">
+                Servicios curados para que aproveches tu viaje al máximo. Guardá los que te interesan con el ❤️ y contactá al proveedor directo.
+              </p>
             </div>
-          </>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {services.map(service => (
+                <ServiceCard
+                  key={service.id}
+                  service={service}
+                  registrationId={registrationId}
+                  isInterested={interestedIds?.includes(service.id) ?? false}
+                />
+              ))}
+            </div>
+          </div>
         )}
-      </div>
 
-      {/* Upsell race-cation */}
-      {services && services.length > 0 && (
-        <div className="mb-8">
-          <div className="mb-5">
-            <h2 className="text-xl font-bold">Armá tu race‑cation 🏃</h2>
-            <p className="text-muted-foreground text-sm mt-1">
-              Servicios curados para que aproveches tu viaje a {location?.city ?? 'Misiones'} al máximo.
-              Guardá los que te interesan con el ❤️ y contactá al proveedor directo.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {services.map(service => (
-              <ServiceCard
-                key={service.id}
-                service={service}
-                registrationId={registrationId}
-                isInterested={interestedIds?.includes(service.id) ?? false}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Acciones finales */}
-      <div className="flex flex-col sm:flex-row gap-3">
-        {event?.slug && (
-          <Link to="/eventos/$slug" params={{ slug: event.slug }} className="flex-1">
-            <Button variant="outline" className="w-full gap-2">
-              Ver el evento
-            </Button>
+        {/* ── Acciones ── */}
+        <div className="flex flex-col sm:flex-row gap-3 pt-2">
+          {event?.slug && (
+            <Link to="/eventos/$slug" params={{ slug: event.slug }} className="flex-1">
+              <button className="w-full px-6 py-3 rounded-full border border-ink text-[14px] font-semibold text-ink hover:bg-ink hover:text-paper transition-colors">
+                Ver el evento
+              </button>
+            </Link>
+          )}
+          <Link to="/eventos" className="flex-1">
+            <button className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-navy text-paper text-[14px] font-semibold hover:bg-terra transition-colors">
+              Ver más eventos <ChevronRight className="h-4 w-4" />
+            </button>
           </Link>
-        )}
-        <Link to="/eventos" className="flex-1">
-          <Button className="w-full gap-2">
-            Ver más eventos <ChevronRight className="h-4 w-4" />
-          </Button>
-        </Link>
+        </div>
       </div>
-
-      <p className="text-xs text-center text-muted-foreground mt-6">
-        Vas a recibir un email de confirmación en {profile?.first_name ? `la casilla de ${profile.first_name}` : 'tu casilla'} pronto.
-      </p>
     </div>
   )
 }

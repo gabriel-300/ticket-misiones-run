@@ -15,6 +15,7 @@ import { Route as OrgIndexRouteImport } from './routes/org/index'
 import { Route as MiPerfilIndexRouteImport } from './routes/mi-perfil/index'
 import { Route as EventosIndexRouteImport } from './routes/eventos/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as UpsellOrderIdRouteImport } from './routes/upsell/$orderId'
 import { Route as LegalTerminosRouteImport } from './routes/legal/terminos'
 import { Route as InscripcionEventIdRouteImport } from './routes/inscripcion/$eventId'
 import { Route as EventosSlugRouteImport } from './routes/eventos/$slug'
@@ -67,6 +68,11 @@ const EventosIndexRoute = EventosIndexRouteImport.update({
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/admin/',
   path: '/admin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UpsellOrderIdRoute = UpsellOrderIdRouteImport.update({
+  id: '/upsell/$orderId',
+  path: '/upsell/$orderId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LegalTerminosRoute = LegalTerminosRouteImport.update({
@@ -202,6 +208,7 @@ export interface FileRoutesByFullPath {
   '/eventos/$slug': typeof EventosSlugRoute
   '/inscripcion/$eventId': typeof InscripcionEventIdRoute
   '/legal/terminos': typeof LegalTerminosRoute
+  '/upsell/$orderId': typeof UpsellOrderIdRoute
   '/admin/': typeof AdminIndexRoute
   '/eventos/': typeof EventosIndexRoute
   '/mi-perfil/': typeof MiPerfilIndexRoute
@@ -233,6 +240,7 @@ export interface FileRoutesByTo {
   '/eventos/$slug': typeof EventosSlugRoute
   '/inscripcion/$eventId': typeof InscripcionEventIdRoute
   '/legal/terminos': typeof LegalTerminosRoute
+  '/upsell/$orderId': typeof UpsellOrderIdRoute
   '/admin': typeof AdminIndexRoute
   '/eventos': typeof EventosIndexRoute
   '/mi-perfil': typeof MiPerfilIndexRoute
@@ -265,6 +273,7 @@ export interface FileRoutesById {
   '/eventos/$slug': typeof EventosSlugRoute
   '/inscripcion/$eventId': typeof InscripcionEventIdRoute
   '/legal/terminos': typeof LegalTerminosRoute
+  '/upsell/$orderId': typeof UpsellOrderIdRoute
   '/admin/': typeof AdminIndexRoute
   '/eventos/': typeof EventosIndexRoute
   '/mi-perfil/': typeof MiPerfilIndexRoute
@@ -298,6 +307,7 @@ export interface FileRouteTypes {
     | '/eventos/$slug'
     | '/inscripcion/$eventId'
     | '/legal/terminos'
+    | '/upsell/$orderId'
     | '/admin/'
     | '/eventos/'
     | '/mi-perfil/'
@@ -329,6 +339,7 @@ export interface FileRouteTypes {
     | '/eventos/$slug'
     | '/inscripcion/$eventId'
     | '/legal/terminos'
+    | '/upsell/$orderId'
     | '/admin'
     | '/eventos'
     | '/mi-perfil'
@@ -360,6 +371,7 @@ export interface FileRouteTypes {
     | '/eventos/$slug'
     | '/inscripcion/$eventId'
     | '/legal/terminos'
+    | '/upsell/$orderId'
     | '/admin/'
     | '/eventos/'
     | '/mi-perfil/'
@@ -392,6 +404,7 @@ export interface RootRouteChildren {
   EventosSlugRoute: typeof EventosSlugRoute
   InscripcionEventIdRoute: typeof InscripcionEventIdRoute
   LegalTerminosRoute: typeof LegalTerminosRoute
+  UpsellOrderIdRoute: typeof UpsellOrderIdRoute
   AdminIndexRoute: typeof AdminIndexRoute
   EventosIndexRoute: typeof EventosIndexRoute
   MiPerfilIndexRoute: typeof MiPerfilIndexRoute
@@ -453,6 +466,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/upsell/$orderId': {
+      id: '/upsell/$orderId'
+      path: '/upsell/$orderId'
+      fullPath: '/upsell/$orderId'
+      preLoaderRoute: typeof UpsellOrderIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/legal/terminos': {
@@ -632,6 +652,7 @@ const rootRouteChildren: RootRouteChildren = {
   EventosSlugRoute: EventosSlugRoute,
   InscripcionEventIdRoute: InscripcionEventIdRoute,
   LegalTerminosRoute: LegalTerminosRoute,
+  UpsellOrderIdRoute: UpsellOrderIdRoute,
   AdminIndexRoute: AdminIndexRoute,
   EventosIndexRoute: EventosIndexRoute,
   MiPerfilIndexRoute: MiPerfilIndexRoute,

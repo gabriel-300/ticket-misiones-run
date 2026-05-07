@@ -72,15 +72,15 @@ function HeroSection() {
           <div>
             <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/[0.08] border border-white/15 backdrop-blur-sm text-[13px] font-medium mb-7">
               <span className="w-2 h-2 rounded-full bg-yellow animate-pulse-dot" />
-              Plataforma oficial de carreras · Misiones, Argentina
+              Plataforma oficial de eventos · Misiones, Argentina
             </div>
             <h1 className="font-display text-[clamp(56px,9vw,132px)] leading-[0.95] tracking-[-0.02em] m-0">
-              Corré<br />
-              en la <span className="text-yellow">selva</span><br />
+              Viví<br />
+              la <span className="text-yellow">selva</span><br />
               <span className="text-terra">misionera</span>.
             </h1>
             <p className="mt-7 text-[clamp(16px,1.4vw,20px)] leading-[1.55] text-paper/80 max-w-[520px]">
-              Inscribite a las mejores carreras del NEA y armá tu race‑cation completa: hospedaje, traslados, gastronomía y más.
+              Inscribite a los mejores eventos del NEA y armá tu experiencia completa: hospedaje, traslados, gastronomía y más.
             </p>
             <div className="flex flex-wrap gap-3 mt-9">
               <Link to="/eventos">
@@ -100,7 +100,7 @@ function HeroSection() {
           <aside className="bg-white/[0.06] border border-white/[0.12] rounded-[20px] p-6 backdrop-blur-[12px]">
             <div className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.12em] text-yellow mb-3.5">
               <span className="w-1.5 h-1.5 rounded-full bg-yellow animate-pulse-dot" />
-              Próxima largada
+              Próximo evento
             </div>
             {featured ? (
               <>
@@ -141,7 +141,7 @@ function HeroSection() {
         <div className="grid grid-cols-2 lg:grid-cols-4 border-t border-white/[0.12] mt-16 pb-0">
           {[
             { num: stats?.events ?? '—', accent: true,  label: 'Eventos este año' },
-            { num: stats ? `${stats.runners}+` : '—', accent: false, label: 'Corredores inscriptos' },
+            { num: stats ? `${stats.runners}+` : '—', accent: false, label: 'Participantes inscriptos' },
             { num: stats?.cities ?? '—', accent: true,  label: 'Ciudades del NEA' },
             { num: '100%', accent: false, label: 'Pago seguro · Payway' },
           ].map((s, i) => (
@@ -163,7 +163,7 @@ function HeroSection() {
 
 // ─── marquee ──────────────────────────────────────────────────────────────────
 function Marquee() {
-  const items = 'POSADAS · IGUAZÚ / SAN IGNACIO · OBERÁ / ELDORADO · APÓSTOLES / 5K · 10K · 21K · 42K · TRAIL / RACE-CATION INCLUIDA /'
+  const items = 'POSADAS · IGUAZÚ / SAN IGNACIO · OBERÁ / RUNNING · TRAIL · CONCIERTOS / ELDORADO · APÓSTOLES / 5K · 10K · 21K · 42K / MISIONES, ARGENTINA /'
   return (
     <div className="bg-yellow border-y-2 border-ink overflow-hidden py-3.5">
       <div className="flex gap-12 whitespace-nowrap motion-safe:animate-marquee font-display text-[22px] tracking-[-0.01em]">
@@ -200,7 +200,7 @@ function EventsSection() {
               Inscripciones<br />abiertas ahora.
             </h2>
             <p className="text-brand-muted text-[17px] mt-4 max-w-[540px]">
-              Elegí tu próxima carrera entre las propuestas más importantes del NEA. Cupos limitados.
+              Elegí tu próximo evento entre las propuestas más importantes del NEA. Cupos limitados.
             </p>
           </div>
           <Link to="/eventos">
@@ -254,10 +254,10 @@ function RegionSection() {
             02 / Misiones
           </div>
           <h2 className="font-display text-[clamp(40px,5vw,72px)] leading-[0.98] tracking-[-0.02em] m-0">
-            Una provincia,<br />ocho destinos para correr.
+            Una provincia,<br />ocho destinos para vivir.
           </h2>
           <p className="text-paper/60 text-[17px] mt-4 max-w-[540px]">
-            Desde la costanera de Posadas hasta los senderos de las Cataratas. Cada carrera, un paisaje distinto.
+            Desde la costanera de Posadas hasta los senderos de las Cataratas. Cada evento, un paisaje distinto.
           </p>
         </div>
 
@@ -287,24 +287,24 @@ const TILES = [
     icon: '🏠',
     title: 'Una sola reserva, todo arreglado.',
     stat: '+ 80',
-    statLabel: 'Hoteles, posadas y cabañas con tarifa runner en toda Misiones.',
+    statLabel: 'Hoteles, posadas y cabañas con tarifa especial para participantes en toda Misiones.',
   },
   {
     cls: 'bg-white text-ink lg:col-span-4',
     icon: '🚌',
     title: 'Traslados sin vueltas',
-    body: 'Aeropuerto, hotel y largada. Coordinamos con operadores locales para que solo te enfoques en correr.',
+    body: 'Aeropuerto, hotel y evento. Coordinamos con operadores locales para que solo te enfoques en disfrutar.',
   },
   {
     cls: 'bg-terra text-cream lg:col-span-3',
     icon: '🍽️',
     title: 'Gastronomía local',
-    body: 'Reservás chipá, sopa paraguaya y menús pensados para corredores.',
+    body: 'Reservás chipá, sopa paraguaya y menús típicos de la región para antes y después del evento.',
   },
   {
     cls: 'bg-white text-ink lg:col-span-4',
     icon: '🌍',
-    title: 'Experiencias post-carrera',
+    title: 'Experiencias post-evento',
     body: 'Cataratas, Saltos del Moconá, Ruinas Jesuíticas. Excursiones agendadas para el día después.',
   },
   {
@@ -332,7 +332,7 @@ function RaceCationSection() {
               03 / Race-cation
             </div>
             <h2 className="font-display text-[clamp(40px,5vw,72px)] leading-[0.98] tracking-[-0.02em] m-0">
-              Corré, descansá,<br />conocé Misiones.
+              Viví, descansá,<br />conocé Misiones.
             </h2>
             <p className="text-brand-muted text-[17px] mt-4 max-w-[540px]">
               Después de inscribirte te ayudamos a organizar todo: alojamiento, traslados, alimentación y experiencias.
@@ -374,10 +374,10 @@ function RaceCationSection() {
 
 // ─── how it works ──────────────────────────────────────────────────────────────
 const STEPS = [
-  { num: '01', title: 'Elegí tu carrera',     body: 'Filtrá por distancia, fecha y ciudad. Comparativa clara de cupos y precios.' },
-  { num: '02', title: 'Inscribite y pagá',    body: 'Cargás tus datos, subís el apto médico y pagás con Payway en cuotas.' },
-  { num: '03', title: 'Armá tu estadía',      body: 'Sumá hotel, traslado y comidas. Todo acumulado a tu reserva inicial.' },
-  { num: '04', title: 'Vení a correr',        body: 'Recibís tu kit, mapa y cronograma. Llegás, corrés y disfrutás la provincia.' },
+  { num: '01', title: 'Elegí tu evento',      body: 'Filtrá por tipo, fecha y ciudad. Comparativa clara de cupos y precios.' },
+  { num: '02', title: 'Inscribite y pagá',    body: 'Cargás tus datos, subís la documentación y pagás con Payway en cuotas.' },
+  { num: '03', title: 'Armá tu estadía',      body: 'Sumá hotel, traslado y comidas. Todo organizado desde un solo lugar.' },
+  { num: '04', title: 'Vení a vivirlo',       body: 'Recibís tu confirmación y toda la info. Llegás, participás y disfrutás Misiones.' },
 ]
 
 function HowItWorksSection() {
@@ -390,7 +390,7 @@ function HowItWorksSection() {
             04 / Cómo funciona
           </div>
           <h2 className="font-display text-[clamp(40px,5vw,72px)] leading-[0.98] tracking-[-0.02em] m-0">
-            De la inscripción a la largada,<br />en cuatro pasos.
+            De la inscripción al evento,<br />en cuatro pasos.
           </h2>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 border-y-2 border-ink divide-y-2 sm:divide-y-0 lg:divide-x lg:divide-y-0 divide-line">
@@ -417,16 +417,16 @@ function CTAStrip() {
   return (
     <section className="bg-yellow text-ink py-28 px-4 md:px-10 text-center relative overflow-hidden">
       <div className="absolute inset-y-0 left-[-4vw] flex items-center font-display text-[22vw] leading-none text-ink/[0.06] pointer-events-none select-none">
-        CORRÉ
+        VIVÍ
       </div>
       <div className="absolute inset-y-0 right-[-4vw] flex items-center font-display text-[22vw] leading-none text-ink/[0.06] pointer-events-none select-none">
         YA
       </div>
       <div className="relative z-10">
         <h2 className="font-display text-[clamp(48px,6vw,96px)] leading-[0.95] tracking-[-0.02em] m-0 mb-5">
-          Tu próxima carrera<br />te está esperando.
+          Tu próximo evento<br />te está esperando.
         </h2>
-        <p className="text-[18px] text-ink/70 mb-9">Sumate a los runners que eligen MISIONA HUB para correr en el NEA.</p>
+        <p className="text-[18px] text-ink/70 mb-9">Sumate a los que eligen MISIONA HUB para vivir sus eventos en el NEA.</p>
         <div className="flex flex-wrap gap-3 justify-center">
           <Link to="/eventos">
             <button className="px-7 py-4 rounded-full bg-ink text-paper text-[15px] font-semibold hover:bg-navy-2 transition-colors">
@@ -446,7 +446,7 @@ function CTAStrip() {
 
 // ─── page ─────────────────────────────────────────────────────────────────────
 function HomePage() {
-  useSeo('Inscripciones a carreras en Misiones', 'Inscribite a las mejores carreras de running del NEA y armá tu race‑cation completa.')
+  useSeo('Eventos en Misiones', 'Inscribite a los mejores eventos del NEA y armá tu experiencia completa en Misiones.')
   return (
     <div className="bg-paper">
       <HeroSection />
