@@ -51,10 +51,9 @@ export function useMyRegistrations() {
       const { data, error } = await supabase
         .from('registrations')
         .select(`
-          id, bib_number, category, status, created_at,
+          id, bib_number, category, status, created_at, order_id,
           ticket_type:ticket_type_id ( name, distance_km ),
-          event:event_id ( name, slug, starts_at, cover_image_url ),
-          orders ( id, status )
+          event:event_id ( name, slug, starts_at, cover_image_url )
         `)
         .eq('buyer_id', user.id)
         .order('created_at', { ascending: false })
