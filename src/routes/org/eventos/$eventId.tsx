@@ -2,7 +2,7 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState } from 'react'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
-import { ChevronLeft, Plus, Trash2, Tag, Users, Calendar, ToggleLeft, ToggleRight } from 'lucide-react'
+import { ChevronLeft, Plus, Trash2, Tag, Users, Calendar, ToggleLeft, ToggleRight, ClipboardList } from 'lucide-react'
 import { toast } from 'sonner'
 import { OrgLayout, OrgBreadcrumb } from '@/components/org/org-layout'
 import {
@@ -288,6 +288,15 @@ function OrgEventDetailPage() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Quick actions */}
+        <div className="flex gap-3">
+          <Link to="/org/inscripciones/$eventId" params={{ eventId }}>
+            <Button variant="outline" className="gap-2">
+              <ClipboardList className="h-4 w-4" /> Ver inscripciones
+            </Button>
+          </Link>
+        </div>
 
         {/* Ticket types & pricing */}
         <div>
