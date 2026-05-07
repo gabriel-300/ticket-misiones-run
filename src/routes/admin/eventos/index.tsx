@@ -101,9 +101,9 @@ function AdminEventos() {
                           : <><ToggleLeft className="h-3.5 w-3.5" /> Publicar</>
                         }
                       </Button>
-                      <Link to="/admin/inscripciones/$eventId" params={{ eventId: event.id }}>
+                      <Link to="/admin/eventos/$eventId" params={{ eventId: event.id }}>
                         <Button size="sm" variant="ghost" className="h-8 gap-1 text-xs">
-                          Ver <ArrowRight className="h-3 w-3" />
+                          Detalle <ArrowRight className="h-3 w-3" />
                         </Button>
                       </Link>
                     </div>
