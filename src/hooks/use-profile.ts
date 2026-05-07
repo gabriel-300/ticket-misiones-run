@@ -64,6 +64,27 @@ export function useMyRegistrations() {
   })
 }
 
+export function useMyEventRegistration(eventId: string) {
+  return useQuery({
+    queryKey: ['my-event-registration', eventId],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return null
+
+      const { data } = await supabase
+        .from('registrations')
+        .select('id, status')
+        .eq('buyer_id', user.id)
+        .eq('event_id', eventId)
+        .in('status', ['pending_payment', 'paid'])
+        .maybeSingle()
+
+      return data ?? null
+    },
+    enabled: !!eventId,
+  })
+}
+
 export function useUploadApto() {
   const qc = useQueryClient()
   return useMutation({

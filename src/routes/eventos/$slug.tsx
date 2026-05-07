@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useAuth } from '@/hooks/use-auth'
+import { useMyEventRegistration } from '@/hooks/use-profile'
 
 const CourseMap = lazy(() => import('@/components/eventos/course-map'))
 
@@ -52,6 +53,7 @@ function EventoDetallePage() {
   const { slug } = Route.useParams()
   const { data: event, isLoading, error } = useEvent(slug)
   const { isAuthenticated } = useAuth()
+  const { data: existingReg } = useMyEventRegistration(event?.id ?? '')
   useSeo(event?.name ?? 'Evento', event?.description ?? undefined)
 
   if (isLoading) {
@@ -243,6 +245,19 @@ function EventoDetallePage() {
                   <div className="text-center text-sm text-muted-foreground">
                     Inscripciones abren el{' '}
                     {format(registrationOpens, "d 'de' MMMM", { locale: es })}
+                  </div>
+                ) : isAuthenticated && existingReg ? (
+                  <div className="space-y-2">
+                    <div className={`text-center text-sm font-medium py-2 rounded-lg ${
+                      existingReg.status === 'paid'
+                        ? 'bg-green-50 text-green-700'
+                        : 'bg-orange-50 text-orange-700'
+                    }`}>
+                      {existingReg.status === 'paid' ? '✓ Ya estás inscripto/a' : '⏳ Inscripción pendiente de pago'}
+                    </div>
+                    <Link to="/perfil" className="block">
+                      <Button variant="outline" className="w-full">Ver mis inscripciones</Button>
+                    </Link>
                   </div>
                 ) : isAuthenticated ? (
                   <Link to="/inscripcion/$eventId" params={{ eventId: event.id }}>
