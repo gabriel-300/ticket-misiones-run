@@ -50,11 +50,11 @@ export default function RegistrationForm({
   const isSports = SPORTS_TYPES.includes(eventType)
 
   const STEPS = isSports
-    ? ['Datos personales', 'Datos deportivos', 'Seguridad', 'Apto médico', 'Aceptaciones']
+    ? ['Datos personales', 'Datos deportivos', 'Aceptaciones']
     : ['Datos personales', 'Selección de entrada', 'Aceptaciones']
 
   const STEP_KEYS = isSports
-    ? ['personal', 'sports', 'emergency', 'medical', 'terms'] as const
+    ? ['personal', 'sports', 'terms'] as const
     : ['personal', 'ticket', 'terms'] as const
 
   const [step, setStep] = useState(0)
@@ -102,7 +102,7 @@ export default function RegistrationForm({
     defaultValues: { accepts_terms: undefined, accepts_waiver: undefined, accepts_image_rights: false },
   })
 
-  const forms = isSports ? [form1, form2, form3, form4, form5] : [form1, form2, form5]
+  const forms = isSports ? [form1, form2, form5] : [form1, form2, form5]
   const currentForm = forms[step]
   const currentStepKey = STEP_KEYS[step]
 
