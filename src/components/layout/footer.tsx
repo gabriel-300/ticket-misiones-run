@@ -37,11 +37,12 @@ export function Footer() {
           {/* Brand */}
           <div className="lg:col-span-1">
             <div className="flex items-center gap-2">
-              <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect width="36" height="36" rx="8" fill="#C84B22"/>
-                <path d="M 28.3 14.2 A 11 11 0 1 1 23.5 8.5" stroke="#071A2F" strokeWidth="2.3" strokeLinecap="round"/>
-                <line x1="10.5" y1="17" x2="25.5" y2="17" stroke="white" strokeWidth="3" strokeLinecap="round"/>
-                <line x1="18" y1="17" x2="18" y2="27.5" stroke="white" strokeWidth="3" strokeLinecap="round"/>
+              <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="38" height="38" rx="9" fill="#C84B22"/>
+                <circle cx="19" cy="19" r="12" stroke="#071A2F" strokeWidth="2.6" fill="none"
+                  strokeDasharray="67 9" strokeLinecap="round" transform="rotate(-30 19 19)"/>
+                <line x1="11" y1="18.5" x2="27" y2="18.5" stroke="white" strokeWidth="3.2" strokeLinecap="round"/>
+                <line x1="19" y1="18.5" x2="19" y2="29" stroke="white" strokeWidth="3.2" strokeLinecap="round"/>
               </svg>
               <span className="font-display text-[18px] tracking-[0.04em] text-paper">
                 TEVEN<span className="text-[#C84B22]">T</span>
