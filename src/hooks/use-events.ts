@@ -17,6 +17,7 @@ export function useEvents(type?: string) {
           )
         `)
         .eq('status', 'published')
+        .gte('starts_at', new Date().toISOString())
         .order('starts_at', { ascending: true })
 
       if (type) query = query.eq('type', type)
