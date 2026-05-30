@@ -239,7 +239,7 @@ const HOW_STEPS = [
 
 function HowItWorksSection() {
   return (
-    <section className="bg-paper py-24 px-4 md:px-10">
+    <section id="como-funciona" className="bg-paper py-24 px-4 md:px-10">
       <div className="max-w-[1440px] mx-auto">
         <div className="text-center mb-16">
           <div className="flex items-center justify-center gap-2.5 font-mono text-[12px] uppercase tracking-[0.16em] text-terra mb-3">

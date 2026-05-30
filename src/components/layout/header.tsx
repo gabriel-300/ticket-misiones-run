@@ -16,13 +16,13 @@ export function Header() {
     setOpen(false)
   }
 
-  const navLinks = [
-    { to: '/eventos' as const, label: 'Eventos' },
-    { to: '/' as const, label: 'Cómo funciona' },
-    { to: '/legal/terminos' as const, label: 'Ayuda' },
-    ...(isAuthenticated ? [{ to: '/perfil' as const, label: 'Mis inscripciones' }] : []),
-    ...(isOrganizer && !isSuperAdmin ? [{ to: '/org' as const, label: 'Mi organización' }] : []),
-    ...(isSuperAdmin ? [{ to: '/admin' as const, label: 'Admin' }] : []),
+  const navLinks: { label: string; to?: string; href?: string }[] = [
+    { to: '/eventos', label: 'Eventos' },
+    { href: '/#como-funciona', label: 'Cómo funciona' },
+    { to: '/legal/terminos', label: 'Ayuda' },
+    ...(isAuthenticated ? [{ to: '/perfil', label: 'Mis inscripciones' }] : []),
+    ...(isOrganizer && !isSuperAdmin ? [{ to: '/org', label: 'Mi organización' }] : []),
+    ...(isSuperAdmin ? [{ to: '/admin', label: 'Admin' }] : []),
   ]
 
   return (
@@ -39,10 +39,18 @@ export function Header() {
 
         {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-8" aria-label="Navegación principal">
-          {navLinks.map(link => (
+          {navLinks.map(link => link.href ? (
+            <a
+              key={link.href}
+              href={link.href}
+              className="text-[15px] font-semibold text-ink/70 hover:text-ink transition-colors py-2"
+            >
+              {link.label}
+            </a>
+          ) : (
             <Link
               key={link.to}
-              to={link.to}
+              to={link.to as any}
               className="text-[15px] font-semibold text-ink/70 hover:text-ink transition-colors py-2"
               activeProps={{ className: 'text-[15px] font-semibold text-ink py-2 border-b-[3px] border-yellow' }}
             >
@@ -101,10 +109,19 @@ export function Header() {
       {/* Mobile menu */}
       {open && (
         <div id="mobile-nav" className="md:hidden border-t border-line bg-paper px-4 py-4 space-y-1" role="navigation" aria-label="Navegación móvil">
-          {navLinks.map(link => (
+          {navLinks.map(link => link.href ? (
+            <a
+              key={link.href}
+              href={link.href}
+              className="block text-[15px] font-semibold text-ink/70 py-2.5 hover:text-ink transition-colors"
+              onClick={() => setOpen(false)}
+            >
+              {link.label}
+            </a>
+          ) : (
             <Link
               key={link.to}
-              to={link.to}
+              to={link.to as any}
               className="block text-[15px] font-semibold text-ink/70 py-2.5 hover:text-ink transition-colors"
               onClick={() => setOpen(false)}
             >
