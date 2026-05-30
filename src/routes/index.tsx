@@ -233,7 +233,7 @@ function CategoriesSection() {
 // ─── how it works ──────────────────────────────────────────────────────────────
 const HOW_STEPS = [
   { num: '01', title: 'Encontrá tu evento', body: 'Explorá los eventos disponibles, elegí la fecha y la modalidad que más te gusta.' },
-  { num: '02', title: 'Inscribite y pagá',  body: 'Completá tus datos y pagá de forma segura con Payway. Todo en minutos.' },
+  { num: '02', title: 'Inscribite y comprá', body: 'Completá tus datos y pagá de forma segura. Todo en minutos.' },
   { num: '03', title: 'Viví la experiencia', body: 'Recibís tu confirmación al instante y llegás listo para disfrutar.' },
 ]
 
