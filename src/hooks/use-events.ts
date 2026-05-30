@@ -33,17 +33,30 @@ export function useFeaturedEvent() {
   return useQuery({
     queryKey: ['events', 'featured'],
     queryFn: async () => {
+      const SELECT = `id, slug, name, starts_at, location,
+        ticket_types(capacity, registered_count, pricing_tiers(price_ars, active, starts_at, ends_at))`
+
+      // 1. Primero buscar el evento marcado como destacado por el admin
+      const { data: featured } = await supabase
+        .from('events')
+        .select(SELECT)
+        .eq('status', 'published')
+        .eq('is_featured', true)
+        .gte('starts_at', new Date().toISOString())
+        .maybeSingle()
+
+      if (featured) return featured
+
+      // 2. Fallback: el próximo evento por fecha
       const { data, error } = await supabase
         .from('events')
-        .select(`
-          id, slug, name, starts_at, location,
-          ticket_types(capacity, registered_count, pricing_tiers(price_ars, active, starts_at, ends_at))
-        `)
+        .select(SELECT)
         .eq('status', 'published')
         .gte('starts_at', new Date().toISOString())
         .order('starts_at', { ascending: true })
         .limit(1)
         .single()
+
       if (error && error.code !== 'PGRST116') throw error
       return data ?? null
     },

@@ -4,11 +4,11 @@ import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import {
   ChevronLeft, Plus, Trash2, Tag, Users, Calendar,
-  ToggleLeft, ToggleRight, ClipboardList, Package,
+  ToggleLeft, ToggleRight, ClipboardList, Package, Star,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { AdminLayout, AdminBreadcrumb } from '@/components/admin/admin-layout'
-import { useToggleEventStatus } from '@/hooks/use-admin'
+import { useToggleEventStatus, useSetFeaturedEvent } from '@/hooks/use-admin'
 import {
   useOrgEventDetail, useCreatePricingTier, useDeletePricingTier,
   useEventServices, useCreateService, useDeleteService, useToggleService,
@@ -398,6 +398,7 @@ function AdminEventDetailPage() {
   const { eventId } = Route.useParams()
   const { data: event, isLoading } = useOrgEventDetail(eventId)
   const { mutate: toggleStatus, isPending: toggling } = useToggleEventStatus()
+  const { mutate: setFeatured, isPending: featuring } = useSetFeaturedEvent()
 
   if (isLoading) {
     return (
@@ -421,6 +422,7 @@ function AdminEventDetailPage() {
 
   const location = event.location as { city: string; province: string }
   const ticketTypes = (event.ticket_types as any[]) ?? []
+  const isFeatured = !!(event as any).is_featured
 
   function handleToggle() {
     const next = event!.status === 'published' ? 'draft' : 'published'
@@ -457,12 +459,27 @@ function AdminEventDetailPage() {
             </div>
           </div>
 
-          <Button size="sm" variant="outline" className="shrink-0 gap-1.5" disabled={toggling} onClick={handleToggle}>
-            {event.status === 'published'
-              ? <><ToggleRight className="h-4 w-4 text-green-600" /> Publicado</>
-              : <><ToggleLeft className="h-4 w-4" /> Publicar</>
-            }
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              size="sm"
+              variant="outline"
+              className={`shrink-0 gap-1.5 ${isFeatured ? 'border-yellow bg-yellow/10 text-ink' : ''}`}
+              disabled={featuring}
+              onClick={() => setFeatured({ eventId, featured: !isFeatured }, {
+                onSuccess: () => toast.success(isFeatured ? 'Quitado de destacados' : '¡Evento destacado en la home!'),
+                onError: () => toast.error('No se pudo actualizar'),
+              })}
+            >
+              <Star className={`h-4 w-4 ${isFeatured ? 'fill-yellow text-yellow' : ''}`} />
+              {isFeatured ? 'Destacado' : 'Destacar'}
+            </Button>
+            <Button size="sm" variant="outline" className="shrink-0 gap-1.5" disabled={toggling} onClick={handleToggle}>
+              {event.status === 'published'
+                ? <><ToggleRight className="h-4 w-4 text-green-600" /> Publicado</>
+                : <><ToggleLeft className="h-4 w-4" /> Publicar</>
+              }
+            </Button>
+          </div>
         </div>
 
         <Card>

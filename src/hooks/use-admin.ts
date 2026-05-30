@@ -201,6 +201,24 @@ export function useToggleEventStatus() {
   })
 }
 
+export function useSetFeaturedEvent() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: async ({ eventId, featured }: { eventId: string; featured: boolean }) => {
+      // Si se marca como featured, primero quitar el featured anterior
+      if (featured) {
+        await supabase.from('events').update({ is_featured: false }).eq('is_featured', true)
+      }
+      const { error } = await supabase.from('events').update({ is_featured: featured }).eq('id', eventId)
+      if (error) throw error
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin-events'] })
+      qc.invalidateQueries({ queryKey: ['events', 'featured'] })
+    },
+  })
+}
+
 // ─── Create event ─────────────────────────────────────────────────────────────
 
 export interface CreateEventInput {
