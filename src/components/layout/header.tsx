@@ -20,7 +20,7 @@ export function Header() {
     { to: '/eventos', label: 'Eventos' },
     { href: '/#como-funciona', label: 'Cómo funciona' },
     { to: '/legal/terminos', label: 'Ayuda' },
-    ...(isAuthenticated ? [{ to: '/perfil', label: 'Mis inscripciones' }] : []),
+    ...(isAuthenticated ? [{ to: '/perfil/?tab=carreras', label: 'Mis inscripciones' }] : []),
     ...(isOrganizer && !isSuperAdmin ? [{ to: '/org', label: 'Mi organización' }] : []),
     ...(isSuperAdmin ? [{ to: '/admin', label: 'Admin' }] : []),
   ]

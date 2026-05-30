@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute, Link, useSearch } from '@tanstack/react-router'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -23,7 +23,10 @@ import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useSeo } from '@/hooks/use-seo'
 
+const searchSchema = z.object({ tab: z.enum(['datos', 'carreras', 'apto']).optional() })
+
 export const Route = createFileRoute('/perfil/')({
+  validateSearch: searchSchema,
   component: () => <ProtectedRoute><PerfilPage /></ProtectedRoute>,
 })
 
@@ -60,7 +63,8 @@ const APTO_STATUS_CONFIG: Record<string, { label: string; color: string }> = {
 
 function PerfilPage() {
   useSeo('Mi perfil')
-  const [tab, setTab] = useState<'datos' | 'carreras' | 'apto'>('datos')
+  const { tab: tabParam } = useSearch({ from: '/perfil/' })
+  const [tab, setTab] = useState<'datos' | 'carreras' | 'apto'>(tabParam ?? 'datos')
   const { profile, user } = useAuth()
   const { data: registrations, isLoading: regsLoading } = useMyRegistrations()
   const { mutate: updateProfile, isPending: saving }    = useUpdateProfile()
@@ -99,7 +103,12 @@ function PerfilPage() {
     })
   }
 
-  if (!profile) return null
+  if (!profile) return (
+    <div className="container mx-auto px-4 py-16 max-w-2xl flex flex-col items-center gap-3 text-muted-foreground">
+      <Loader2 className="h-8 w-8 animate-spin" />
+      <p className="text-sm">Cargando perfil...</p>
+    </div>
+  )
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-2xl">
