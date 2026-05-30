@@ -3,20 +3,19 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate } from '@tanstack/react-router'
 import { toast } from 'sonner'
-import { ChevronLeft, ChevronRight, Loader2, Upload, CheckCircle2 } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Progress } from '@/components/ui/progress'
-import { Textarea } from '@/components/ui/textarea'
 import { Checkbox } from '@/components/ui/checkbox'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import {
-  step1Schema, step2Schema, step3Schema, step4Schema, step5Schema,
-  type Step1Data, type Step2Data, type Step3Data, type Step4Data, type Step5Data,
+  step1Schema, step2Schema, step5Schema,
+  type Step1Data, type Step2Data, type Step5Data,
   type RegistrationFormData,
 } from '@/lib/validators/registration'
 import { useUpload } from '@/hooks/use-upload'
@@ -44,8 +43,7 @@ interface RegistrationFormProps {
 }
 
 export default function RegistrationForm({
-  eventId, eventName, userEmail, eventType, distances,
-  requiresMedicalCert, medicalCertMinKm, profile,
+  eventId, eventName, userEmail, eventType, distances, profile,
 }: RegistrationFormProps) {
   const isSports = SPORTS_TYPES.includes(eventType)
 
@@ -59,9 +57,8 @@ export default function RegistrationForm({
 
   const [step, setStep] = useState(0)
   const [formData, setFormData] = useState<Partial<RegistrationFormData>>({})
-  const [certFile, setCertFile] = useState<File | null>(null)
   const navigate = useNavigate()
-  const { uploadMedicalCert, uploading } = useUpload()
+  const { uploading } = useUpload()
   const { mutateAsync: createRegistration, isPending } = useCreateRegistration()
 
   const form1 = useForm<Step1Data>({
@@ -84,17 +81,6 @@ export default function RegistrationForm({
     defaultValues: { distance_id: '', shirt_size: undefined, is_first_race: false, club: '' },
   })
 
-  const form3 = useForm<Step3Data>({
-    resolver: zodResolver(step3Schema),
-    defaultValues: {
-      emergency_contact_name: '',
-      emergency_contact_phone: '',
-      blood_type: undefined,
-      medical_conditions: '',
-      allergies: '',
-    },
-  })
-
   const form5 = useForm<Step5Data>({
     resolver: zodResolver(step5Schema),
     defaultValues: { accepts_terms: undefined, accepts_waiver: undefined, accepts_image_rights: false },
@@ -106,13 +92,6 @@ export default function RegistrationForm({
 
   const selectedDistanceId = form2.watch('distance_id')
   const selectedDistance = distances.find(d => d.id === selectedDistanceId)
-  const needsCert =
-    requiresMedicalCert &&
-    medicalCertMinKm !== null &&
-    selectedDistance?.distance_km != null
-      ? selectedDistance.distance_km >= medicalCertMinKm
-      : false
-
   function getActivePrice(d: typeof distances[0]) {
     const now = new Date()
     const tier = d.pricing_tiers?.find(t => t.active && now >= new Date(t.starts_at) && now <= new Date(t.ends_at))
@@ -138,12 +117,7 @@ export default function RegistrationForm({
 
   async function handleSubmit(data: RegistrationFormData) {
     try {
-      let medicalCertUrl: string | undefined
-      if (certFile && needsCert) {
-        const { data: { user } } = await import('@/lib/supabase').then(m => m.supabase.auth.getUser())
-        if (user) medicalCertUrl = await uploadMedicalCert(certFile, user.id)
-      }
-      const result = await createRegistration({ eventId, distanceId: data.distance_id, formData: data, medicalCertUrl })
+      const result = await createRegistration({ eventId, distanceId: data.distance_id, formData: data })
       toast.success('¡Inscripción registrada! Completá el pago para confirmar tu lugar.')
       navigate({ to: '/checkout/$orderId', params: { orderId: result.order_id } })
     } catch (err: any) {
