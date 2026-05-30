@@ -32,14 +32,13 @@ export function Header() {
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 shrink-0">
           <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="36" height="36" rx="9" fill="#071A2F"/>
-            {/* Círculo/ruta — abierto arriba como un sendero */}
-            <circle cx="18" cy="19" r="10" stroke="#C84B22" strokeWidth="2.2" fill="none"
-              strokeDasharray="42 22" strokeLinecap="round" transform="rotate(110 18 19)"/>
-            {/* T bold — barra horizontal */}
-            <line x1="11" y1="15" x2="25" y2="15" stroke="white" strokeWidth="2.8" strokeLinecap="round"/>
-            {/* T bold — barra vertical */}
-            <line x1="18" y1="15" x2="18" y2="26" stroke="white" strokeWidth="2.8" strokeLinecap="round"/>
+            <rect width="36" height="36" rx="8" fill="#071A2F"/>
+            {/* Anillo ~320°, gap en zona 1-2 del reloj (30°-70° desde las 12) */}
+            <path d="M 28.3 14.2 A 11 11 0 1 1 23.5 8.5" stroke="#C84B22" strokeWidth="2.3" strokeLinecap="round"/>
+            {/* T — barra horizontal (toca los bordes del anillo) */}
+            <line x1="10.5" y1="17" x2="25.5" y2="17" stroke="white" strokeWidth="3" strokeLinecap="round"/>
+            {/* T — barra vertical */}
+            <line x1="18" y1="17" x2="18" y2="27.5" stroke="white" strokeWidth="3" strokeLinecap="round"/>
           </svg>
           <span className="font-display text-[18px] tracking-[0.04em] text-navy">
             TEVEN<span className="text-[#C84B22]">T</span>
