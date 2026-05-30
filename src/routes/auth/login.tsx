@@ -48,13 +48,13 @@ function LoginPage() {
       <div className="hidden lg:flex lg:w-1/2 bg-navy flex-col justify-between p-16">
         <Link to="/" className="flex items-center gap-2.5 font-display text-[18px] tracking-[0.02em] text-paper">
           <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="36" height="36" rx="9" fill="#F5A623"/>
+            <rect width="36" height="36" rx="9" fill="#C84B22"/>
             <circle cx="18" cy="19" r="10" stroke="#071A2F" strokeWidth="2.2" fill="none"
               strokeDasharray="42 22" strokeLinecap="round" transform="rotate(110 18 19)"/>
             <line x1="11" y1="15" x2="25" y2="15" stroke="#071A2F" strokeWidth="2.8" strokeLinecap="round"/>
             <line x1="18" y1="15" x2="18" y2="26" stroke="#071A2F" strokeWidth="2.8" strokeLinecap="round"/>
           </svg>
-          <span className="font-display text-[18px] tracking-[0.04em] text-paper">TEVEN<span className="text-[#F5A623]">T</span></span>
+          <span className="font-display text-[18px] tracking-[0.04em] text-paper">TEVEN<span className="text-[#C84B22]">T</span></span>
         </Link>
         <div>
           <h2 className="font-display text-[clamp(36px,4vw,56px)] leading-[0.97] tracking-[-0.02em] text-paper mb-4">
