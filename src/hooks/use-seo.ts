@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-const SITE_NAME = 'MISIONA HUB'
+const SITE_NAME = 'tevent'
 
 export function useSeo(title: string, description?: string) {
   useEffect(() => {

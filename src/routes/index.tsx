@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, Bike, PersonStanding, MountainSnow, Waves, Star } from 'lucide-react'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { useSeo } from '@/hooks/use-seo'
@@ -51,7 +51,6 @@ function HeroSection() {
 
   return (
     <section className="relative bg-navy text-paper overflow-hidden" style={{ padding: 0 }}>
-      {/* Background */}
       <div
         className="absolute inset-0"
         style={{
@@ -64,8 +63,7 @@ function HeroSection() {
         }}
       />
 
-      <div className="relative max-w-[1440px] mx-auto px-4 md:px-10 pt-20 md:pt-28 pb-0" style={{ minHeight: 680 }}>
-        {/* Top: copy + card */}
+      <div className="relative max-w-[1440px] mx-auto px-4 md:px-10 pt-20 md:pt-28 pb-0" style={{ minHeight: 620 }}>
         <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-12 lg:gap-16 items-end">
 
           {/* Copy */}
@@ -74,13 +72,13 @@ function HeroSection() {
               <span className="w-2 h-2 rounded-full bg-yellow animate-pulse-dot" />
               Plataforma oficial de eventos · Misiones, Argentina
             </div>
-            <h1 className="font-display text-[clamp(56px,9vw,132px)] leading-[0.95] tracking-[-0.02em] m-0">
-              Viví<br />
-              la <span className="text-yellow">selva</span><br />
-              <span className="text-terra">misionera</span>.
+            <h1 className="font-display text-[clamp(52px,8vw,120px)] leading-[0.95] tracking-[-0.02em] m-0">
+              Encontrá<br />
+              tu próximo<br />
+              <span className="text-yellow">evento</span>.
             </h1>
             <p className="mt-7 text-[clamp(16px,1.4vw,20px)] leading-[1.55] text-paper/80 max-w-[520px]">
-              Inscribite a los mejores eventos del NEA y armá tu experiencia completa: hospedaje, traslados, gastronomía y más.
+              Inscribite en los mejores eventos del NEA. Pago seguro, confirmación inmediata.
             </p>
             <div className="flex flex-wrap gap-3 mt-9">
               <Link to="/eventos">
@@ -96,7 +94,7 @@ function HeroSection() {
             </div>
           </div>
 
-          {/* Featured race card */}
+          {/* Featured event card */}
           <aside className="bg-white/[0.06] border border-white/[0.12] rounded-[20px] p-6 backdrop-blur-[12px]">
             <div className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.12em] text-yellow mb-3.5">
               <span className="w-1.5 h-1.5 rounded-full bg-yellow animate-pulse-dot" />
@@ -140,15 +138,12 @@ function HeroSection() {
         {/* Stats strip */}
         <div className="grid grid-cols-2 lg:grid-cols-4 border-t border-white/[0.12] mt-16 pb-0">
           {[
-            { num: stats?.events ?? '—', accent: true,  label: 'Eventos este año' },
+            { num: stats?.events ?? '—',             accent: true,  label: 'Eventos este año' },
             { num: stats ? `${stats.runners}+` : '—', accent: false, label: 'Participantes inscriptos' },
-            { num: stats?.cities ?? '—', accent: true,  label: 'Ciudades del NEA' },
-            { num: '100%', accent: false, label: 'Pago seguro · Payway' },
+            { num: stats?.cities ?? '—',             accent: true,  label: 'Ciudades del NEA' },
+            { num: '100%',                           accent: false, label: 'Pago seguro · Payway' },
           ].map((s, i) => (
-            <div
-              key={i}
-              className={`py-7 ${i > 0 ? 'border-l border-white/[0.08] pl-6' : ''} ${i < 3 ? 'pr-6' : ''}`}
-            >
+            <div key={i} className={`py-7 ${i > 0 ? 'border-l border-white/[0.08] pl-6' : ''} ${i < 3 ? 'pr-6' : ''}`}>
               <div className="font-display text-[44px] leading-none">
                 {s.accent ? <span className="text-yellow">{s.num}</span> : s.num}
               </div>
@@ -158,27 +153,6 @@ function HeroSection() {
         </div>
       </div>
     </section>
-  )
-}
-
-// ─── marquee ──────────────────────────────────────────────────────────────────
-function Marquee() {
-  const items = 'POSADAS · IGUAZÚ / SAN IGNACIO · OBERÁ / RUNNING · TRAIL · CONCIERTOS / ELDORADO · APÓSTOLES / 5K · 10K · 21K · 42K / MISIONES, ARGENTINA /'
-  return (
-    <div className="bg-yellow border-y-2 border-ink overflow-hidden py-3.5">
-      <div className="flex gap-12 whitespace-nowrap motion-safe:animate-marquee font-display text-[22px] tracking-[-0.01em]">
-        {[items, items].map((text, i) => (
-          <span key={i} className="flex items-center gap-12 shrink-0">
-            {text.split('/').map((part, j) => (
-              <span key={j} className="flex items-center gap-12">
-                {part.trim()}
-                {j < text.split('/').length - 2 && <span className="text-terra">/</span>}
-              </span>
-            ))}
-          </span>
-        ))}
-      </div>
-    </div>
   )
 }
 
@@ -194,13 +168,13 @@ function EventsSection() {
           <div>
             <div className="flex items-center gap-2.5 font-mono text-[12px] uppercase tracking-[0.16em] text-terra mb-3.5">
               <span className="w-6 h-px bg-terra" />
-              01 / Próximos eventos
+              Próximos eventos
             </div>
-            <h2 className="font-display text-[clamp(40px,5vw,72px)] leading-[0.98] tracking-[-0.02em] m-0">
-              Inscripciones<br />abiertas ahora.
+            <h2 className="font-display text-[clamp(36px,4vw,64px)] leading-[0.98] tracking-[-0.02em] m-0">
+              Inscripciones abiertas.
             </h2>
             <p className="text-brand-muted text-[17px] mt-4 max-w-[540px]">
-              Elegí tu próximo evento entre las propuestas más importantes del NEA. Cupos limitados.
+              Elegí tu próximo evento. Cupos limitados.
             </p>
           </div>
           <Link to="/eventos">
@@ -230,142 +204,43 @@ function EventsSection() {
   )
 }
 
-// ─── region section (static) ───────────────────────────────────────────────────
-function RegionSection() {
-  const cities = [
-    { num: '01', name: 'Posadas',       info: '4 eventos · próximo AGO' },
-    { num: '02', name: 'Puerto Iguazú', info: '3 eventos · próximo SEP' },
-    { num: '03', name: 'San Ignacio',   info: '2 eventos · próximo NOV' },
-    { num: '04', name: 'Oberá',         info: '5 eventos · próximo JUL' },
-    { num: '05', name: 'Eldorado',      info: '3 eventos · próximo OCT' },
-    { num: '06', name: 'Apóstoles',     info: '4 eventos · próximo JUN' },
-  ]
-
-  return (
-    <section className="bg-navy text-paper py-24 px-4 md:px-10 relative overflow-hidden">
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{ background: 'repeating-linear-gradient(45deg,rgba(255,255,255,0.02) 0 2px,transparent 2px 16px)' }}
-      />
-      <div className="max-w-[1440px] mx-auto relative">
-        <div className="mb-12">
-          <div className="flex items-center gap-2.5 font-mono text-[12px] uppercase tracking-[0.16em] text-yellow mb-3.5">
-            <span className="w-6 h-px bg-yellow" />
-            02 / Misiones
-          </div>
-          <h2 className="font-display text-[clamp(40px,5vw,72px)] leading-[0.98] tracking-[-0.02em] m-0">
-            Una provincia,<br />ocho destinos para vivir.
-          </h2>
-          <p className="text-paper/60 text-[17px] mt-4 max-w-[540px]">
-            Desde la costanera de Posadas hasta los senderos de las Cataratas. Cada evento, un paisaje distinto.
-          </p>
-        </div>
-
-        <div className="divide-y divide-white/10 border-y border-white/10">
-          {cities.map(city => (
-            <Link key={city.num} to="/eventos">
-              <div className="flex items-center gap-5 py-5 hover:pl-3 transition-all duration-150 group cursor-pointer">
-                <span className="font-mono text-[12px] text-paper/40 tracking-[0.1em] w-8 shrink-0">{city.num}</span>
-                <div className="flex-1">
-                  <div className="font-display text-[28px] leading-none">{city.name}</div>
-                  <div className="font-mono text-[13px] text-paper/60 mt-1">{city.info}</div>
-                </div>
-                <span className="text-yellow text-[24px] group-hover:translate-x-1.5 transition-transform">→</span>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
-// ─── race-cation bento ─────────────────────────────────────────────────────────
-const TILES = [
-  {
-    cls: 'bg-navy text-paper lg:col-span-5',
-    icon: '🏠',
-    title: 'Una sola reserva, todo arreglado.',
-    stat: '+ 80',
-    statLabel: 'Hoteles, posadas y cabañas con tarifa especial para participantes en toda Misiones.',
-  },
-  {
-    cls: 'bg-white text-ink lg:col-span-4',
-    icon: '🚌',
-    title: 'Traslados sin vueltas',
-    body: 'Aeropuerto, hotel y evento. Coordinamos con operadores locales para que solo te enfoques en disfrutar.',
-  },
-  {
-    cls: 'bg-terra text-cream lg:col-span-3',
-    icon: '🍽️',
-    title: 'Gastronomía local',
-    body: 'Reservás chipá, sopa paraguaya y menús típicos de la región para antes y después del evento.',
-  },
-  {
-    cls: 'bg-white text-ink lg:col-span-4',
-    icon: '🌍',
-    title: 'Experiencias post-evento',
-    body: 'Cataratas, Saltos del Moconá, Ruinas Jesuíticas. Excursiones agendadas para el día después.',
-  },
-  {
-    cls: 'bg-yellow text-ink lg:col-span-4',
-    icon: '💳',
-    title: 'Pago seguro con Payway',
-    body: 'Una sola factura para todo. Hasta 6 cuotas sin interés.',
-  },
-  {
-    cls: 'bg-white text-ink lg:col-span-4',
-    icon: '✅',
-    title: 'Apto médico digital',
-    body: 'Subí tu apto desde el celular y recibí confirmación en 24h.',
-  },
+// ─── categories section ───────────────────────────────────────────────────────
+const CATEGORIES = [
+  { label: 'Ciclismo',   icon: Bike,            color: 'bg-navy text-paper' },
+  { label: 'Running',    icon: PersonStanding,  color: 'bg-terra text-cream' },
+  { label: 'Trail',      icon: MountainSnow,    color: 'bg-navy text-paper' },
+  { label: 'Aventura',   icon: Waves,           color: 'bg-terra text-cream' },
+  { label: 'Destacados', icon: Star,            color: 'bg-yellow text-ink' },
 ]
 
-function RaceCationSection() {
+function CategoriesSection() {
   return (
-    <section className="bg-cream py-24 px-4 md:px-10">
+    <section className="bg-cream py-20 px-4 md:px-10">
       <div className="max-w-[1440px] mx-auto">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-          <div>
-            <div className="flex items-center gap-2.5 font-mono text-[12px] uppercase tracking-[0.16em] text-terra mb-3.5">
-              <span className="w-6 h-px bg-terra" />
-              03 / Race-cation
-            </div>
-            <h2 className="font-display text-[clamp(40px,5vw,72px)] leading-[0.98] tracking-[-0.02em] m-0">
-              Viví, descansá,<br />conocé Misiones.
-            </h2>
-            <p className="text-brand-muted text-[17px] mt-4 max-w-[540px]">
-              Después de inscribirte te ayudamos a organizar todo: alojamiento, traslados, alimentación y experiencias.
-            </p>
+        <div className="text-center mb-12">
+          <div className="flex items-center justify-center gap-2.5 font-mono text-[12px] uppercase tracking-[0.16em] text-terra mb-3">
+            <span className="w-6 h-px bg-terra" />
+            Categorías
+            <span className="w-6 h-px bg-terra" />
           </div>
-          <Link to="/eventos">
-            <button className="flex items-center gap-2 px-[18px] py-[11px] rounded-full bg-ink text-paper text-[14px] font-semibold hover:bg-black transition-colors shrink-0">
-              Ver eventos <ArrowRight className="h-4 w-4" />
-            </button>
-          </Link>
+          <h2 className="font-display text-[clamp(32px,4vw,56px)] leading-[0.98] tracking-[-0.02em] m-0">
+            Encontrá una categoría
+          </h2>
+          <p className="text-brand-muted text-[16px] mt-3">Tu próxima experiencia según tu estilo.</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-5">
-          {TILES.map((tile, i) => (
-            <div
-              key={i}
-              className={`rounded-card p-7 border border-line flex flex-col min-h-[280px] relative overflow-hidden ${tile.cls}`}
-            >
-              <div className="text-[44px] mb-4">{tile.icon}</div>
-              {'stat' in tile ? (
-                <>
-                  <h3 className="font-display text-[26px] leading-[1.05] mb-2">{tile.title}</h3>
-                  <div className="font-display text-[80px] leading-[0.9] text-yellow my-2">{tile.stat}</div>
-                  <p className="text-[14px] leading-[1.55] opacity-70">{tile.statLabel}</p>
-                </>
-              ) : (
-                <>
-                  <h3 className="font-display text-[26px] leading-[1.05] mb-2">{tile.title}</h3>
-                  <p className="text-[14px] leading-[1.55] opacity-85">{tile.body}</p>
-                </>
-              )}
-            </div>
-          ))}
+        <div className="flex flex-wrap justify-center gap-4">
+          {CATEGORIES.map(cat => {
+            const Icon = cat.icon
+            return (
+              <Link key={cat.label} to="/eventos">
+                <div className={`${cat.color} rounded-[16px] w-32 h-32 flex flex-col items-center justify-center gap-3 cursor-pointer hover:scale-105 transition-transform border border-line`}>
+                  <Icon className="h-8 w-8" />
+                  <span className="font-display text-[16px]">{cat.label}</span>
+                </div>
+              </Link>
+            )
+          })}
         </div>
       </div>
     </section>
@@ -373,29 +248,29 @@ function RaceCationSection() {
 }
 
 // ─── how it works ──────────────────────────────────────────────────────────────
-const STEPS = [
-  { num: '01', title: 'Elegí tu evento',      body: 'Filtrá por tipo, fecha y ciudad. Comparativa clara de cupos y precios.' },
-  { num: '02', title: 'Inscribite y pagá',    body: 'Cargás tus datos, subís la documentación y pagás con Payway en cuotas.' },
-  { num: '03', title: 'Armá tu estadía',      body: 'Sumá hotel, traslado y comidas. Todo organizado desde un solo lugar.' },
-  { num: '04', title: 'Vení a vivirlo',       body: 'Recibís tu confirmación y toda la info. Llegás, participás y disfrutás Misiones.' },
+const HOW_STEPS = [
+  { num: '01', title: 'Encontrá tu evento', body: 'Explorá los eventos disponibles, elegí la fecha y la modalidad que más te gusta.' },
+  { num: '02', title: 'Inscribite y pagá',  body: 'Completá tus datos y pagá de forma segura con Payway. Todo en minutos.' },
+  { num: '03', title: 'Viví la experiencia', body: 'Recibís tu confirmación al instante y llegás listo para disfrutar.' },
 ]
 
 function HowItWorksSection() {
   return (
     <section className="bg-paper py-24 px-4 md:px-10">
       <div className="max-w-[1440px] mx-auto">
-        <div className="mb-16">
-          <div className="flex items-center gap-2.5 font-mono text-[12px] uppercase tracking-[0.16em] text-terra mb-3.5">
+        <div className="text-center mb-16">
+          <div className="flex items-center justify-center gap-2.5 font-mono text-[12px] uppercase tracking-[0.16em] text-terra mb-3">
             <span className="w-6 h-px bg-terra" />
-            04 / Cómo funciona
+            Cómo funciona
+            <span className="w-6 h-px bg-terra" />
           </div>
-          <h2 className="font-display text-[clamp(40px,5vw,72px)] leading-[0.98] tracking-[-0.02em] m-0">
-            De la inscripción al evento,<br />en cuatro pasos.
+          <h2 className="font-display text-[clamp(36px,4vw,60px)] leading-[0.98] tracking-[-0.02em] m-0">
+            Tres pasos para participar.
           </h2>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 border-y-2 border-ink divide-y-2 sm:divide-y-0 lg:divide-x lg:divide-y-0 divide-line">
-          {STEPS.map((step, i) => (
-            <div key={i} className={`py-9 ${i > 0 ? 'lg:pl-7' : ''} ${i < 3 ? 'lg:pr-7' : ''}`}>
+        <div className="grid grid-cols-1 sm:grid-cols-3 border-y-2 border-ink divide-y-2 sm:divide-y-0 sm:divide-x divide-line">
+          {HOW_STEPS.map((step, i) => (
+            <div key={i} className={`py-9 ${i > 0 ? 'sm:pl-7' : ''} ${i < 2 ? 'sm:pr-7' : ''}`}>
               <div
                 className="font-display text-[56px] leading-none mb-6"
                 style={{ WebkitTextStroke: '1px #C84B22', color: 'transparent' }}
@@ -426,7 +301,7 @@ function CTAStrip() {
         <h2 className="font-display text-[clamp(48px,6vw,96px)] leading-[0.95] tracking-[-0.02em] m-0 mb-5">
           Tu próximo evento<br />te está esperando.
         </h2>
-        <p className="text-[18px] text-ink/70 mb-9">Sumate a los que eligen MISIONA HUB para vivir sus eventos en el NEA.</p>
+        <p className="text-[18px] text-ink/70 mb-9">Sumate a los que eligen tevent para vivir sus eventos en el NEA.</p>
         <div className="flex flex-wrap gap-3 justify-center">
           <Link to="/eventos">
             <button className="px-7 py-4 rounded-full bg-ink text-paper text-[15px] font-semibold hover:bg-navy-2 transition-colors">
@@ -446,14 +321,12 @@ function CTAStrip() {
 
 // ─── page ─────────────────────────────────────────────────────────────────────
 function HomePage() {
-  useSeo('Eventos en Misiones', 'Inscribite a los mejores eventos del NEA y armá tu experiencia completa en Misiones.')
+  useSeo('Eventos en Misiones', 'Inscribite a los mejores eventos del NEA. Pago seguro, confirmación inmediata.')
   return (
     <div className="bg-paper">
       <HeroSection />
-      <Marquee />
       <EventsSection />
-      <RegionSection />
-      <RaceCationSection />
+      <CategoriesSection />
       <HowItWorksSection />
       <CTAStrip />
     </div>

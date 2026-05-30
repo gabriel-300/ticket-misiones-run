@@ -8,7 +8,7 @@ export const Route = createFileRoute('/legal/terminos')({
 })
 
 function TerminosPage() {
-  useSeo('Términos y condiciones — MISIONA HUB')
+  useSeo('Términos y condiciones')
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-3xl">
@@ -27,7 +27,7 @@ function TerminosPage() {
         <section>
           <h2 className="text-lg font-bold mt-6 mb-2">1. Aceptación</h2>
           <p>
-            Al inscribirte en cualquier evento a través de MISIONA HUB, aceptás estos términos en su totalidad.
+            Al inscribirte en cualquier evento a través de tevent, aceptás estos términos en su totalidad.
             Si no estás de acuerdo, no debés completar la inscripción.
           </p>
         </section>
@@ -35,7 +35,7 @@ function TerminosPage() {
         <section>
           <h2 className="text-lg font-bold mt-6 mb-2">2. Servicio</h2>
           <p>
-            MISIONA HUB es una plataforma de gestión de inscripciones para eventos deportivos y de entretenimiento
+            tevent es una plataforma de gestión de inscripciones para eventos deportivos y de entretenimiento
             en la provincia de Misiones, Argentina, operada por Misiones Online.
           </p>
         </section>
@@ -44,7 +44,7 @@ function TerminosPage() {
           <h2 className="text-lg font-bold mt-6 mb-2">3. Inscripciones y pagos</h2>
           <ul className="list-disc pl-5 space-y-1">
             <li>Las inscripciones son personales e intransferibles salvo comunicación previa al organizador.</li>
-            <li>El pago se procesa a través de Payway (Decidir). MISIONA HUB no almacena datos de tarjeta.</li>
+            <li>El pago se procesa a través de Payway (Decidir). tevent no almacena datos de tarjeta.</li>
             <li>Una vez confirmado el pago, la inscripción es definitiva.</li>
             <li>El fee de servicio (indicado en cada evento) no es reembolsable.</li>
           </ul>
@@ -54,7 +54,7 @@ function TerminosPage() {
           <h2 className="text-lg font-bold mt-6 mb-2">4. Cancelaciones y reembolsos</h2>
           <p>
             Las políticas de cancelación y reembolso son definidas por cada organizador. Consultá las condiciones
-            específicas de cada evento antes de inscribirte. MISIONA HUB no es responsable de los reembolsos,
+            específicas de cada evento antes de inscribirte. tevent no es responsable de los reembolsos,
             que son gestionados directamente por el organizador del evento.
           </p>
         </section>
@@ -64,7 +64,7 @@ function TerminosPage() {
           <p>
             La participación en eventos deportivos implica riesgos inherentes a la actividad física. Al inscribirte,
             declarás que estás en condiciones físicas aptas para participar, que contás con apto médico cuando
-            el evento lo requiere, y que relevás a MISIONA HUB y a los organizadores de toda responsabilidad
+            el evento lo requiere, y que relevás a tevent y a los organizadores de toda responsabilidad
             por accidentes o daños derivados de tu participación.
           </p>
         </section>
@@ -82,7 +82,7 @@ function TerminosPage() {
           <h2 className="text-lg font-bold mt-6 mb-2">7. Uso de imagen</h2>
           <p>
             Si autorizaste el uso de imagen durante la inscripción, aceptás que las fotos y videos tomados
-            durante el evento puedan ser utilizados por MISIONA HUB y el organizador con fines de comunicación
+            durante el evento puedan ser utilizados por tevent y el organizador con fines de comunicación
             y promoción, sin derecho a compensación económica.
           </p>
         </section>
@@ -90,7 +90,7 @@ function TerminosPage() {
         <section>
           <h2 className="text-lg font-bold mt-6 mb-2">8. Modificaciones</h2>
           <p>
-            MISIONA HUB se reserva el derecho de modificar estos términos en cualquier momento. Los cambios
+            tevent se reserva el derecho de modificar estos términos en cualquier momento. Los cambios
             serán publicados en esta página con la fecha de actualización.
           </p>
         </section>
@@ -99,8 +99,8 @@ function TerminosPage() {
           <h2 className="text-lg font-bold mt-6 mb-2">9. Contacto</h2>
           <p>
             Ante consultas, podés escribirnos a{' '}
-            <a href="mailto:info@misionahub.com.ar" className="text-primary underline">
-              info@misionahub.com.ar
+            <a href="mailto:info@tevent.com.ar" className="text-primary underline">
+              info@tevent.com.ar
             </a>
           </p>
         </section>

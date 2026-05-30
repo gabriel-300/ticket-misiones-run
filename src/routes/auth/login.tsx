@@ -47,15 +47,15 @@ function LoginPage() {
       {/* Left panel */}
       <div className="hidden lg:flex lg:w-1/2 bg-navy flex-col justify-between p-16">
         <Link to="/" className="flex items-center gap-2.5 font-display text-[18px] tracking-[0.02em] text-paper">
-          <span className="w-9 h-9 bg-yellow text-ink rounded-[10px] grid place-items-center text-lg font-display">M</span>
-          MISIONA HUB
+          <span className="w-9 h-9 bg-yellow text-ink rounded-[10px] grid place-items-center text-lg font-display">t</span>
+          tevent
         </Link>
         <div>
           <h2 className="font-display text-[clamp(36px,4vw,56px)] leading-[0.97] tracking-[-0.02em] text-paper mb-4">
             Las mejores<br />carreras del NEA<br />te esperan.
           </h2>
           <p className="text-paper/60 text-[16px]">
-            Inscribite, pagá y armá tu race-cation completa desde Misiones.
+            Inscribite, pagá y viví los mejores eventos de Misiones.
           </p>
         </div>
         <div className="flex items-center gap-2.5 font-mono text-[12px] uppercase tracking-[0.16em] text-yellow">

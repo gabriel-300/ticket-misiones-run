@@ -95,8 +95,6 @@ export default function RegistrationForm({
     },
   })
 
-  const form4 = useForm<Step4Data>({ resolver: zodResolver(step4Schema) })
-
   const form5 = useForm<Step5Data>({
     resolver: zodResolver(step5Schema),
     defaultValues: { accepts_terms: undefined, accepts_waiver: undefined, accepts_image_rights: false },
@@ -334,98 +332,6 @@ export default function RegistrationForm({
         </Card>
       )}
 
-      {/* Step: emergency / safety (sports only) */}
-      {currentStepKey === 'emergency' && (
-        <Card>
-          <CardContent className="p-6 space-y-4">
-            <div>
-              <h3 className="font-semibold mb-4">Contacto de emergencia</h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="ec_name">Nombre y apellido *</Label>
-                  <Input id="ec_name" {...form3.register('emergency_contact_name')} />
-                  {form3.formState.errors.emergency_contact_name && <p className="text-xs text-destructive">{form3.formState.errors.emergency_contact_name.message}</p>}
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="ec_phone">Teléfono *</Label>
-                  <Input id="ec_phone" {...form3.register('emergency_contact_phone')} />
-                  {form3.formState.errors.emergency_contact_phone && <p className="text-xs text-destructive">{form3.formState.errors.emergency_contact_phone.message}</p>}
-                </div>
-              </div>
-            </div>
-
-            <Separator />
-
-            <div className="space-y-2">
-              <Label>Grupo sanguíneo *</Label>
-              <Select onValueChange={v => form3.setValue('blood_type', v as any)} defaultValue={form3.getValues('blood_type')}>
-                <SelectTrigger><SelectValue placeholder="Seleccionar" /></SelectTrigger>
-                <SelectContent>
-                  {['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', '0+', '0-', 'No sé'].map(bt => (
-                    <SelectItem key={bt} value={bt}>{bt}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {form3.formState.errors.blood_type && <p className="text-xs text-destructive">{form3.formState.errors.blood_type.message}</p>}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="conditions">Condiciones médicas relevantes (opcional)</Label>
-              <Textarea id="conditions" placeholder="Diabetes, hipertensión, asma..." {...form3.register('medical_conditions')} />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="allergies">Alergias (opcional)</Label>
-              <Textarea id="allergies" placeholder="Alergias a medicamentos, alimentos..." {...form3.register('allergies')} />
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Step: medical certificate (sports only) */}
-      {currentStepKey === 'medical' && (
-        <Card>
-          <CardContent className="p-6 space-y-4">
-            {needsCert ? (
-              <>
-                <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 text-sm text-orange-800">
-                  La distancia seleccionada requiere apto médico vigente (distancias de {medicalCertMinKm} km o más).
-                </div>
-                <div className="space-y-3">
-                  <Label>Subir apto médico *</Label>
-                  <label className="flex flex-col items-center justify-center h-32 border-2 border-dashed rounded-xl cursor-pointer hover:bg-muted/40 transition-colors">
-                    {certFile ? (
-                      <div className="flex items-center gap-2 text-green-600">
-                        <CheckCircle2 className="h-5 w-5" />
-                        <span className="text-sm font-medium">{certFile.name}</span>
-                      </div>
-                    ) : (
-                      <div className="text-center text-muted-foreground">
-                        <Upload className="h-8 w-8 mx-auto mb-2" />
-                        <p className="text-sm">Hacé clic o arrastrá el archivo</p>
-                        <p className="text-xs mt-1">PDF, JPG o PNG — máx. 5 MB</p>
-                      </div>
-                    )}
-                    <input
-                      type="file"
-                      className="hidden"
-                      accept=".pdf,.jpg,.jpeg,.png"
-                      onChange={e => { const f = e.target.files?.[0]; if (f) setCertFile(f) }}
-                    />
-                  </label>
-                </div>
-              </>
-            ) : (
-              <div className="text-center py-8 text-muted-foreground">
-                <CheckCircle2 className="h-12 w-12 mx-auto mb-3 text-green-500" />
-                <p className="font-medium text-foreground">No se requiere apto médico</p>
-                <p className="text-sm mt-1">La distancia seleccionada no exige certificado médico.</p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      )}
-
       {/* Step: terms & confirmation */}
       {currentStepKey === 'terms' && (
         <Card>
@@ -451,7 +357,7 @@ export default function RegistrationForm({
                   onCheckedChange={v => form5.setValue('accepts_terms', v === true ? true : undefined as any)}
                 />
                 <Label htmlFor="terms" className="cursor-pointer text-sm leading-relaxed">
-                  Acepto los <a href="/legal/terminos" target="_blank" className="underline text-primary">Términos y condiciones</a> de MISIONA HUB. *
+                  Acepto los <a href="/legal/terminos" target="_blank" className="underline text-primary">Términos y condiciones</a> de tevent. *
                 </Label>
               </div>
               {form5.formState.errors.accepts_terms && <p className="text-xs text-destructive ml-7">{form5.formState.errors.accepts_terms.message}</p>}

@@ -29,9 +29,9 @@ export function Header() {
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2.5 font-display text-[18px] tracking-[0.02em] text-navy shrink-0">
           <span className="w-9 h-9 bg-navy text-yellow rounded-[10px] grid place-items-center text-lg font-display">
-            M
+            t
           </span>
-          MISIONA HUB
+          tevent
         </Link>
 
         {/* Desktop nav */}

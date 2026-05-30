@@ -3,17 +3,11 @@ import { Link } from '@tanstack/react-router'
 const LINKS = {
   Eventos: [
     { label: 'Próximos eventos', to: '/eventos' },
-    { label: 'Por distancia',   to: '/eventos' },
-    { label: 'Trail running',   to: '/eventos?tipo=trail' },
-  ],
-  'Race-cation': [
-    { label: 'Alojamientos',     to: '/' },
-    { label: 'Traslados',        to: '/' },
-    { label: 'Gastronomía',     to: '/' },
-    { label: 'Experiencias',    to: '/' },
+    { label: 'Ciclismo',         to: '/eventos' },
+    { label: 'Running',          to: '/eventos' },
+    { label: 'Trail',            to: '/eventos' },
   ],
   Soporte: [
-    { label: 'Apto médico',             to: '/perfil' },
     { label: 'Términos y condiciones',  to: '/legal/terminos' },
     { label: 'Política de privacidad',  to: '/legal/terminos' },
     { label: 'Contacto',               to: '/legal/terminos' },
@@ -43,11 +37,11 @@ export function Footer() {
           {/* Brand */}
           <div className="lg:col-span-1">
             <div className="flex items-center gap-2.5 font-display text-[18px] tracking-[0.02em]">
-              <span className="w-9 h-9 bg-yellow text-ink rounded-[10px] grid place-items-center text-lg font-display">M</span>
-              MISIONA HUB
+              <span className="w-9 h-9 bg-yellow text-ink rounded-[10px] grid place-items-center text-lg font-display">t</span>
+              tevent
             </div>
             <p className="text-paper/60 text-[14px] leading-[1.5] mt-5 mb-6 max-w-xs">
-              La plataforma oficial de carreras del NEA. Inscribite, preparate y viví tu race‑cation completa en Misiones.
+              La plataforma de eventos de Misiones. Inscribite, pagá seguro y viví tu experiencia en el NEA.
             </p>
             <div className="flex gap-2">
               <SocialIcon label="Instagram">
@@ -88,7 +82,7 @@ export function Footer() {
 
         {/* Bottom bar */}
         <div className="flex flex-col sm:flex-row justify-between items-center py-8 gap-3 font-mono text-[12px] text-paper/50">
-          <span>© {new Date().getFullYear()} MISIONA HUB · Misiones Online · Todos los derechos reservados</span>
+          <span>© {new Date().getFullYear()} tevent · Misiones Online · Todos los derechos reservados</span>
           <span>Hecho en Misiones, Argentina 🇦🇷</span>
         </div>
       </div>
