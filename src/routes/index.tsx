@@ -97,7 +97,7 @@ function HeroSection() {
           <aside className="bg-white/[0.06] border border-white/[0.12] rounded-[20px] p-6 backdrop-blur-[12px]">
             <div className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.12em] text-yellow mb-3.5">
               <span className="w-1.5 h-1.5 rounded-full bg-yellow animate-pulse-dot" />
-              Próximo evento
+              Evento destacado
             </div>
             {featured ? (
               <>
