@@ -30,11 +30,20 @@ export function Header() {
       <div className="max-w-[1440px] mx-auto px-4 md:px-10 flex h-16 items-center justify-between gap-6">
 
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2.5 font-display text-[18px] tracking-[0.02em] text-navy shrink-0">
-          <span className="w-9 h-9 bg-navy text-yellow rounded-[10px] grid place-items-center text-lg font-display">
-            t
+        <Link to="/" className="flex items-center gap-2 shrink-0">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="36" height="36" rx="9" fill="#071A2F"/>
+            {/* Círculo/ruta — abierto arriba como un sendero */}
+            <circle cx="18" cy="19" r="10" stroke="#F5A623" strokeWidth="2.2" fill="none"
+              strokeDasharray="42 22" strokeLinecap="round" transform="rotate(110 18 19)"/>
+            {/* T bold — barra horizontal */}
+            <line x1="11" y1="15" x2="25" y2="15" stroke="white" strokeWidth="2.8" strokeLinecap="round"/>
+            {/* T bold — barra vertical */}
+            <line x1="18" y1="15" x2="18" y2="26" stroke="white" strokeWidth="2.8" strokeLinecap="round"/>
+          </svg>
+          <span className="font-display text-[18px] tracking-[0.04em] text-navy">
+            TEVEN<span className="text-[#F5A623]">T</span>
           </span>
-          tevent
         </Link>
 
         {/* Desktop nav */}

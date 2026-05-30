@@ -36,9 +36,17 @@ export function Footer() {
 
           {/* Brand */}
           <div className="lg:col-span-1">
-            <div className="flex items-center gap-2.5 font-display text-[18px] tracking-[0.02em]">
-              <span className="w-9 h-9 bg-yellow text-ink rounded-[10px] grid place-items-center text-lg font-display">t</span>
-              tevent
+            <div className="flex items-center gap-2">
+              <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="36" height="36" rx="9" fill="#F5A623"/>
+                <circle cx="18" cy="19" r="10" stroke="#071A2F" strokeWidth="2.2" fill="none"
+                  strokeDasharray="42 22" strokeLinecap="round" transform="rotate(110 18 19)"/>
+                <line x1="11" y1="15" x2="25" y2="15" stroke="#071A2F" strokeWidth="2.8" strokeLinecap="round"/>
+                <line x1="18" y1="15" x2="18" y2="26" stroke="#071A2F" strokeWidth="2.8" strokeLinecap="round"/>
+              </svg>
+              <span className="font-display text-[18px] tracking-[0.04em] text-paper">
+                TEVEN<span className="text-[#F5A623]">T</span>
+              </span>
             </div>
             <p className="text-paper/60 text-[14px] leading-[1.5] mt-5 mb-6 max-w-xs">
               La plataforma de eventos de Misiones. Inscribite, pagá seguro y viví tu experiencia en el NEA.
