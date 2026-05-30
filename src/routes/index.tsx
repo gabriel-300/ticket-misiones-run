@@ -4,7 +4,7 @@ import { ArrowRight, Bike, PersonStanding, MountainSnow, Waves, Star } from 'luc
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { useSeo } from '@/hooks/use-seo'
-import { useEvents, useFeaturedEvent, useStats } from '@/hooks/use-events'
+import { useEvents, useFeaturedEvent } from '@/hooks/use-events'
 import EventCard from '@/components/eventos/event-card'
 import { formatARS, getActiveTier } from '@/lib/utils'
 
@@ -33,7 +33,6 @@ function CountdownCell({ value, unit }: { value: number; unit: string }) {
 // ─── hero ─────────────────────────────────────────────────────────────────────
 function HeroSection() {
   const { data: featured } = useFeaturedEvent()
-  const { data: stats }    = useStats()
   const [t, setT] = useState(() => calcTime(featured ? new Date(featured.starts_at) : new Date()))
 
   useEffect(() => {
@@ -135,22 +134,6 @@ function HeroSection() {
           </aside>
         </div>
 
-        {/* Stats strip */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 border-t border-white/[0.12] mt-16 pb-0">
-          {[
-            { num: stats?.events ?? '—',             accent: true,  label: 'Eventos este año' },
-            { num: stats ? `${stats.runners}+` : '—', accent: false, label: 'Participantes inscriptos' },
-            { num: stats?.cities ?? '—',             accent: true,  label: 'Ciudades del NEA' },
-            { num: '100%',                           accent: false, label: 'Pago seguro · Payway' },
-          ].map((s, i) => (
-            <div key={i} className={`py-7 ${i > 0 ? 'border-l border-white/[0.08] pl-6' : ''} ${i < 3 ? 'pr-6' : ''}`}>
-              <div className="font-display text-[44px] leading-none">
-                {s.accent ? <span className="text-yellow">{s.num}</span> : s.num}
-              </div>
-              <div className="font-mono text-[11px] uppercase tracking-[0.12em] text-paper/55 mt-2.5">{s.label}</div>
-            </div>
-          ))}
-        </div>
       </div>
     </section>
   )
