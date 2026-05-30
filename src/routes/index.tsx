@@ -154,10 +154,10 @@ function EventsSection() {
               Próximos eventos
             </div>
             <h2 className="font-display text-[clamp(36px,4vw,64px)] leading-[0.98] tracking-[-0.02em] m-0">
-              Inscripciones abiertas.
+              Elegí tu experiencia.
             </h2>
             <p className="text-brand-muted text-[17px] mt-4 max-w-[540px]">
-              Elegí tu próximo evento. Cupos limitados.
+              Eventos disponibles. Cupos limitados.
             </p>
           </div>
           <Link to="/eventos">
