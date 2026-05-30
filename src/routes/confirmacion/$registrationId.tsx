@@ -4,9 +4,7 @@ import { es } from 'date-fns/locale'
 import { CheckCircle2, Calendar, MapPin, Medal, Tag, ChevronRight, AlertCircle } from 'lucide-react'
 import { ProtectedRoute } from '@/components/layout/protected-route'
 import { useRegistrationDetail } from '@/hooks/use-registration-detail'
-import { useComplementaryServices, useServiceInterests } from '@/hooks/use-complementary-services'
 import { useAuth } from '@/hooks/use-auth'
-import ServiceCard from '@/components/confirmacion/service-card'
 import { Skeleton } from '@/components/ui/skeleton'
 
 export const Route = createFileRoute('/confirmacion/$registrationId')({
@@ -23,9 +21,6 @@ function ConfirmacionPage() {
   const { data: reg, isLoading, error } = useRegistrationDetail(registrationId)
   const event = reg?.event as any
   const ticketType = reg?.ticket_type as any
-
-  const { data: services } = useComplementaryServices(event?.id ?? '')
-  const { data: interestedIds } = useServiceInterests(registrationId)
 
   if (isLoading) {
     return (
@@ -142,35 +137,6 @@ function ConfirmacionPage() {
             </div>
           )}
         </div>
-
-        {/* ── Upsell race-cation ── */}
-        {services && services.length > 0 && (
-          <div>
-            <div className="mb-5">
-              <div className="flex items-center gap-2.5 font-mono text-[12px] uppercase tracking-[0.16em] text-terra mb-2">
-                <span className="w-6 h-px bg-terra" />
-                Race-cation
-              </div>
-              <h2 className="font-display text-[28px] leading-[1.05] text-navy">
-                Armá tu estadía en {location?.city ?? 'Misiones'}
-              </h2>
-              <p className="text-brand-muted text-[15px] mt-2">
-                Servicios curados para que aproveches tu viaje al máximo. Guardá los que te interesan con el ❤️ y contactá al proveedor directo.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {services.map(service => (
-                <ServiceCard
-                  key={service.id}
-                  service={service}
-                  registrationId={registrationId}
-                  isInterested={interestedIds?.includes(service.id) ?? false}
-                />
-              ))}
-            </div>
-          </div>
-        )}
 
         {/* ── Acciones ── */}
         <div className="flex flex-col sm:flex-row gap-3 pt-2">

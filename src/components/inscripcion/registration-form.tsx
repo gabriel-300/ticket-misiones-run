@@ -146,8 +146,8 @@ export default function RegistrationForm({
         if (user) medicalCertUrl = await uploadMedicalCert(certFile, user.id)
       }
       const result = await createRegistration({ eventId, distanceId: data.distance_id, formData: data, medicalCertUrl })
-      toast.success('¡Inscripción registrada! Completá tu experiencia.')
-      navigate({ to: '/upsell/$orderId', params: { orderId: result.order_id }, search: { step: 'transporte' } })
+      toast.success('¡Inscripción registrada! Completá el pago para confirmar tu lugar.')
+      navigate({ to: '/checkout/$orderId', params: { orderId: result.order_id } })
     } catch (err: any) {
       toast.error(err.message ?? 'Error al procesar la inscripción')
     }
