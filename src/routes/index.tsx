@@ -142,7 +142,7 @@ function HeroSection() {
 // ─── events section ────────────────────────────────────────────────────────────
 function EventsSection() {
   const { data: events, isLoading } = useEvents()
-  const top3 = events?.slice(0, 3) ?? []
+  const top3 = events?.slice(0, 4) ?? []
 
   return (
     <section className="bg-paper py-24 px-4 md:px-10">
@@ -176,7 +176,7 @@ function EventsSection() {
         ) : top3.length === 0 ? (
           <p className="text-brand-muted font-mono text-[14px]">No hay eventos publicados aún.</p>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {top3.map(event => (
               <EventCard key={event.id} event={event as any} />
             ))}
