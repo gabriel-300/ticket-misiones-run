@@ -59,7 +59,7 @@ Deno.serve(async (req: Request) => {
     if (order.status !== 'pending') return json({ error: 'Esta orden ya fue procesada' }, 409)
 
     // Build Payway payload
-    // Decidir amount: pesos sin decimales × 100 (43500 ARS = 4350000)
+    // Decidir amount: pesos sin decimales x 100 (43500 ARS = 4350000)
     const amount = Math.round(Number(order.total_amount) * 100)
     const siteTransactionId = `TMR-${order_id.split('-')[0].toUpperCase()}-${Date.now()}`
 
@@ -138,12 +138,12 @@ Deno.serve(async (req: Request) => {
     }
 
     const mensaje = approved
-      ? '¡Pago aprobado! Tu inscripción está confirmada.'
+      ? 'Pago aprobado. Tu inscripcion esta confirmada.'
       : paywayData.status === 'rejected'
-        ? 'Pago rechazado por el banco. Verificá los datos o usá otra tarjeta.'
+        ? 'Pago rechazado por el banco. Verifica los datos o usa otra tarjeta.'
         : `Estado del pago: ${paywayData.status}`
 
-    console.log(`Pago ${paywayData.status} — ${siteTransactionId} — $${order.total_amount} ARS`)
+    console.log(`Pago ${paywayData.status} - ${siteTransactionId} - $${order.total_amount} ARS`)
 
     return json({ aprobado: approved, mensaje, registration_id: registrationId })
 
