@@ -142,7 +142,7 @@ function HeroSection() {
 // ─── events section ────────────────────────────────────────────────────────────
 function EventsSection() {
   const { data: events, isLoading } = useEvents()
-  const top3 = events?.slice(0, 4) ?? []
+  const top3 = events?.slice(0, 8) ?? []
 
   return (
     <section className="bg-paper py-24 px-4 md:px-10">
