@@ -50,15 +50,15 @@ function HeroSection() {
 
   return (
     <section className="relative bg-navy text-paper overflow-hidden" style={{ padding: 0 }}>
+      {/* Hero background image */}
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(https://yszfiaeajgkwuebxuvhg.supabase.co/storage/v1/object/public/assets/hero-runners.png)` }}
+      />
       <div
         className="absolute inset-0"
         style={{
-          background: `
-            linear-gradient(180deg,rgba(11,27,43,0.55) 0%,rgba(11,27,43,0.85) 70%,#0B1B2B 100%),
-            repeating-linear-gradient(45deg,rgba(255,255,255,0.03) 0 2px,transparent 2px 12px),
-            radial-gradient(circle at 80% 20%,rgba(200,75,34,0.3),transparent 50%),
-            radial-gradient(circle at 20% 80%,rgba(255,210,63,0.15),transparent 55%)
-          `,
+          background: `linear-gradient(180deg,rgba(11,27,43,0.60) 0%,rgba(11,27,43,0.88) 70%,#0B1B2B 100%)`,
         }}
       />
 
