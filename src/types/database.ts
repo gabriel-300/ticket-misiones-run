@@ -323,6 +323,7 @@ export type Database = {
           type: string
           updated_at: string
           waiver_text: string | null
+          is_featured: boolean
         }
         Insert: {
           course_geojson_url?: string | null
@@ -353,6 +354,7 @@ export type Database = {
           type?: string
           updated_at?: string
           waiver_text?: string | null
+          is_featured?: boolean
         }
         Update: {
           course_geojson_url?: string | null
@@ -383,6 +385,7 @@ export type Database = {
           type?: string
           updated_at?: string
           waiver_text?: string | null
+          is_featured?: boolean
         }
         Relationships: [
           {
