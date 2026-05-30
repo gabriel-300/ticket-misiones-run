@@ -50,7 +50,7 @@ Deno.serve(async (req: Request) => {
 
     const { data: order, error: orderError } = await admin
       .from('orders')
-      .select('id, buyer_id, total_amount, status')
+      .select('id, buyer_id, total_amount, status, registration_id')
       .eq('id', order_id)
       .eq('buyer_id', user.id)
       .single()
@@ -116,16 +116,13 @@ Deno.serve(async (req: Request) => {
       updated_at: new Date().toISOString(),
     }).eq('id', order_id)
 
-    // Update registration status and get registration_id
-    let registrationId: string | null = null
-    if (approved) {
-      const { data: regData } = await admin
+    // Update registration status using registration_id from order (FK is orders.registration_id)
+    let registrationId: string | null = (order as any).registration_id ?? null
+    if (approved && registrationId) {
+      await admin
         .from('registrations')
         .update({ status: 'paid', updated_at: new Date().toISOString() })
-        .eq('order_id', order_id)
-        .select('id')
-        .single()
-      registrationId = regData?.id ?? null
+        .eq('id', registrationId)
 
       // Fire-and-forget confirmation email
       if (registrationId) {
