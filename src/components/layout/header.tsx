@@ -18,6 +18,9 @@ export function Header() {
 
   const navLinks = [
     { to: '/eventos' as const, label: 'Eventos' },
+    { to: '/' as const, label: 'Cómo funciona' },
+    { to: '/legal/terminos' as const, label: 'Ayuda' },
+    ...(isAuthenticated ? [{ to: '/perfil' as const, label: 'Mis inscripciones' }] : []),
     ...(isOrganizer && !isSuperAdmin ? [{ to: '/org' as const, label: 'Mi organización' }] : []),
     ...(isSuperAdmin ? [{ to: '/admin' as const, label: 'Admin' }] : []),
   ]
