@@ -233,7 +233,8 @@ export function useUpdateEvent() {
   return useMutation({
     mutationFn: async ({ eventId, data }: { eventId: string; data: UpdateEventInput }) => {
       const { city, province, address, ...rest } = data
-      const update: Record<string, any> = { ...rest }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const update: any = { ...rest }
       if (city !== undefined || province !== undefined) {
         update.location = { city: city ?? '', province: province ?? '', address: address ?? '' }
       }
