@@ -115,7 +115,7 @@ function HeroSection() {
                   <span>
                     Cupos{' '}
                     <strong className="text-paper font-semibold">
-                      {totalReg} / {totalCap || '∞'}
+                      {totalCap > 0 ? totalCap : '∞'}
                     </strong>
                   </span>
                   {activeTier && (
