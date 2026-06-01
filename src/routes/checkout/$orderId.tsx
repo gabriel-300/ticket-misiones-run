@@ -194,7 +194,7 @@ function CheckoutPage() {
               )}
               {serviceFeeFromItems !== undefined && (
                 <div className="flex justify-between text-brand-muted">
-                  <span>Fee de servicio</span>
+                  <span>Pasarela de compra</span>
                   <span>{formatARS(serviceFeeFromItems)}</span>
                 </div>
               )}

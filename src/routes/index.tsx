@@ -73,8 +73,8 @@ function HeroSection() {
             </div>
             <h1 className="font-display text-[clamp(52px,8vw,120px)] leading-[0.95] tracking-[-0.02em] m-0">
               Encontrá<br />
-              tu próximo<br />
-              <span className="text-yellow">evento</span>.
+              tu próxima<br />
+              <span className="text-yellow">Aventura</span>.
             </h1>
             <p className="mt-7 text-[clamp(16px,1.4vw,20px)] leading-[1.55] text-paper/80 max-w-[520px]">
               Inscribite en los mejores eventos del NEA. Pago seguro, confirmación inmediata.

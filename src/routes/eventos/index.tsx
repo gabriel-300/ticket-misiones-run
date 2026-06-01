@@ -48,7 +48,7 @@ function EventosPage() {
             Catálogo
           </div>
           <h1 className="font-display text-[clamp(40px,6vw,80px)] leading-[0.95] tracking-[-0.02em] m-0">
-            Todos los eventos
+            Todas las Experiencias
           </h1>
           <p className="text-paper/60 text-[17px] mt-3 max-w-[500px]">
             Cupos limitados. Inscribite antes de que se agoten.

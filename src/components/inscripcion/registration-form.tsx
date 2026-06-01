@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate } from '@tanstack/react-router'
@@ -105,6 +105,28 @@ export default function RegistrationForm({
     resolver: zodResolver(step5Schema),
     defaultValues: { accepts_terms: undefined, accepts_waiver: undefined, accepts_image_rights: false },
   })
+
+  // Resetear form1 cuando el perfil carga (llega después del primer render)
+  useEffect(() => {
+    if (!profile) return
+    form1.reset({
+      first_name: profile.first_name ?? '',
+      last_name: profile.last_name ?? '',
+      email: userEmail,
+      phone: profile.phone ?? '',
+      birth_date: profile.birth_date ?? '',
+      gender: (profile.gender as 'M' | 'F' | 'X') ?? undefined,
+      dni_type: (profile.dni_type as 'DNI' | 'PASAPORTE' | 'CI') ?? 'DNI',
+      dni: profile.dni ?? '',
+      nationality: profile.nationality ?? 'Argentina',
+      guardian_full_name: '',
+      guardian_dni: '',
+      guardian_phone: '',
+      guardian_relationship: undefined,
+      accepts_guardian_authorization: false,
+    })
+    if (profileComplete) setEditingPersonal(false)
+  }, [profile?.id])
 
   const forms = [form1, form2, form5]
   const currentForm = forms[step]

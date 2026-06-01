@@ -128,14 +128,6 @@ function ConfirmacionPage() {
             )}
           </div>
 
-          {reg.bib_number && (
-            <div className="mt-5 pt-5 border-t border-line text-center">
-              <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-brand-muted mb-1">Número de dorsal</p>
-              <p className="font-display text-[72px] leading-none text-navy">
-                <span className="text-terra">#</span>{reg.bib_number}
-              </p>
-            </div>
-          )}
         </div>
 
         {/* ── Acciones ── */}
