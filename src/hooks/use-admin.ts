@@ -190,6 +190,46 @@ export function useValidateApto() {
 
 // ─── Toggle event status ──────────────────────────────────────────────────────
 
+export function useUpdateOrganization() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: async ({ orgId, data }: { orgId: string; data: { name?: string; contact_email?: string; commission_rate?: number } }) => {
+      const { error } = await supabase.from('organizations').update(data).eq('id', orgId)
+      if (error) throw error
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin-organizations'] }),
+  })
+}
+
+export function useDeleteOrganization() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: async (orgId: string) => {
+      const { error } = await supabase.from('organizations').delete().eq('id', orgId)
+      if (error) throw error
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin-organizations'] })
+      qc.invalidateQueries({ queryKey: ['admin-stats'] })
+    },
+  })
+}
+
+export function useDeleteEvent() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: async (eventId: string) => {
+      const { error } = await supabase.from('events').delete().eq('id', eventId)
+      if (error) throw error
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin-events'] })
+      qc.invalidateQueries({ queryKey: ['events'] })
+      qc.invalidateQueries({ queryKey: ['admin-stats'] })
+    },
+  })
+}
+
 export function useToggleEventStatus() {
   const qc = useQueryClient()
   return useMutation({

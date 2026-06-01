@@ -268,7 +268,7 @@ export default function RegistrationForm({
                   </div>
                   <div className="space-y-2">
                     <Label>Género *</Label>
-                    <Select onValueChange={v => form1.setValue('gender', v as 'M' | 'F' | 'X')} defaultValue={form1.getValues('gender')}>
+                    <Select value={form1.watch('gender') ?? ''} onValueChange={v => form1.setValue('gender', v as 'M' | 'F' | 'X', { shouldValidate: true })}>
                       <SelectTrigger><SelectValue placeholder="Seleccionar" /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="M">Masculino</SelectItem>
@@ -282,7 +282,7 @@ export default function RegistrationForm({
                 <div className="grid grid-cols-3 gap-4">
                   <div className="space-y-2">
                     <Label>Tipo doc.</Label>
-                    <Select onValueChange={v => form1.setValue('dni_type', v as 'DNI' | 'PASAPORTE' | 'CI')} defaultValue={form1.getValues('dni_type')}>
+                    <Select value={form1.watch('dni_type') ?? 'DNI'} onValueChange={v => form1.setValue('dni_type', v as 'DNI' | 'PASAPORTE' | 'CI', { shouldValidate: true })}>
                       <SelectTrigger><SelectValue /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="DNI">DNI</SelectItem>

@@ -1,12 +1,19 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { Plus, Building2, ArrowRight, ToggleLeft, ToggleRight } from 'lucide-react'
+import { useState } from 'react'
+import { Plus, Building2, ToggleLeft, ToggleRight, Pencil, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { AdminLayout, AdminBreadcrumb } from '@/components/admin/admin-layout'
-import { useAdminOrganizations, useUpdateOrganizationStatus } from '@/hooks/use-admin'
+import {
+  useAdminOrganizations, useUpdateOrganizationStatus,
+  useUpdateOrganization, useDeleteOrganization,
+} from '@/hooks/use-admin'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 
 export const Route = createFileRoute('/admin/organizaciones/')({
   component: AdminOrganizaciones,
@@ -19,15 +26,40 @@ const STATUS_VARIANTS: Record<string, 'default' | 'secondary' | 'destructive' | 
   active: 'default', pending: 'secondary', suspended: 'destructive',
 }
 
+interface EditState { id: string; name: string; contact_email: string; commission_rate: number }
+
 function AdminOrganizaciones() {
   const { data: orgs, isLoading } = useAdminOrganizations()
-  const { mutate: updateStatus, isPending } = useUpdateOrganizationStatus()
+  const { mutate: updateStatus, isPending: toggling } = useUpdateOrganizationStatus()
+  const { mutate: updateOrg, isPending: saving } = useUpdateOrganization()
+  const { mutate: deleteOrg, isPending: deleting } = useDeleteOrganization()
+
+  const [editOrg, setEditOrg] = useState<EditState | null>(null)
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null)
 
   function handleToggle(orgId: string, currentStatus: string) {
     const next = currentStatus === 'active' ? 'suspended' : 'active'
     updateStatus({ orgId, status: next }, {
       onSuccess: () => toast.success(`Organización ${next === 'active' ? 'activada' : 'suspendida'}`),
       onError:   () => toast.error('No se pudo cambiar el estado'),
+    })
+  }
+
+  function handleSaveEdit() {
+    if (!editOrg) return
+    updateOrg(
+      { orgId: editOrg.id, data: { name: editOrg.name, contact_email: editOrg.contact_email, commission_rate: editOrg.commission_rate } },
+      {
+        onSuccess: () => { toast.success('Organización actualizada'); setEditOrg(null) },
+        onError:   () => toast.error('No se pudo actualizar'),
+      }
+    )
+  }
+
+  function handleDelete(orgId: string) {
+    deleteOrg(orgId, {
+      onSuccess: () => { toast.success('Organización eliminada'); setConfirmDelete(null) },
+      onError:   () => toast.error('No se pudo eliminar — puede tener eventos asociados'),
     })
   }
 
@@ -41,10 +73,7 @@ function AdminOrganizaciones() {
           <p className="text-sm text-muted-foreground">{orgs?.length ?? 0} organizaciones registradas</p>
         </div>
         <Link to="/admin/organizaciones/nueva">
-          <Button className="gap-2">
-            <Plus className="h-4 w-4" />
-            Nueva organización
-          </Button>
+          <Button className="gap-2"><Plus className="h-4 w-4" /> Nueva organización</Button>
         </Link>
       </div>
 
@@ -54,7 +83,6 @@ function AdminOrganizaciones() {
         <div className="text-center py-16 text-muted-foreground">
           <Building2 className="h-10 w-10 mx-auto mb-3 opacity-30" />
           <p className="font-medium">Todavía no hay organizaciones</p>
-          <p className="text-sm mt-1">Creá la primera para empezar a asignar eventos.</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -88,21 +116,33 @@ function AdminOrganizaciones() {
                     </div>
 
                     <div className="flex items-center gap-2 shrink-0">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="h-8 text-xs gap-1"
-                        disabled={isPending}
-                        onClick={() => handleToggle(org.id, org.status)}
-                      >
+                      <Button size="sm" variant="outline" className="h-8 text-xs gap-1" disabled={toggling}
+                        onClick={() => handleToggle(org.id, org.status)}>
                         {org.status === 'active'
                           ? <><ToggleRight className="h-3.5 w-3.5 text-green-600" /> Activa</>
-                          : <><ToggleLeft className="h-3.5 w-3.5" /> Activar</>
-                        }
+                          : <><ToggleLeft className="h-3.5 w-3.5" /> Activar</>}
                       </Button>
-                      <Button size="sm" variant="ghost" className="h-8 gap-1 text-xs" disabled>
-                        Ver <ArrowRight className="h-3 w-3" />
+                      <Button size="sm" variant="outline" className="h-8 w-8 p-0"
+                        onClick={() => setEditOrg({ id: org.id, name: org.name, contact_email: org.contact_email ?? '', commission_rate: org.commission_rate ?? 8 })}>
+                        <Pencil className="h-3.5 w-3.5" />
                       </Button>
+                      {confirmDelete === org.id ? (
+                        <div className="flex gap-1">
+                          <Button size="sm" variant="destructive" className="h-8 text-xs" disabled={deleting}
+                            onClick={() => handleDelete(org.id)}>
+                            {deleting ? '...' : 'Confirmar'}
+                          </Button>
+                          <Button size="sm" variant="ghost" className="h-8 text-xs"
+                            onClick={() => setConfirmDelete(null)}>
+                            Cancelar
+                          </Button>
+                        </div>
+                      ) : (
+                        <Button size="sm" variant="ghost" className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+                          onClick={() => setConfirmDelete(org.id)}>
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
+                      )}
                     </div>
                   </div>
                 </CardContent>
@@ -111,6 +151,38 @@ function AdminOrganizaciones() {
           })}
         </div>
       )}
+
+      {/* Dialog editar */}
+      <Dialog open={!!editOrg} onOpenChange={open => !open && setEditOrg(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Editar organización</DialogTitle>
+          </DialogHeader>
+          {editOrg && (
+            <div className="space-y-4 pt-2">
+              <div className="space-y-1.5">
+                <Label>Nombre</Label>
+                <Input value={editOrg.name} onChange={e => setEditOrg({ ...editOrg, name: e.target.value })} />
+              </div>
+              <div className="space-y-1.5">
+                <Label>Email de contacto</Label>
+                <Input type="email" value={editOrg.contact_email} onChange={e => setEditOrg({ ...editOrg, contact_email: e.target.value })} />
+              </div>
+              <div className="space-y-1.5">
+                <Label>Comisión (%)</Label>
+                <Input type="number" min="0" max="100" step="0.5" value={editOrg.commission_rate}
+                  onChange={e => setEditOrg({ ...editOrg, commission_rate: Number(e.target.value) })} />
+              </div>
+              <div className="flex gap-3 pt-2">
+                <Button className="flex-1" disabled={saving} onClick={handleSaveEdit}>
+                  {saving ? 'Guardando...' : 'Guardar cambios'}
+                </Button>
+                <Button variant="outline" onClick={() => setEditOrg(null)}>Cancelar</Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </AdminLayout>
   )
 }

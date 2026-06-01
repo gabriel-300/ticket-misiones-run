@@ -39,3 +39,6 @@ supabase/.temp
 Thumbs.db
 .claude/
 @/
+
+.vercel
+.env*
