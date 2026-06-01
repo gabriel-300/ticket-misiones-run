@@ -183,7 +183,7 @@ function PerfilPage() {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <Label>Talle de remera</Label>
-              <Select onValueChange={v => form.setValue('shirt_size', v)} defaultValue={form.getValues('shirt_size')}>
+              <Select value={form.watch('shirt_size') ?? ''} onValueChange={v => form.setValue('shirt_size', v)}>
                 <SelectTrigger><SelectValue placeholder="Seleccionar" /></SelectTrigger>
                 <SelectContent>
                   {['XS','S','M','L','XL','XXL'].map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
@@ -192,7 +192,7 @@ function PerfilPage() {
             </div>
             <div className="space-y-1.5">
               <Label>Grupo sanguíneo</Label>
-              <Select onValueChange={v => form.setValue('blood_type', v)} defaultValue={form.getValues('blood_type')}>
+              <Select value={form.watch('blood_type') ?? ''} onValueChange={v => form.setValue('blood_type', v)}>
                 <SelectTrigger><SelectValue placeholder="Seleccionar" /></SelectTrigger>
                 <SelectContent>
                   {['A+','A-','B+','B-','AB+','AB-','0+','0-','No sé'].map(b => <SelectItem key={b} value={b}>{b}</SelectItem>)}
@@ -301,7 +301,7 @@ function PerfilPage() {
               <div className={`border rounded-xl p-4 ${APTO_STATUS_CONFIG[profile.apto_medico_status ?? 'pendiente'].color}`}>
                 <p className="font-semibold">{APTO_STATUS_CONFIG[profile.apto_medico_status ?? 'pendiente'].label}</p>
                 {profile.apto_medico_status === 'pendiente' && (
-                  <p className="text-sm mt-1">Tu certificado fue enviado y está siendo revisado por el equipo de MISIONA HUB.</p>
+                  <p className="text-sm mt-1">Tu certificado fue enviado y está siendo revisado por el equipo de tevent.</p>
                 )}
                 {profile.apto_medico_status === 'aprobado' && (
                   <p className="text-sm mt-1">Tu certificado médico está vigente y aprobado. ¡Listo para correr!</p>
