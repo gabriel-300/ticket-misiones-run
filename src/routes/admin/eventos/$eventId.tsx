@@ -1,14 +1,14 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import {
   ChevronLeft, Plus, Trash2, Tag, Users, Calendar,
-  ToggleLeft, ToggleRight, ClipboardList, Package, Star,
+  ToggleLeft, ToggleRight, ClipboardList, Package, Star, Pencil,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { AdminLayout, AdminBreadcrumb } from '@/components/admin/admin-layout'
-import { useToggleEventStatus, useSetFeaturedEvent } from '@/hooks/use-admin'
+import { useToggleEventStatus, useSetFeaturedEvent, useUpdateEvent, useDeleteEvent } from '@/hooks/use-admin'
 import {
   useOrgEventDetail, useCreatePricingTier, useDeletePricingTier,
   useEventServices, useCreateService, useDeleteService, useToggleService,
@@ -20,6 +20,7 @@ import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Textarea } from '@/components/ui/textarea'
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger,
 } from '@/components/ui/dialog'
@@ -392,13 +393,61 @@ function ServicesSection({ eventId }: { eventId: string }) {
   )
 }
 
+function toLocal(iso: string) {
+  return iso ? new Date(iso).toISOString().slice(0, 16) : ''
+}
+
 // ─── Main page ────────────────────────────────────────────────────────────────
 
 function AdminEventDetailPage() {
   const { eventId } = Route.useParams()
+  const navigate = useNavigate()
   const { data: event, isLoading } = useOrgEventDetail(eventId)
   const { mutate: toggleStatus, isPending: toggling } = useToggleEventStatus()
   const { mutate: setFeatured, isPending: featuring } = useSetFeaturedEvent()
+  const { mutate: updateEvent, isPending: saving } = useUpdateEvent()
+  const { mutate: deleteEvent, isPending: deleting } = useDeleteEvent()
+
+  const [editOpen, setEditOpen] = useState(false)
+  const [confirmDelete, setConfirmDelete] = useState(false)
+  const [editData, setEditData] = useState<{
+    name: string; starts_at: string; registration_opens_at: string
+    registration_closes_at: string; city: string; province: string
+    address: string; short_description: string; description: string; cover_image_url: string
+  } | null>(null)
+
+  function openEdit() {
+    if (!event) return
+    const loc = event.location as any
+    setEditData({
+      name: event.name,
+      starts_at: toLocal(event.starts_at),
+      registration_opens_at: toLocal(event.registration_opens_at),
+      registration_closes_at: toLocal(event.registration_closes_at),
+      city: loc?.city ?? '',
+      province: loc?.province ?? '',
+      address: loc?.address ?? '',
+      short_description: (event as any).short_description ?? '',
+      description: (event as any).description ?? '',
+      cover_image_url: (event as any).cover_image_url ?? '',
+    })
+    setEditOpen(true)
+  }
+
+  function handleSaveEdit() {
+    if (!editData) return
+    updateEvent({ eventId, data: editData }, {
+      onSuccess: () => { toast.success('Evento actualizado'); setEditOpen(false) },
+      onError:   () => toast.error('No se pudo actualizar el evento'),
+    })
+  }
+
+  function handleDelete() {
+    deleteEvent(eventId, {
+      onSuccess: () => { toast.success('Evento eliminado'); navigate({ to: '/admin/eventos' }) },
+      onError:   () => toast.error('No se pudo eliminar — puede tener inscripciones asociadas'),
+    })
+  }
 
   if (isLoading) {
     return (
@@ -459,7 +508,7 @@ function AdminEventDetailPage() {
             </div>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             <Button
               size="sm"
               variant="outline"
@@ -479,6 +528,26 @@ function AdminEventDetailPage() {
                 : <><ToggleLeft className="h-4 w-4" /> Publicar</>
               }
             </Button>
+            <Button size="sm" variant="outline" className="shrink-0 gap-1.5" onClick={openEdit}>
+              <Pencil className="h-4 w-4" /> Editar
+            </Button>
+            {confirmDelete ? (
+              <div className="flex gap-1">
+                <Button size="sm" variant="destructive" className="h-8 text-xs" disabled={deleting}
+                  onClick={handleDelete}>
+                  {deleting ? '...' : 'Confirmar'}
+                </Button>
+                <Button size="sm" variant="ghost" className="h-8 text-xs"
+                  onClick={() => setConfirmDelete(false)}>
+                  Cancelar
+                </Button>
+              </div>
+            ) : (
+              <Button size="sm" variant="ghost" className="shrink-0 h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+                onClick={() => setConfirmDelete(true)}>
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            )}
           </div>
         </div>
 
@@ -530,6 +599,78 @@ function AdminEventDetailPage() {
 
         <ServicesSection eventId={eventId} />
       </div>
+
+      {/* ── Dialog editar evento ── */}
+      <Dialog open={editOpen} onOpenChange={open => !open && setEditOpen(false)}>
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Editar evento</DialogTitle>
+          </DialogHeader>
+          {editData && (
+            <div className="space-y-4 pt-2">
+              <div className="space-y-1.5">
+                <Label>Nombre *</Label>
+                <Input value={editData.name} onChange={e => setEditData({ ...editData, name: e.target.value })} />
+              </div>
+              <div className="space-y-1.5">
+                <Label>Descripción corta *</Label>
+                <Input value={editData.short_description}
+                  onChange={e => setEditData({ ...editData, short_description: e.target.value })} />
+              </div>
+              <div className="space-y-1.5">
+                <Label>Descripción completa</Label>
+                <Textarea rows={3} value={editData.description}
+                  onChange={e => setEditData({ ...editData, description: e.target.value })} />
+              </div>
+              <div className="space-y-1.5">
+                <Label>Fecha y hora del evento *</Label>
+                <Input type="datetime-local" value={editData.starts_at}
+                  onChange={e => setEditData({ ...editData, starts_at: e.target.value })} />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <Label>Apertura inscripciones</Label>
+                  <Input type="datetime-local" value={editData.registration_opens_at}
+                    onChange={e => setEditData({ ...editData, registration_opens_at: e.target.value })} />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Cierre inscripciones</Label>
+                  <Input type="datetime-local" value={editData.registration_closes_at}
+                    onChange={e => setEditData({ ...editData, registration_closes_at: e.target.value })} />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <Label>Ciudad</Label>
+                  <Input value={editData.city}
+                    onChange={e => setEditData({ ...editData, city: e.target.value })} />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Provincia</Label>
+                  <Input value={editData.province}
+                    onChange={e => setEditData({ ...editData, province: e.target.value })} />
+                </div>
+              </div>
+              <div className="space-y-1.5">
+                <Label>Dirección / punto de largada</Label>
+                <Input value={editData.address}
+                  onChange={e => setEditData({ ...editData, address: e.target.value })} />
+              </div>
+              <div className="space-y-1.5">
+                <Label>URL imagen de portada</Label>
+                <Input value={editData.cover_image_url}
+                  onChange={e => setEditData({ ...editData, cover_image_url: e.target.value })} />
+              </div>
+              <div className="flex gap-3 pt-2">
+                <Button className="flex-1" disabled={saving} onClick={handleSaveEdit}>
+                  {saving ? 'Guardando...' : 'Guardar cambios'}
+                </Button>
+                <Button variant="outline" onClick={() => setEditOpen(false)}>Cancelar</Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </AdminLayout>
   )
 }

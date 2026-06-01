@@ -215,6 +215,38 @@ export function useDeleteOrganization() {
   })
 }
 
+export interface UpdateEventInput {
+  name?: string
+  starts_at?: string
+  registration_opens_at?: string
+  registration_closes_at?: string
+  city?: string
+  province?: string
+  address?: string
+  short_description?: string
+  description?: string
+  cover_image_url?: string
+}
+
+export function useUpdateEvent() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: async ({ eventId, data }: { eventId: string; data: UpdateEventInput }) => {
+      const { city, province, address, ...rest } = data
+      const update: Record<string, any> = { ...rest }
+      if (city !== undefined || province !== undefined) {
+        update.location = { city: city ?? '', province: province ?? '', address: address ?? '' }
+      }
+      const { error } = await supabase.from('events').update(update).eq('id', eventId)
+      if (error) throw error
+    },
+    onSuccess: (_, { eventId }) => {
+      qc.invalidateQueries({ queryKey: ['admin-events'] })
+      qc.invalidateQueries({ queryKey: ['org-event-detail', eventId] })
+    },
+  })
+}
+
 export function useDeleteEvent() {
   const qc = useQueryClient()
   return useMutation({
