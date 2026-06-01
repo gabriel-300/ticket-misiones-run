@@ -48,13 +48,13 @@ function LoginPage() {
       <div className="hidden lg:flex lg:w-1/2 bg-navy flex-col justify-between p-16">
         <Link to="/" className="flex items-center gap-2.5 font-display text-[18px] tracking-[0.02em] text-paper">
           <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="38" height="38" rx="9" fill="#C84B22"/>
-            <circle cx="19" cy="19" r="12" stroke="#071A2F" strokeWidth="2.6" fill="none"
+            <rect width="38" height="38" rx="9" fill="#07142F"/>
+            <circle cx="19" cy="19" r="12" stroke="#F5C913" strokeWidth="2.6" fill="none"
               strokeDasharray="67 9" strokeLinecap="round" transform="rotate(-30 19 19)"/>
             <line x1="11" y1="18.5" x2="27" y2="18.5" stroke="white" strokeWidth="3.2" strokeLinecap="round"/>
             <line x1="19" y1="18.5" x2="19" y2="29" stroke="white" strokeWidth="3.2" strokeLinecap="round"/>
           </svg>
-          <span className="font-display text-[18px] tracking-[0.04em] text-paper">TEVEN<span className="text-[#C84B22]">T</span></span>
+          <span className="font-display text-[18px] font-black tracking-[0.04em] text-paper">TEVEN<span className="text-yellow">T</span></span>
         </Link>
         <div>
           <h2 className="font-display text-[clamp(36px,4vw,56px)] leading-[0.97] tracking-[-0.02em] text-paper mb-4">

@@ -164,11 +164,11 @@ function buildConfirmationEmail(d: TemplateData): string {
         <!-- Header -->
         <tr>
           <td style="background:#0D1B2A;padding:36px 32px 28px;text-align:center;">
-            <p style="margin:0 0 16px;font-size:13px;font-weight:700;color:#C84B22;letter-spacing:3px;text-transform:uppercase;">tevent</p>
+            <p style="margin:0 0 16px;font-size:13px;font-weight:700;color:#F5C913;letter-spacing:3px;text-transform:uppercase;">tevent</p>
             <h1 style="margin:0;font-size:28px;font-weight:800;color:#ffffff;line-height:1.2;">¡Estás inscripto${d.firstName ? '' : ''}!</h1>
             <p style="margin:10px 0 0;font-size:15px;color:rgba(255,255,255,.7);">
               Hola <strong style="color:#ffffff;">${d.firstName}</strong>, tu lugar está reservado en<br/>
-              <strong style="color:#C84B22;">${d.eventName}</strong>
+              <strong style="color:#F5C913;">${d.eventName}</strong>
             </p>
           </td>
         </tr>
@@ -176,31 +176,31 @@ function buildConfirmationEmail(d: TemplateData): string {
         <!-- Event details -->
         <tr>
           <td style="padding:28px 32px 8px;">
-            <p style="margin:0 0 16px;font-size:11px;font-weight:700;color:#C84B22;letter-spacing:3px;text-transform:uppercase;">Tu inscripción</p>
+            <p style="margin:0 0 16px;font-size:11px;font-weight:700;color:#F5C913;letter-spacing:3px;text-transform:uppercase;">Tu inscripción</p>
             <h2 style="margin:0 0 20px;font-size:20px;font-weight:700;color:#0D1B2A;">${d.eventName}</h2>
 
             <table width="100%" cellpadding="0" cellspacing="0">
               <tr>
                 <td width="50%" style="padding:10px 12px;background:#F5F1EB;border-radius:10px;vertical-align:top;">
-                  <span style="display:block;font-size:10px;font-weight:700;color:#C84B22;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Fecha</span>
+                  <span style="display:block;font-size:10px;font-weight:700;color:#F5C913;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Fecha</span>
                   <span style="font-size:13px;font-weight:600;color:#0D1B2A;text-transform:capitalize;">${d.eventDate}</span>
                 </td>
                 <td width="4px"></td>
                 <td width="50%" style="padding:10px 12px;background:#F5F1EB;border-radius:10px;vertical-align:top;">
-                  <span style="display:block;font-size:10px;font-weight:700;color:#C84B22;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Lugar</span>
+                  <span style="display:block;font-size:10px;font-weight:700;color:#F5C913;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Lugar</span>
                   <span style="font-size:13px;font-weight:600;color:#0D1B2A;">${d.city}, ${d.province}</span>
                 </td>
               </tr>
               <tr><td colspan="3" style="padding:4px 0;"></td></tr>
               <tr>
                 <td width="50%" style="padding:10px 12px;background:#F5F1EB;border-radius:10px;vertical-align:top;">
-                  <span style="display:block;font-size:10px;font-weight:700;color:#C84B22;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Entrada</span>
+                  <span style="display:block;font-size:10px;font-weight:700;color:#F5C913;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Entrada</span>
                   <span style="font-size:13px;font-weight:600;color:#0D1B2A;">${d.ticketName}${d.distanceKm != null ? ` — ${d.distanceKm} km` : ''}${d.startTime ? `<br/><span style="font-weight:400;font-size:12px;color:#6b7280;">Largada: ${d.startTime}</span>` : ''}</span>
                 </td>
                 <td width="4px"></td>
                 <td width="50%" style="padding:10px 12px;background:#F5F1EB;border-radius:10px;vertical-align:top;">
                   ${d.category ? `
-                  <span style="display:block;font-size:10px;font-weight:700;color:#C84B22;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Categoría</span>
+                  <span style="display:block;font-size:10px;font-weight:700;color:#F5C913;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Categoría</span>
                   <span style="font-size:13px;font-weight:600;color:#0D1B2A;">${d.category}</span>
                   ` : '<span style="display:block;font-size:13px;color:transparent;">—</span>'}
                 </td>
@@ -213,7 +213,7 @@ function buildConfirmationEmail(d: TemplateData): string {
         <tr>
           <td style="padding:28px 32px;text-align:center;">
             <a href="${confirmationUrl}"
-               style="display:inline-block;background:#C84B22;color:#ffffff;text-decoration:none;font-weight:700;font-size:15px;padding:14px 36px;border-radius:100px;letter-spacing:0.3px;">
+               style="display:inline-block;background:#F5C913;color:#ffffff;text-decoration:none;font-weight:700;font-size:15px;padding:14px 36px;border-radius:100px;letter-spacing:0.3px;">
               Ver mi inscripción →
             </a>
           </td>
@@ -222,7 +222,7 @@ function buildConfirmationEmail(d: TemplateData): string {
         <!-- Footer -->
         <tr>
           <td style="background:#0D1B2A;padding:20px 32px;text-align:center;">
-            <p style="margin:0 0 4px;font-size:13px;font-weight:700;color:#C84B22;letter-spacing:2px;text-transform:uppercase;">tevent</p>
+            <p style="margin:0 0 4px;font-size:13px;font-weight:700;color:#F5C913;letter-spacing:2px;text-transform:uppercase;">tevent</p>
             <p style="margin:0;font-size:12px;color:rgba(255,255,255,.45);">
               Experiencias que dejan huella · Misiones, Argentina<br/>
               Si no realizaste esta inscripción, ignorá este mensaje.

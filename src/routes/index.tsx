@@ -58,7 +58,7 @@ function HeroSection() {
       <div
         className="absolute inset-0"
         style={{
-          background: `linear-gradient(180deg,rgba(11,27,43,0.60) 0%,rgba(11,27,43,0.88) 70%,#0B1B2B 100%)`,
+          background: `linear-gradient(180deg,rgba(7,20,47,0.60) 0%,rgba(7,20,47,0.88) 70%,#07142F 100%)`,
         }}
       />
 
@@ -256,7 +256,7 @@ function HowItWorksSection() {
             <div key={i} className={`py-9 ${i > 0 ? 'sm:pl-7' : ''} ${i < 2 ? 'sm:pr-7' : ''}`}>
               <div
                 className="font-display text-[56px] leading-none mb-6"
-                style={{ WebkitTextStroke: '1px #C84B22', color: 'transparent' }}
+                style={{ WebkitTextStroke: '1px #F5C913', color: 'transparent' }}
               >
                 {step.num}
               </div>

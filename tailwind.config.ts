@@ -49,20 +49,21 @@ export default {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
-        // Brand design tokens
-        navy:   { DEFAULT: '#0B1B2B', '2': '#0F2235' },
-        ink:    '#0B1B2B',
-        yellow: { DEFAULT: '#FFD23F', deep: '#F2BF1B' },
-        terra:  { DEFAULT: '#C84B22', deep: '#A33A18' },
+        // Brand design tokens — TevenT v1.0 mayo 2025
+        navy:   { DEFAULT: '#07142F', '2': '#0C2040' },
+        ink:    '#07142F',
+        yellow: { DEFAULT: '#F5C913', deep: '#DDB110' },
+        terra:  { DEFAULT: '#F5C913', deep: '#DDB110' }, // amarillo energía (rebrand desde naranja)
         jungle: '#1F3A2E',
         cream:  '#F5F0E6',
         paper:  '#FAF7F1',
         line:   '#E6DFCF',
-        'brand-muted': '#6B6457',
+        'brand-muted': '#677B86',
       },
       fontFamily: {
-        display: ['"Archivo Black"', 'Archivo', 'system-ui', 'sans-serif'],
-        sans:    ['Archivo', 'system-ui', 'sans-serif'],
+        display: ['"Montserrat"', 'system-ui', 'sans-serif'],
+        sans:    ['"Montserrat"', 'system-ui', 'sans-serif'],
+        body:    ['"Poppins"', 'system-ui', 'sans-serif'],
         mono:    ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
       },
       borderRadius: {

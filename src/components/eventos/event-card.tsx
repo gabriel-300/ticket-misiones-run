@@ -32,14 +32,14 @@ const TYPE_LABEL: Record<string, string> = {
 }
 
 const PLACEHOLDER_GRAD: Record<string, string> = {
-  running:     'linear-gradient(135deg,#0B1B2B,#1F3A2E)',
-  trail:       'linear-gradient(135deg,#1F3A2E,#0B1B2B)',
-  triathlon:   'linear-gradient(135deg,#3D2B5C,#0B1B2B)',
-  cycling:     'linear-gradient(135deg,#1B4D6B,#0B1B2B)',
-  concierto:   'linear-gradient(135deg,#C84B22,#0B1B2B)',
+  running:     'linear-gradient(135deg,#07142F,#1F3A2E)',
+  trail:       'linear-gradient(135deg,#1F3A2E,#07142F)',
+  triathlon:   'linear-gradient(135deg,#3D2B5C,#07142F)',
+  cycling:     'linear-gradient(135deg,#1B4D6B,#07142F)',
+  concierto:   'linear-gradient(135deg,#F5C913,#07142F)',
   teatro:      'linear-gradient(135deg,#3D2B5C,#1F3A2E)',
   conferencia: 'linear-gradient(135deg,#1B4D6B,#1F3A2E)',
-  other:       'linear-gradient(135deg,#C84B22,#1F3A2E)',
+  other:       'linear-gradient(135deg,#F5C913,#07142F)',
 }
 
 export default function EventCard({ event }: { event: EventCardData }) {
