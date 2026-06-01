@@ -3,9 +3,9 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY') ?? ''
 const SUPABASE_URL   = Deno.env.get('SUPABASE_URL') ?? ''
 const SERVICE_KEY    = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+const APP_URL        = Deno.env.get('APP_URL') ?? 'https://ticket-misiones-run.vercel.app'
 
-// Use onboarding@resend.dev until a custom domain is verified in Resend
-const FROM_EMAIL = 'MISIONA HUB <onboarding@resend.dev>'
+const FROM_EMAIL = 'tevent <onboarding@resend.dev>'
 
 const cors = {
   'Access-Control-Allow-Origin': '*',
@@ -23,11 +23,10 @@ Deno.serve(async (req: Request) => {
 
     const admin = createClient(SUPABASE_URL, SERVICE_KEY)
 
-    // Fetch registration with all needed data
     const { data: reg, error: regError } = await admin
       .from('registrations')
       .select(`
-        id, bib_number, category, status,
+        id, category, status,
         buyer:buyer_id ( id, first_name, last_name ),
         ticket_type:ticket_type_id ( name, distance_km, start_time ),
         event:event_id ( name, starts_at, location, cover_image_url )
@@ -39,7 +38,6 @@ Deno.serve(async (req: Request) => {
       return new Response(JSON.stringify({ error: 'Inscripción no encontrada' }), { status: 404, headers: cors })
     }
 
-    // Get buyer email from auth.users
     const { data: userData } = await admin.auth.admin.getUserById((reg.buyer as any).id ?? '')
     const buyerEmail = userData?.user?.email
     if (!buyerEmail) {
@@ -51,27 +49,24 @@ Deno.serve(async (req: Request) => {
     const ticketType = reg.ticket_type as any
     const location   = event.location as { city: string; province: string; address?: string }
 
-    const eventDate = new Date(event.starts_at)
-    const formattedDate = eventDate.toLocaleDateString('es-AR', {
+    const formattedDate = new Date(event.starts_at).toLocaleDateString('es-AR', {
       weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
     })
 
     const html = buildConfirmationEmail({
-      firstName:    buyer.first_name,
-      lastName:     buyer.last_name,
-      eventName:    event.name,
-      eventDate:    formattedDate,
-      city:         location.city,
-      province:     location.province,
-      ticketName:   ticketType.name,
-      distanceKm:   ticketType.distance_km ?? null,
-      startTime:    ticketType.start_time ?? null,
-      category:     reg.category ?? null,
-      bibNumber:    reg.bib_number ?? null,
+      firstName:      buyer.first_name,
+      lastName:       buyer.last_name,
+      eventName:      event.name,
+      eventDate:      formattedDate,
+      city:           location.city,
+      province:       location.province,
+      ticketName:     ticketType.name,
+      distanceKm:     ticketType.distance_km ?? null,
+      startTime:      ticketType.start_time ?? null,
+      category:       reg.category ?? null,
       registrationId: reg.id,
     })
 
-    // Send via Resend
     const resendRes = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
@@ -81,7 +76,7 @@ Deno.serve(async (req: Request) => {
       body: JSON.stringify({
         from:    FROM_EMAIL,
         to:      [buyerEmail],
-        subject: `✅ Inscripción confirmada — ${event.name}`,
+        subject: `¡Estás inscripto! — ${event.name}`,
         html,
       }),
     })
@@ -90,15 +85,24 @@ Deno.serve(async (req: Request) => {
 
     if (!resendRes.ok) {
       console.error('Resend error:', JSON.stringify(resendData))
-      await logEmail(admin, { registrationId: reg.id, recipientEmail: buyerEmail, status: 'failed', error: JSON.stringify(resendData), subject: `Inscripción confirmada — ${event.name}` })
+      await logEmail(admin, {
+        registrationId: reg.id, recipientEmail: buyerEmail,
+        status: 'failed', error: JSON.stringify(resendData),
+        subject: `¡Estás inscripto! — ${event.name}`,
+      })
       return new Response(JSON.stringify({ error: resendData?.message ?? 'Error al enviar email' }), { status: 500, headers: cors })
     }
 
-    // Log success
-    await logEmail(admin, { registrationId: reg.id, recipientEmail: buyerEmail, resendId: resendData.id, status: 'sent', subject: `Inscripción confirmada — ${event.name}` })
+    await logEmail(admin, {
+      registrationId: reg.id, recipientEmail: buyerEmail,
+      resendId: resendData.id, status: 'sent',
+      subject: `¡Estás inscripto! — ${event.name}`,
+    })
 
     console.log(`Email enviado a ${buyerEmail} — resend_id: ${resendData.id}`)
-    return new Response(JSON.stringify({ ok: true, resend_id: resendData.id }), { headers: { ...cors, 'Content-Type': 'application/json' } })
+    return new Response(JSON.stringify({ ok: true, resend_id: resendData.id }), {
+      headers: { ...cors, 'Content-Type': 'application/json' },
+    })
 
   } catch (err) {
     console.error('send-confirmation-email error:', err)
@@ -115,14 +119,14 @@ async function logEmail(admin: ReturnType<typeof createClient>, params: {
   subject: string
 }) {
   await admin.from('email_log').insert({
-    recipient_email:           params.recipientEmail,
-    template:                  'registration_confirmation',
-    subject:                   params.subject,
-    resend_id:                 params.resendId ?? null,
-    status:                    params.status,
-    error:                     params.error ?? null,
-    related_registration_id:   params.registrationId,
-    sent_at:                   params.status === 'sent' ? new Date().toISOString() : null,
+    recipient_email:         params.recipientEmail,
+    template:                'registration_confirmation',
+    subject:                 params.subject,
+    resend_id:               params.resendId ?? null,
+    status:                  params.status,
+    error:                   params.error ?? null,
+    related_registration_id: params.registrationId,
+    sent_at:                 params.status === 'sent' ? new Date().toISOString() : null,
   })
 }
 
@@ -139,100 +143,89 @@ interface TemplateData {
   distanceKm: number | null
   startTime: string | null
   category: string | null
-  bibNumber: number | null
   registrationId: string
 }
 
 function buildConfirmationEmail(d: TemplateData): string {
-  const appUrl = Deno.env.get('APP_URL') ?? 'https://misionahub.com.ar'
-  const confirmationUrl = `${appUrl}/confirmacion/${d.registrationId}`
+  const confirmationUrl = `${APP_URL}/confirmacion/${d.registrationId}`
 
   return `<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Inscripción confirmada</title>
+  <title>¡Estás inscripto!</title>
 </head>
-<body style="margin:0;padding:0;background:#f4f4f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f5;padding:32px 16px;">
+<body style="margin:0;padding:0;background:#F5F1EB;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#F5F1EB;padding:32px 16px;">
     <tr><td align="center">
-      <table width="100%" style="max-width:560px;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08);">
+      <table width="100%" style="max-width:560px;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.08);">
 
         <!-- Header -->
         <tr>
-          <td style="background:linear-gradient(135deg,#16a34a,#15803d);padding:32px 32px 24px;text-align:center;">
-            <p style="margin:0 0 8px;font-size:14px;color:rgba(255,255,255,.8);letter-spacing:2px;text-transform:uppercase;">🏃 MISIONA HUB</p>
-            <div style="display:inline-block;background:rgba(255,255,255,.15);border-radius:50%;width:64px;height:64px;line-height:64px;font-size:32px;text-align:center;margin-bottom:12px;">✅</div>
-            <h1 style="margin:0;font-size:26px;font-weight:800;color:#ffffff;">¡Inscripción confirmada!</h1>
-            <p style="margin:8px 0 0;font-size:15px;color:rgba(255,255,255,.85);">Hola ${d.firstName}, tu lugar está reservado</p>
+          <td style="background:#0D1B2A;padding:36px 32px 28px;text-align:center;">
+            <p style="margin:0 0 16px;font-size:13px;font-weight:700;color:#C84B22;letter-spacing:3px;text-transform:uppercase;">tevent</p>
+            <h1 style="margin:0;font-size:28px;font-weight:800;color:#ffffff;line-height:1.2;">¡Estás inscripto${d.firstName ? '' : ''}!</h1>
+            <p style="margin:10px 0 0;font-size:15px;color:rgba(255,255,255,.7);">
+              Hola <strong style="color:#ffffff;">${d.firstName}</strong>, tu lugar está reservado en<br/>
+              <strong style="color:#C84B22;">${d.eventName}</strong>
+            </p>
           </td>
         </tr>
 
-        <!-- Event info -->
+        <!-- Event details -->
         <tr>
-          <td style="padding:28px 32px 0;">
-            <h2 style="margin:0 0 16px;font-size:20px;font-weight:700;color:#111827;">${d.eventName}</h2>
+          <td style="padding:28px 32px 8px;">
+            <p style="margin:0 0 16px;font-size:11px;font-weight:700;color:#C84B22;letter-spacing:3px;text-transform:uppercase;">Tu inscripción</p>
+            <h2 style="margin:0 0 20px;font-size:20px;font-weight:700;color:#0D1B2A;">${d.eventName}</h2>
+
             <table width="100%" cellpadding="0" cellspacing="0">
               <tr>
-                <td style="padding:8px 0;border-bottom:1px solid #f3f4f6;">
-                  <span style="font-size:13px;color:#6b7280;">📅 Fecha</span><br/>
-                  <span style="font-size:14px;font-weight:600;color:#111827;text-transform:capitalize;">${d.eventDate}</span>
+                <td width="50%" style="padding:10px 12px;background:#F5F1EB;border-radius:10px;vertical-align:top;">
+                  <span style="display:block;font-size:10px;font-weight:700;color:#C84B22;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Fecha</span>
+                  <span style="font-size:13px;font-weight:600;color:#0D1B2A;text-transform:capitalize;">${d.eventDate}</span>
+                </td>
+                <td width="4px"></td>
+                <td width="50%" style="padding:10px 12px;background:#F5F1EB;border-radius:10px;vertical-align:top;">
+                  <span style="display:block;font-size:10px;font-weight:700;color:#C84B22;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Lugar</span>
+                  <span style="font-size:13px;font-weight:600;color:#0D1B2A;">${d.city}, ${d.province}</span>
                 </td>
               </tr>
+              <tr><td colspan="3" style="padding:4px 0;"></td></tr>
               <tr>
-                <td style="padding:8px 0;border-bottom:1px solid #f3f4f6;">
-                  <span style="font-size:13px;color:#6b7280;">📍 Lugar</span><br/>
-                  <span style="font-size:14px;font-weight:600;color:#111827;">${d.city}, ${d.province}</span>
+                <td width="50%" style="padding:10px 12px;background:#F5F1EB;border-radius:10px;vertical-align:top;">
+                  <span style="display:block;font-size:10px;font-weight:700;color:#C84B22;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Entrada</span>
+                  <span style="font-size:13px;font-weight:600;color:#0D1B2A;">${d.ticketName}${d.distanceKm != null ? ` — ${d.distanceKm} km` : ''}${d.startTime ? `<br/><span style="font-weight:400;font-size:12px;color:#6b7280;">Largada: ${d.startTime}</span>` : ''}</span>
+                </td>
+                <td width="4px"></td>
+                <td width="50%" style="padding:10px 12px;background:#F5F1EB;border-radius:10px;vertical-align:top;">
+                  ${d.category ? `
+                  <span style="display:block;font-size:10px;font-weight:700;color:#C84B22;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Categoría</span>
+                  <span style="font-size:13px;font-weight:600;color:#0D1B2A;">${d.category}</span>
+                  ` : '<span style="display:block;font-size:13px;color:transparent;">—</span>'}
                 </td>
               </tr>
-              <tr>
-                <td style="padding:8px 0;border-bottom:1px solid #f3f4f6;">
-                  <span style="font-size:13px;color:#6b7280;">🎟️ Entrada</span><br/>
-                  <span style="font-size:14px;font-weight:600;color:#111827;">${d.ticketName}${d.distanceKm != null ? ` — ${d.distanceKm} km` : ''}${d.startTime ? ` · Largada: ${d.startTime}` : ''}</span>
-                </td>
-              </tr>
-              ${d.category ? `
-              <tr>
-                <td style="padding:8px 0;border-bottom:1px solid #f3f4f6;">
-                  <span style="font-size:13px;color:#6b7280;">🏅 Categoría</span><br/>
-                  <span style="font-size:14px;font-weight:600;color:#111827;">${d.category}</span>
-                </td>
-              </tr>` : ''}
             </table>
           </td>
         </tr>
 
-        <!-- Bib number -->
-        ${d.bibNumber ? `
-        <tr>
-          <td style="padding:24px 32px;">
-            <div style="background:#f0fdf4;border:2px solid #86efac;border-radius:12px;padding:20px;text-align:center;">
-              <p style="margin:0 0 4px;font-size:12px;color:#16a34a;text-transform:uppercase;letter-spacing:2px;font-weight:600;">Número de dorsal</p>
-              <p style="margin:0;font-size:56px;font-weight:900;color:#15803d;line-height:1;">#${d.bibNumber}</p>
-            </div>
-          </td>
-        </tr>` : ''}
-
         <!-- CTA -->
         <tr>
-          <td style="padding:0 32px 28px;text-align:center;">
+          <td style="padding:28px 32px;text-align:center;">
             <a href="${confirmationUrl}"
-               style="display:inline-block;background:#16a34a;color:#ffffff;text-decoration:none;font-weight:700;font-size:15px;padding:14px 32px;border-radius:8px;">
-              Ver mi inscripción y race‑cation →
+               style="display:inline-block;background:#C84B22;color:#ffffff;text-decoration:none;font-weight:700;font-size:15px;padding:14px 36px;border-radius:100px;letter-spacing:0.3px;">
+              Ver mi inscripción →
             </a>
-            <p style="margin:16px 0 0;font-size:13px;color:#9ca3af;">
-              También podés armar tu estadía y traslados desde la plataforma.
-            </p>
           </td>
         </tr>
 
         <!-- Footer -->
         <tr>
-          <td style="background:#f9fafb;padding:20px 32px;text-align:center;border-top:1px solid #f3f4f6;">
-            <p style="margin:0;font-size:12px;color:#9ca3af;">
-              MISIONA HUB · Misiones, Argentina<br/>
-              Si no solicitaste esta inscripción, ignorá este mensaje.
+          <td style="background:#0D1B2A;padding:20px 32px;text-align:center;">
+            <p style="margin:0 0 4px;font-size:13px;font-weight:700;color:#C84B22;letter-spacing:2px;text-transform:uppercase;">tevent</p>
+            <p style="margin:0;font-size:12px;color:rgba(255,255,255,.45);">
+              Experiencias que dejan huella · Misiones, Argentina<br/>
+              Si no realizaste esta inscripción, ignorá este mensaje.
             </p>
           </td>
         </tr>
